@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WDP 可行性测试：视频流 + 相机聚焦</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div id="player"></div>
+
+    <div id="loading" class="overlay">
+      <div class="panel">
+        <h2>正在连接云渲染视频流</h2>
+        <p id="loadingText">初始化中...</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button id="focusBtn" disabled>飞跃并聚焦目标实体</button>
+      <span id="status">状态：未启动</span>
+    </div>
+
+    <pre id="log" class="log"></pre>
+  </div>
+
+  <script src="https://wdpapi.51aes.com/sdk/wdpApi.min.js"></script>
+  <script src="https://unpkg.com/wdpapi@2.2.1/dist/wdpApi.min.js"></script>
+  <script src="config/index.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+wdpApi.min.js:9  
+wdpApi.min.js:9  🌍 51WORLD -- Digital twin storm is now
+wdpApi.min.js:9  🌟  Version V2.1.0_20038
+wdpApi.min.js:9  🌟  Updated 2025/9/15 10:34:38
+wdpApi.min.js:9  🌟   Author 51WORLD
+wdpApi.min.js:9  🌟  Company 51WORLD
+wdpApi.min.js:9  🌟 Document https://wdpapi.51aes.com/
+app.js:16 WdpApi 实例创建完成 {id: 'player', url: 'https://dtp-api.51aes.com'}
+wdpApi.min.js:9 HEVC main profile is supported!
+app.js:16 Renderer.Start 成功 
+wdpApi.min.js:9 Uncaught (in promise) NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
+value @ wdpApi.min.js:9
+value @ wdpApi.min.js:9
+(anonymous) @ wdpApi.min.js:9
+r @ wdpApi.min.js:9
+Promise.then
+o @ wdpApi.min.js:9
+(anonymous) @ wdpApi.min.js:9
+m @ wdpApi.min.js:9
+value @ wdpApi.min.js:9
+Start @ wdpApi.min.js:9
+startRenderer @ app.js:100
+bootstrap @ app.js:147
+app.js:16 onRenderCloudConnected 
+wdpApi.min.js:9 The SDK version does not match the Runtime version. This will cause some functions to not operate properly. Please install an SDK that matches the Runtime!
+(anonymous) @ wdpApi.min.js:9
+r @ wdpApi.min.js:9
+Promise.then
+o @ wdpApi.min.js:9
+(anonymous) @ wdpApi.min.js:9
+m @ wdpApi.min.js:9
+value @ wdpApi.min.js:9
+(anonymous) @ wdpApi.min.js:9
+r @ wdpApi.min.js:9
+Promise.then
+o @ wdpApi.min.js:9
+(anonymous) @ wdpApi.min.js:9
+m @ wdpApi.min.js:9
+value @ wdpApi.min.js:9
+value @ wdpApi.min.js:9
+value @ wdpApi.min.js:9
+value @ wdpApi.min.js:9
+(anonymous) @ wdpApi.min.js:9
+(anonymous) @ wdpApi.min.js:9
+u @ wdpApi.min.js:9
+webRtcPlayerObj.onLargeDataChannelMessage @ wdpApi.min.js:9
+r.onmessage @ wdpApi.min.js:9
+wdpApi.min.js:9 (index)NameValue(index)NameValue0'SDK version''2.1.0_20038'1'Runtime version''2.2.0'2'Updated''2025/9/15 10:34:38'3'UserAgent''Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb…KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'4'OS''win64'5'Rendering resolution''undefined x undefined'6'Screen resolution''1303 x 959'Array(7)
+app.js:16 OnWdpSceneIsReady 100% 
+app.js:16 onVideoReady：视频流连接成功 
+favicon.ico:1  GET http://localhost:8090/favicon.ico 404 (File not found)
+app.js:16 开始获取实体 {eid: '-9149062448540868842'}
+app.js:16 按钮动作失败 {error: "Converting circular structure to JSON\n    --> star…r 'Object'\n    --- property '/' closes the circle"}
