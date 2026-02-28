@@ -1,0 +1,6 @@
+﻿# runtime artifacts
+feasibility_test_wdp_camera/log/*.log
+
+# temp workspace files
+.tmp/
+*.tmp
