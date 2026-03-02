@@ -39,6 +39,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 - 必须存在 `window.projectGlobalConfigs.renderer`。
 - 必须包含 `id`、`env.url`、`env.order`。
 - `env.order` 必须是 32 位十六进制字符串。
+- 渲染口令获取/下发/环境匹配流程以 `../wdp-frontend-integration/SKILL.md` 为准。
 
 2. 校验容器与尺寸。
 - `renderer.id` 对应 DOM 必须存在。
@@ -47,6 +48,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 3. 校验 SDK 依赖链。
 - 必须先有 `CloudApi`，再有 `WdpApi`。
 - 若出现 `CloudApi is not defined`，优先检查脚本 URL 是否真实返回 JS。
+- 命中 BIM/GIS 子域时，必须先校验 `Plugin.Install(BimApi/GisApi)` 成功，再执行领域 API。
 
 4. 校验初始化时序。
 - 推荐顺序：`SetTimeoutTime -> Renderer.Start -> RegisterEvents -> SceneReady(100%) -> 业务 API`。

@@ -7,6 +7,12 @@ description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi
 
 第一轮编写/补完仅参考在线管理文档：`https://wdpapidoc-admin.51aes.com/manual/doc`。
 
+## 前置安装门禁（强制）
+
+- 执行任意 GIS API 前，必须先完成 `App.Plugin.Install(GisApi)`。
+- 若未确认插件安装成功，不得继续执行 `GeoLayer` 创建、更新、显隐、事件监听。
+- 首次进入 GIS 调用链时，必须输出安装结果与插件版本信息（`App.gis.GetVersion()`）。
+
 ## 能力范围（已补完）
 
 1. 插件与版本
