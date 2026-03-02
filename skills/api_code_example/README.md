@@ -20,8 +20,61 @@
 - 通用基础属性读取/更新模板
 - 对应技能：`../wdp-api-generic-base-attributes/SKILL.md`
 
-5. `official-*.md`
+5. `entity-general-behavior.template.js`
+- 实体/单体通用行为模板（检索、显隐、删除、落地）
+- 对应技能：`../wdp-api-entity-general-behavior/SKILL.md`
+
+6. `entity-coverings.template.js`
+- 实体覆盖物模板（实时视频、Window、POI、Web组件）
+- 对应技能：`../wdp-api-entity-coverings/SKILL.md`
+
+7. `layer-models.template.js`
+- 图层/模型模板（图层控制、node控制、模型控制）
+- 对应技能：`../wdp-api-layer-models/SKILL.md`
+
+8. `material-settings.template.js`
+- 材质设置模板（材质创建、拾取、替换、高亮）
+- 对应技能：`../wdp-api-material-settings/SKILL.md`
+
+9. `cluster.template.js`
+- 点聚合模板（数据部署、聚合配置、周边搜索）
+- 对应技能：`../wdp-api-cluster/SKILL.md`
+
+10. `function-components.template.js`
+- 功能组件模板（环境、控件、工具、设置）
+- 对应技能：`../wdp-api-function-components/SKILL.md`
+
+11. `bim-core-operations.template.js`
+- BIM 首批模板（模型列表、Hierarchy 加载）
+- 对应技能：`../bim-api-core-operations/SKILL.md`
+
+12. `bim-model-behaviors.template.js`
+- BIM 模型行为模板（激活、移动、旋转、缩放、聚焦、显隐、落地、剖切、拆楼、卸载）
+- 对应技能：`../bim-api-core-operations/SKILL.md`
+
+13. `bim-component-space.template.js`
+- BIM 构件/空间模板（构件树、搜索、属性、聚焦、显隐、高亮、坐标、移动、空间高亮/聚焦）
+- 对应技能：`../bim-api-core-operations/SKILL.md`
+
+14. `covering-advanced.template.js`
+- 覆盖物高级模板（HeatMap、Path、Bound、Scene.Create(s)、ClearByTypes）
+- 对应技能：`../wdp-api-covering-advanced/SKILL.md`
+
+15. `bim-plugin-and-roam.template.js`
+- BIM 插件与漫游模板（Plugin.Install、CameraRoam、PlayRoam/StopRoam）
+- 对应技能：`../wdp-bim-plugin-and-roam/SKILL.md`
+
+16. `gis-core-operations.template.js`
+- GIS 核心模板（GisApi 安装、GeoLayer 加载、图层更新/偏移/高亮）
+- 对应技能：`../gis-api-core-operations/SKILL.md`
+
+17. `official-*.md`
 - 来自新版后台的可读脚本摘录（用于快速复制方法）
+- BIM 全量摘录：`official-bim-full.md`（按 BIM 2.1.1 官网分类）
+- GIS 全量摘录：`official-gis-full.md`（按 GIS 2.1.0 官网分类）
+
+18. `DOC_PLATFORM.md`
+- 文档平台固定入口（公共文档站 + 管理后台）
 
 ## 使用方式
 
