@@ -1,0 +1,46 @@
+name: collab-guard
+
+on:
+  pull_request:
+    branches: [ "master" ]
+  push:
+    branches: [ "master" ]
+
+jobs:
+  baseline-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify key files exist
+        run: |
+          test -f skills/README.md
+          test -f skills/wdp-entry-agent/SKILL.md
+          test -f skills/api_code_example/OFFICIAL_EXCERPT_INDEX.md
+
+      - name: Scan sensitive patterns
+        run: |
+          set -e
+          patterns=(
+            "eyJhbGciOi"
+            "admin123"
+            "Authorization:[[:space:]]*Bearer"
+            "access_token"
+            "refresh_token"
+          )
+          for p in "${patterns[@]}"; do
+            if grep -RInE "$p" skills .github --exclude-dir=.git; then
+              echo "Found sensitive pattern: $p"
+              exit 1
+            fi
+          done
+
+      - name: Block temp files in repo root
+        run: |
+          set -e
+          if find . -maxdepth 1 -type f \( -name "tmp_*" -o -name "*.log" -o -name "*_token*.txt" \) | grep -q .; then
+            echo "Temp or sensitive file found in repository root."
+            find . -maxdepth 1 -type f \( -name "tmp_*" -o -name "*.log" -o -name "*_token*.txt" \)
+            exit 1
+          fi

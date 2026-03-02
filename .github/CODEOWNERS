@@ -1,0 +1,12 @@
+# 默认代码所有者（请按实际 GitHub 用户/团队名调整）
+* @morking48
+
+# 入口与规则由固定负责人把关
+/skills/README.md @morking48
+/skills/wdp-entry-agent/SKILL.md @morking48
+
+# 官方摘录与模板属于高频变更区，建议固定审核人
+/skills/api_code_example/ @morking48
+
+# 子技能目录
+/skills/*/SKILL.md @morking48
