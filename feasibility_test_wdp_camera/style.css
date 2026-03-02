@@ -44,12 +44,25 @@ body,
   left: 16px;
   z-index: 180;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 12px;
   padding: 10px 12px;
   border-radius: 10px;
   background: rgba(6, 12, 28, 0.72);
   border: 1px solid rgba(115, 170, 255, 0.35);
+  max-width: min(940px, 95vw);
+}
+
+.toolbar-title {
+  font-size: 13px;
+  color: rgba(232, 242, 255, 0.85);
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 button {
@@ -61,6 +74,16 @@ button {
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
+}
+
+button.is-on {
+  border-color: rgba(163, 255, 191, 0.95);
+  background: linear-gradient(135deg, #1b7a43, #1aa168);
+}
+
+button.boss {
+  border-color: rgba(255, 182, 130, 0.9);
+  background: linear-gradient(135deg, #8a3a12, #bf5b20);
 }
 
 button:disabled {

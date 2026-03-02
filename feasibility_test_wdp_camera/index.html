@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WDP 可行性测试：视频流 + 相机聚焦</title>
+  <title>WDP 可行性测试：覆盖物与场景开关</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,7 +18,15 @@
     </div>
 
     <div class="toolbar">
-      <button id="focusBtn" disabled>飞跃并聚焦目标实体</button>
+      <div class="toolbar-title">功能测试面板（点击即开/关）</div>
+      <div class="toolbar-actions">
+        <button id="focusBtn" disabled>镜头聚焦</button>
+        <button id="poiBtn" disabled>POI</button>
+        <button id="rangeBtn" disabled>区域轮廓</button>
+        <button id="heatmapBtn" disabled>热力图</button>
+        <button id="timeBtn" disabled>场景时间</button>
+        <button id="bossBtn" disabled>BOSS复位</button>
+      </div>
       <span id="status">状态：未启动</span>
     </div>
 

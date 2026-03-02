@@ -9,7 +9,7 @@
     resolution: [1920, 1080],
     rendererMode: 0,
     debugMode: 'normal',
-    keyboard: { normal: true, func: false }
+    keyboard: { normal: true, func: true }
   },
   testTarget: {
     eid: '-9149062448540868842',
