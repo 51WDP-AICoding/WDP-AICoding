@@ -1,9 +1,10 @@
-# 官方脚本摘录（新版后台）：功能组件
+﻿# 官方脚本摘录（新版后台）：功能组件
 
 版本基线：WDP API 2.2.1  
 来源：wdpapidoc 后台接口（分类：功能组件，子项 id: 1406/1407/1408/1409）
 
 ## 使用说明
+
 - 本文件用于本地快速编码，减少重复在线查询。
 - 若线上文档与本文件不一致，以线上发布口径为准。
 - 不在仓库保存后台 token。
@@ -16,6 +17,22 @@ await App.Environment.SetSkylightTime('12:30', 3, false);
 await App.Environment.GetSceneWeather();
 await App.Environment.SetSceneWeather('Sunny', 3, false);
 await App.Scene.SetSceneStyle('comic'); // comic / sketch / dark / ashy / false
+```
+
+### 天气参数补充（本地规则）
+
+- 当前官方代码块仅明确了 `Sunny` 示例。
+- 未在摘录中拿到完整天气枚举表时，不得直接猜测 `Snow/Snowy/...` 作为最终实现。
+- 需先通过文档参数表或运行时探测确认可用枚举。
+
+运行时探测示例：
+
+```javascript
+const candidates = ['Sunny', 'Cloudy', 'Rain', 'Snow', 'Snowy', 'HeavySnow'];
+for (const weather of candidates) {
+  const res = await App.Environment.SetSceneWeather(weather, 1, false);
+  console.log(weather, res);
+}
 ```
 
 ## 控件（id: 1407）

@@ -45,7 +45,6 @@ description: 处理 WDP 通用事件注册与治理。用于规范事件注册�
 
 - `../api_code_example/official-general-event-registration.md`
 - `../api_code_example/general-event-registration.template.js`
-- `../example/EXAMPLE_REFERENCE.md`
 
 ## 输出要求
 

@@ -1,4 +1,4 @@
-let App = null;
+﻿let App = null;
 let sceneReady = false;
 
 const ui = {
@@ -9,6 +9,7 @@ const ui = {
   rangeBtn: document.getElementById('rangeBtn'),
   heatmapBtn: document.getElementById('heatmapBtn'),
   timeBtn: document.getElementById('timeBtn'),
+  seasonBtn: document.getElementById('seasonBtn'),
   bossBtn: document.getElementById('bossBtn'),
   status: document.getElementById('status'),
   log: document.getElementById('log'),
@@ -19,6 +20,7 @@ const featureState = {
   range: false,
   heatmap: false,
   sceneTime: false,
+  weatherCycle: false,
 };
 
 const featureObjects = {
@@ -31,6 +33,21 @@ const runtime = {
   targetEntity: null,
   center: [121.50007292, 31.22579403, 30],
   defaultSkylightTime: '12:00',
+  defaultWeather: 'Sunny',
+  appliedWeather: '',
+  weatherCycleIndex: -1,
+  weatherCooldownMs: 1000,
+  weatherLastAt: 0,
+  weatherCycleList: [
+    'Sunny',
+    'Cloudy',
+    'Overcast',
+    'Rain',
+    'HeavyRain',
+    'Snow',
+    'HeavySnow',
+    'Fog',
+  ],
 };
 const RANGE_CUSTOM_ID = 'my-range-id';
 
@@ -71,7 +88,7 @@ function validateConfig(config) {
 
 function initWdp() {
   if (typeof WdpApi === 'undefined') {
-    throw new Error('WdpApi is not defined，请检查 SDK 加载');
+    throw new Error('WdpApi is not definedï¼Œè¯·æ£€æŸ¥ SDK åŠ è½½');
   }
 
   const config = window.projectGlobalConfigs.renderer;
@@ -88,7 +105,7 @@ function initWdp() {
     prefix: config.prefix,
   });
 
-  log('WdpApi 实例创建完成', { id: config.id, url: config.env.url });
+  log('WdpApi å®žä¾‹åˆ›å»ºå®Œæˆ', { id: config.id, url: config.env.url });
 }
 
 function setActionButtonsDisabled(disabled) {
@@ -97,6 +114,7 @@ function setActionButtonsDisabled(disabled) {
   ui.rangeBtn.disabled = disabled;
   ui.heatmapBtn.disabled = disabled;
   ui.timeBtn.disabled = disabled;
+  ui.seasonBtn.disabled = disabled;
   ui.bossBtn.disabled = disabled;
 }
 
@@ -105,6 +123,7 @@ function updateButtonStates() {
   ui.rangeBtn.classList.toggle('is-on', featureState.range);
   ui.heatmapBtn.classList.toggle('is-on', featureState.heatmap);
   ui.timeBtn.classList.toggle('is-on', featureState.sceneTime);
+  ui.seasonBtn.classList.toggle('is-on', featureState.weatherCycle);
   ui.bossBtn.classList.add('boss');
 }
 
@@ -152,12 +171,12 @@ function pickCenterFromBBox(result) {
 }
 
 async function resolveCenterFromEidEntity(entity) {
-  // 1) 官方对象 Get() 返回里优先找 location
+  // 1) å®˜æ–¹å¯¹è±¡ Get() è¿”å›žé‡Œä¼˜å…ˆæ‰¾ location
   const infoRes = await entity.Get();
   const loc = pickFirstLocation(infoRes?.result);
   if (loc) return loc;
 
-  // 2) 用官方 GetBoundingBox([entity]) 兜底求中心
+  // 2) ç”¨å®˜æ–¹ GetBoundingBox([entity]) å…œåº•æ±‚ä¸­å¿ƒ
   const bboxRes = await App.Scene.GetBoundingBox([entity]);
   const bboxCenter = pickCenterFromBBox(bboxRes?.result || bboxRes);
   if (bboxCenter) return bboxCenter;
@@ -172,12 +191,12 @@ async function normalizeCenterToGIS(center) {
   const alt = Number(center[2]);
   if (!Number.isFinite(lon) || !Number.isFinite(lat) || !Number.isFinite(alt)) return null;
 
-  // 若已是经纬度范围，直接返回
+  // è‹¥å·²æ˜¯ç»çº¬åº¦èŒƒå›´ï¼Œç›´æŽ¥è¿”å›ž
   if (Math.abs(lon) <= 180 && Math.abs(lat) <= 90) {
     return [lon, lat, alt];
   }
 
-  // 兜底：视为笛卡尔坐标，转换为 GIS
+  // å…œåº•ï¼šè§†ä¸ºç¬›å¡å°”åæ ‡ï¼Œè½¬æ¢ä¸º GIS
   const convRes = await App.Tools.Coordinate.CartesianToGIS([[lon, lat, alt]]);
   const converted =
     convRes?.result?.[0] ||
@@ -197,7 +216,7 @@ async function getTargetEntity() {
   const target = window.projectGlobalConfigs.testTarget;
   const getRes = await App.Scene.GetByEids([target.eid]);
   if (!getRes.success || !Array.isArray(getRes.result) || getRes.result.length === 0) {
-    throw new Error('GetByEids 未返回有效实体');
+    throw new Error('GetByEids æœªè¿”å›žæœ‰æ•ˆå®žä½“');
   }
 
   runtime.targetEntity = getRes.result[0];
@@ -206,9 +225,9 @@ async function getTargetEntity() {
   if (gisCenter) {
     runtime.center = gisCenter;
   } else {
-    log('未能从 eid 实体解析有效 GIS 中心点，使用默认中心', { center: runtime.center, rawCenter });
+    log('æœªèƒ½ä»Ž eid å®žä½“è§£æžæœ‰æ•ˆ GIS ä¸­å¿ƒç‚¹ï¼Œä½¿ç”¨é»˜è®¤ä¸­å¿ƒ', { center: runtime.center, rawCenter });
   }
-  log('目标实体已缓存', { eid: target.eid, center: runtime.center });
+  log('ç›®æ ‡å®žä½“å·²ç¼“å­˜', { eid: target.eid, center: runtime.center });
   return runtime.targetEntity;
 }
 
@@ -216,7 +235,7 @@ async function safeSetVisible(obj, visible, label) {
   if (!obj) return;
   if (typeof obj.SetVisible === 'function') {
     const res = await obj.SetVisible(visible);
-    if (!res?.success) throw new Error(`${label}.SetVisible 失败`);
+    if (!res?.success) throw new Error(`${label}.SetVisible å¤±è´¥`);
     return;
   }
   if (!visible && typeof obj.Delete === 'function') {
@@ -303,17 +322,17 @@ async function togglePoi() {
     const addRes = await App.Scene.Add(poi, {
       calculateCoordZ: { coordZRef: 'surface', coordZOffset: 20 },
     });
-    if (!addRes.success) throw new Error(`Poi 添加失败: ${addRes.message || 'unknown'}`);
+    if (!addRes.success) throw new Error(`Poi æ·»åŠ å¤±è´¥: ${addRes.message || 'unknown'}`);
     featureObjects.poi = poi;
     featureState.poi = true;
-    log('POI 创建并显示');
+    log('POI åˆ›å»ºå¹¶æ˜¾ç¤º');
     return;
   }
 
   const next = !featureState.poi;
   await safeSetVisible(featureObjects.poi, next, 'Poi');
   featureState.poi = next;
-  log(`POI 已${next ? '开启' : '关闭'}`);
+  log(`POI å·²${next ? 'å¼€å¯' : 'å…³é—­'}`);
 }
 
 async function toggleRange() {
@@ -328,10 +347,10 @@ async function toggleRange() {
     const addRes = await App.Scene.Add(range, {
       calculateCoordZ: { coordZRef: 'surface', coordZOffset: 10 },
     });
-    if (!addRes.success) throw new Error(`Range 添加失败: ${addRes.message || 'unknown'}`);
+    if (!addRes.success) throw new Error(`Range æ·»åŠ å¤±è´¥: ${addRes.message || 'unknown'}`);
     featureObjects.range = range;
     featureState.range = true;
-    log('区域轮廓创建并显示');
+    log('åŒºåŸŸè½®å»“åˆ›å»ºå¹¶æ˜¾ç¤º');
     return;
   }
 
@@ -345,7 +364,7 @@ async function toggleRange() {
     }
   }
   featureState.range = false;
-  log('区域轮廓已关闭');
+  log('åŒºåŸŸè½®å»“å·²å…³é—­');
 }
 
 async function toggleHeatMap() {
@@ -355,46 +374,80 @@ async function toggleHeatMap() {
     const addRes = await App.Scene.Add(heatmap, {
       calculateCoordZ: { coordZRef: 'surface', coordZOffset: 6 },
     });
-    if (!addRes.success) throw new Error(`HeatMap 添加失败: ${addRes.message || 'unknown'}`);
+    if (!addRes.success) throw new Error(`HeatMap æ·»åŠ å¤±è´¥: ${addRes.message || 'unknown'}`);
     featureObjects.heatmap = heatmap;
     featureState.heatmap = true;
-    log('热力图创建并显示');
+    log('çƒ­åŠ›å›¾åˆ›å»ºå¹¶æ˜¾ç¤º');
     return;
   }
 
   const next = !featureState.heatmap;
   await safeSetVisible(featureObjects.heatmap, next, 'HeatMap');
   featureState.heatmap = next;
-  log(`热力图已${next ? '开启' : '关闭'}`);
+  log(`çƒ­åŠ›å›¾å·²${next ? 'å¼€å¯' : 'å…³é—­'}`);
 }
 
 async function applySceneTime(modeOn) {
   if (modeOn) {
     const res = await App.Environment.SetSkylightTime('18:30', 1, false);
-    if (!res.success) throw new Error(`设置场景时间失败: ${res.message || 'unknown'}`);
+    if (!res.success) throw new Error(`è®¾ç½®åœºæ™¯æ—¶é—´å¤±è´¥: ${res.message || 'unknown'}`);
     featureState.sceneTime = true;
-    log('场景时间切换为傍晚 18:30');
+    log('åœºæ™¯æ—¶é—´åˆ‡æ¢ä¸ºå‚æ™š 18:30');
     return;
   }
 
   const fallbackTime = runtime.defaultSkylightTime || '12:00';
   const res = await App.Environment.SetSkylightTime(fallbackTime, 1, false);
-  if (!res.success) throw new Error(`恢复场景时间失败: ${res.message || 'unknown'}`);
+  if (!res.success) throw new Error(`æ¢å¤åœºæ™¯æ—¶é—´å¤±è´¥: ${res.message || 'unknown'}`);
   featureState.sceneTime = false;
-  log(`场景时间恢复为 ${fallbackTime}`);
+  log(`åœºæ™¯æ—¶é—´æ¢å¤ä¸º ${fallbackTime}`);
 }
 
 async function toggleSceneTime() {
   await applySceneTime(!featureState.sceneTime);
 }
 
+function getNextWeather() {
+  if (!Array.isArray(runtime.weatherCycleList) || runtime.weatherCycleList.length === 0) {
+    throw new Error('天气轮换列表为空');
+  }
+  runtime.weatherCycleIndex = (runtime.weatherCycleIndex + 1) % runtime.weatherCycleList.length;
+  return runtime.weatherCycleList[runtime.weatherCycleIndex];
+}
+
+async function resetWeather() {
+  const fallbackWeather = runtime.defaultWeather || 'Sunny';
+  const res = await App.Environment.SetSceneWeather(fallbackWeather, 1, false);
+  if (!res.success) throw new Error(`恢复默认天气失败: ${res.message || 'unknown'}`);
+  featureState.weatherCycle = false;
+  runtime.appliedWeather = fallbackWeather;
+  log(`天气恢复为 ${fallbackWeather}`);
+}
+
+async function cycleWeather() {
+  const now = Date.now();
+  const elapsed = now - runtime.weatherLastAt;
+  if (elapsed < runtime.weatherCooldownMs) {
+    const waitSec = ((runtime.weatherCooldownMs - elapsed) / 1000).toFixed(1);
+    throw new Error(`天气切换冷却中，请 ${waitSec}s 后再试`);
+  }
+
+  const nextWeather = getNextWeather();
+  const res = await App.Environment.SetSceneWeather(nextWeather, 1, false);
+  if (!res.success) throw new Error(`设置天气失败: ${res.message || 'unknown'}`);
+
+  runtime.weatherLastAt = Date.now();
+  runtime.appliedWeather = nextWeather;
+  featureState.weatherCycle = true;
+  log('天气已切换', { weather: nextWeather, index: runtime.weatherCycleIndex });
+}
 async function focusToTargetByEid() {
-  if (!sceneReady) throw new Error('场景未就绪，无法执行聚焦');
+  if (!sceneReady) throw new Error('åœºæ™¯æœªå°±ç»ªï¼Œæ— æ³•æ‰§è¡Œèšç„¦');
 
   const target = window.projectGlobalConfigs.testTarget;
   const entity = await getTargetEntity();
 
-  setStatus('执行镜头飞跃聚焦');
+  setStatus('æ‰§è¡Œé•œå¤´é£žè·ƒèšç„¦');
   const focusPayload = {
     rotation: target.focus.rotation,
     distanceFactor: target.focus.distanceFactor,
@@ -403,13 +456,13 @@ async function focusToTargetByEid() {
   };
 
   const focusRes = await App.CameraControl.Focus(focusPayload);
-  if (!focusRes.success) throw new Error(`CameraControl.Focus 失败: ${focusRes.message || 'unknown'}`);
-  setStatus('聚焦完成');
-  log('聚焦成功', { eid: target.eid });
+  if (!focusRes.success) throw new Error(`CameraControl.Focus å¤±è´¥: ${focusRes.message || 'unknown'}`);
+  setStatus('èšç„¦å®Œæˆ');
+  log('èšç„¦æˆåŠŸ', { eid: target.eid });
 }
 
 async function bossReset() {
-  setStatus('BOSS 复位中');
+  setStatus('BOSS å¤ä½ä¸­');
 
   if (featureObjects.poi && featureState.poi) await safeSetVisible(featureObjects.poi, false, 'Poi');
   if (featureObjects.range && featureState.range) await safeSetVisible(featureObjects.range, false, 'Range');
@@ -419,19 +472,20 @@ async function bossReset() {
   featureState.range = false;
   featureState.heatmap = false;
   if (featureState.sceneTime) await applySceneTime(false);
+  if (featureState.weatherCycle) await resetWeather();
 
   await focusToTargetByEid();
-  setStatus('已恢复默认状态和镜头');
-  log('BOSS 复位完成');
+  setStatus('å·²æ¢å¤é»˜è®¤çŠ¶æ€å’Œé•œå¤´');
+  log('BOSS å¤ä½å®Œæˆ');
 }
 
 async function startRenderer() {
   await App.System.SetDefaultBrowserFunctionKeyboard(true);
   await App.System.SetTimeoutTime(30000);
-  setStatus('启动渲染器中');
+  setStatus('å¯åŠ¨æ¸²æŸ“å™¨ä¸­');
   const res = await App.Renderer.Start();
-  if (!res.success) throw new Error(`Renderer.Start 失败: ${res.message || 'unknown'}`);
-  log('Renderer.Start 成功');
+  if (!res.success) throw new Error(`Renderer.Start å¤±è´¥: ${res.message || 'unknown'}`);
+  log('Renderer.Start æˆåŠŸ');
 }
 
 async function registerEvents() {
@@ -440,21 +494,21 @@ async function registerEvents() {
       name: 'onVideoReady',
       func: () => {
         ui.loading.style.display = 'none';
-        setStatus('视频流已就绪，可操作');
-        log('onVideoReady：视频流连接成功');
+        setStatus('è§†é¢‘æµå·²å°±ç»ªï¼Œå¯æ“ä½œ');
+        log('onVideoReadyï¼šè§†é¢‘æµè¿žæŽ¥æˆåŠŸ');
       },
     },
     {
       name: 'onRenderCloudConnected',
       func: () => {
-        setStatus('云渲染已连接');
+        setStatus('äº‘æ¸²æŸ“å·²è¿žæŽ¥');
         log('onRenderCloudConnected');
       },
     },
     {
       name: 'onStopedRenderCloud',
       func: (reason) => {
-        setStatus('渲染服务已中断');
+        setStatus('æ¸²æŸ“æœåŠ¡å·²ä¸­æ–­');
         setActionButtonsDisabled(true);
         log('onStopedRenderCloud', { reason });
       },
@@ -466,18 +520,28 @@ async function registerEvents() {
       name: 'OnWdpSceneIsReady',
       func: async (res) => {
         const progress = res?.result?.progress || 0;
-        ui.loadingText.textContent = `场景加载中：${progress}%`;
+        ui.loadingText.textContent = `åœºæ™¯åŠ è½½ä¸­ï¼š${progress}%`;
         if (progress === 100 && !sceneReady) {
           sceneReady = true;
           setActionButtonsDisabled(false);
-          setStatus('场景已就绪，点击按钮测试功能');
+          setStatus('åœºæ™¯å·²å°±ç»ªï¼Œç‚¹å‡»æŒ‰é’®æµ‹è¯•åŠŸèƒ½');
           log('OnWdpSceneIsReady 100%');
 
           const skyRes = await App.Environment.GetSkylightTime();
           if (skyRes?.success) {
             const maybe = skyRes?.result?.time || skyRes?.result || runtime.defaultSkylightTime;
             if (typeof maybe === 'string' && maybe.includes(':')) runtime.defaultSkylightTime = maybe;
-            log('默认场景时间已缓存', { time: runtime.defaultSkylightTime });
+            log('é»˜è®¤åœºæ™¯æ—¶é—´å·²ç¼“å­˜', { time: runtime.defaultSkylightTime });
+          }
+
+          const weatherRes = await App.Environment.GetSceneWeather();
+          if (weatherRes?.success) {
+            const maybeWeather = weatherRes?.result?.weather || weatherRes?.result || runtime.defaultWeather;
+            if (typeof maybeWeather === 'string' && maybeWeather.length > 0) runtime.defaultWeather = maybeWeather;
+            const defaultIndex = runtime.weatherCycleList.indexOf(runtime.defaultWeather);
+            runtime.weatherCycleIndex = defaultIndex >= 0 ? defaultIndex - 1 : -1;
+            runtime.appliedWeather = runtime.defaultWeather;
+            log('é»˜è®¤å¤©æ°”å·²ç¼“å­˜', { weather: runtime.defaultWeather });
           }
 
           await getTargetEntity();
@@ -489,41 +553,43 @@ async function registerEvents() {
 
 async function bootstrap() {
   try {
-    setStatus('初始化中');
+    setStatus('åˆå§‹åŒ–ä¸­');
     updateButtonStates();
     setActionButtonsDisabled(true);
     initWdp();
     await startRenderer();
     await registerEvents();
   } catch (err) {
-    setStatus('初始化失败');
-    ui.loadingText.textContent = '初始化失败，请查看日志';
-    log('初始化失败', { error: err.message });
+    setStatus('åˆå§‹åŒ–å¤±è´¥');
+    ui.loadingText.textContent = 'åˆå§‹åŒ–å¤±è´¥ï¼Œè¯·æŸ¥çœ‹æ—¥å¿—';
+    log('åˆå§‹åŒ–å¤±è´¥', { error: err.message });
     alert(err.message);
   }
 }
 
 async function runAction(actionName, fn) {
   if (!sceneReady) {
-    alert('场景未就绪，请稍后再试');
+    alert('åœºæ™¯æœªå°±ç»ªï¼Œè¯·ç¨åŽå†è¯•');
     return;
   }
   try {
-    setStatus(`执行：${actionName}`);
+    setStatus(`æ‰§è¡Œï¼š${actionName}`);
     await fn();
   } catch (err) {
-    log(`${actionName} 失败`, { error: err.message });
+    log(`${actionName} å¤±è´¥`, { error: err.message });
     alert(err.message);
   } finally {
     updateButtonStates();
   }
 }
 
-ui.focusBtn.addEventListener('click', () => runAction('镜头聚焦', focusToTargetByEid));
-ui.poiBtn.addEventListener('click', () => runAction('POI 开关', togglePoi));
-ui.rangeBtn.addEventListener('click', () => runAction('区域轮廓开关', toggleRange));
-ui.heatmapBtn.addEventListener('click', () => runAction('热力图开关', toggleHeatMap));
-ui.timeBtn.addEventListener('click', () => runAction('场景时间开关', toggleSceneTime));
-ui.bossBtn.addEventListener('click', () => runAction('BOSS 复位', bossReset));
+ui.focusBtn.addEventListener('click', () => runAction('é•œå¤´èšç„¦', focusToTargetByEid));
+ui.poiBtn.addEventListener('click', () => runAction('POI å¼€å…³', togglePoi));
+ui.rangeBtn.addEventListener('click', () => runAction('åŒºåŸŸè½®å»“å¼€å…³', toggleRange));
+ui.heatmapBtn.addEventListener('click', () => runAction('çƒ­åŠ›å›¾å¼€å…³', toggleHeatMap));
+ui.timeBtn.addEventListener('click', () => runAction('åœºæ™¯æ—¶é—´å¼€å…³', toggleSceneTime));
+ui.seasonBtn.addEventListener('click', () => runAction('天气轮换', cycleWeather));
+ui.bossBtn.addEventListener('click', () => runAction('BOSS å¤ä½', bossReset));
 
 window.addEventListener('load', bootstrap);
+

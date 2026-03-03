@@ -48,7 +48,6 @@ description: 处理 WDP 通用基础属性 API 的读取与更新。用于规范
 
 - `../api_code_example/official-generic-base-attributes.md`
 - `../api_code_example/generic-base-attributes.template.js`
-- `../example/EXAMPLE_REFERENCE.md`
 
 ## 输出要求
 

@@ -1,4 +1,4 @@
----
+﻿---
 name: wdp-bim-plugin-and-roam
 description: 处理 BIM 插件安装与相机漫游链路（Plugin.Install(BimApi)、CameraRoam、PlayRoam/StopRoam）的实现与排障。用于项目接入 BIM 插件并执行引导漫游、中断漫游、回归镜头时使用本技能。
 ---
@@ -6,6 +6,11 @@ description: 处理 BIM 插件安装与相机漫游链路（Plugin.Install(BimAp
 # BIM 插件与漫游子技能
 
 本技能只处理“插件安装 + 漫游链路”，BIM 模型/构件/空间能力由 `bim-api-core-operations` 负责。
+
+## 版本与来源约束（强制）
+
+- 具体方法名、参数结构、枚举值、返回字段仅以官方在线文档为准。
+- 历史案例只用于流程优化（时序、门禁、回滚），不作为方法真值来源。
 
 ## 能力范围
 

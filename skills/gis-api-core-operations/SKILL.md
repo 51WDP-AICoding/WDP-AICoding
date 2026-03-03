@@ -1,4 +1,4 @@
----
+﻿---
 name: gis-api-core-operations
 description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi 插件安装、GeoLayer 图层接入、图层更新/显隐/偏移/高亮与 GIS 事件联动实现。
 ---
@@ -6,6 +6,11 @@ description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi
 # GIS 核心操作子技能
 
 第一轮编写/补完仅参考在线管理文档：`https://wdpapidoc-admin.51aes.com/manual/doc`。
+
+## 版本与来源约束（强制）
+
+- 具体方法名、参数结构、枚举值、返回字段仅以官方在线文档为准。
+- 历史案例只用于流程优化（时序、门禁、回滚），不作为方法真值来源。
 
 ## 前置安装门禁（强制）
 
@@ -46,7 +51,7 @@ description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi
 1. 先确认基础 App 已初始化并可渲染。
 2. 安装 GisApi 插件并记录插件 id。
 3. 按图层类型构造 `GeoLayer` 并 `Scene.Add`。
-4. 绑定 GIS 事件后再执行高亮、偏移、更新等业务行为。
+4. 绑定 GIS 事件后再执行业务行为（高亮、偏移、更新）。
 5. 输出调用链、关键参数、验证结果。
 
 ## 输出要求
