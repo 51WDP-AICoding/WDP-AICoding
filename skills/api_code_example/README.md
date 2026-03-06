@@ -2,6 +2,23 @@
 
 本目录提供可直接复用的 API 脚本摘录与模板，目标是减少重复生成代码的成本。
 
+## 给 Agent 的快速使用方式
+
+如果只是要“快速找到能调用的方法和最小示例”，按下面顺序读：
+
+1. `OFFICIAL_EXCERPT_INDEX.md`
+2. 对应 `official-*.md`
+3. 对应 `*.template.js`
+4. 命中的 sub skill
+
+不要默认从 `example/` 或历史项目里找 API 用法。
+
+## 当前对齐状态
+
+- `official-*.md` 已与当前公开线上文档完成一次方法级对齐。
+- 核对结果见：`./ONLINE_COVERAGE_AUDIT.md`
+- 若线上文档变化，可用：`./sync_public_official_excerpts.ps1` 重新同步部分 WDP 摘录文件。
+
 ## 文件清单
 
 1. `initialize-scene.template.js`
@@ -81,6 +98,34 @@
 1. 优先查看 `official-*.md` 获取对应 API 的现成脚本。
 2. 在项目中复制模板文件并替换 `TODO`、参数对象和业务回调。
 3. 保留时序门禁：`Renderer.Start()` 成功后再注册场景事件，场景 ready 后再进入业务调用。
+
+## 按需求查什么
+
+- 启动、渲染、Scene Ready：`official-initialize-scene.md`
+- 事件注册与回收：`official-general-event-registration.md`
+- 相机、聚焦、漫游：`official-scene-camera.md`
+- 实体增删改查、显隐、位置更新：`official-generic-base-attributes.md`、`official-entity-general-behavior.md`
+- 覆盖物、POI、Window、热力图：`official-entity-coverings.md`
+- 图层、模型、node：`official-layer-models.md`
+- 材质替换与高亮：`official-material-settings.md`
+- 环境、控件、工具、设置：`official-function-components.md`
+- 点聚合：`official-cluster.md`
+- BIM：`official-bim-full.md`
+- GIS：`official-gis-full.md`
+
+## 同步与复核
+
+重新同步 WDP 公开摘录：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\skills\api_code_example\sync_public_official_excerpts.ps1
+```
+
+同步前建议先确认：
+
+1. 当前线上版本仍是 `WDP API 2.2.1`
+2. 本次是否只需要同步单个专题文件
+3. 同步后是否需要一起更新对应 sub skill
 
 ## 安全与流程约束
 
