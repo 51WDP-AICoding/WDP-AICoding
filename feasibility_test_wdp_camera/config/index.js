@@ -1,4 +1,4 @@
-﻿window.projectGlobalConfigs = {
+window.projectGlobalConfigs = {
   renderer: {
     id: 'player',
     env: {

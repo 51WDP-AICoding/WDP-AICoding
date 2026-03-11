@@ -1,4 +1,4 @@
-﻿# WDP Example Reference（临时整合）
+# WDP Example Reference（临时整合）
 
 状态：临时参考，非最终权威标准。
 用途：为入口调度与首批 sub skill 提供最小可复用参考片段。

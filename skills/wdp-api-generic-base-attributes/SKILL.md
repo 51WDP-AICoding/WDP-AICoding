@@ -1,4 +1,4 @@
-﻿---
+---
 name: wdp-api-generic-base-attributes
 description: 处理 WDP 通用基础属性 API 的读取与更新。用于规范属性调用时序、参数校验、回读确认和失败回退；涉及状态不一致或属性更新无效时使用本技能。
 ---

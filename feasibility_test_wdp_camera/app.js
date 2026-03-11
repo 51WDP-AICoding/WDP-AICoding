@@ -1,4 +1,4 @@
-﻿let App = null;
+let App = null;
 let sceneReady = false;
 
 const ui = {

@@ -1,4 +1,4 @@
-﻿# official-gis-full（GIS 2.1.0 在线完整摘录）
+# official-gis-full（GIS 2.1.0 在线完整摘录）
 
 来源：`https://wdpapidoc-admin.51aes.com/manual/doc` 对应在线接口。
 

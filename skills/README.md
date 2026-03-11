@@ -1,4 +1,4 @@
-﻿# WDP AI Coding Skills 快速使用规则
+# WDP AI Coding Skills 快速使用规则
 
 这份文件是团队首次使用的唯一入口。
 目标：让同事只读一份说明，就能理解这套 skills 做什么、怎么开始用。

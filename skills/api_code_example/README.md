@@ -1,4 +1,4 @@
-﻿# API Code Example（WDP 2.2.1）
+# API Code Example（WDP 2.2.1）
 
 本目录提供可直接复用的 API 脚本摘录与模板，目标是减少重复生成代码的成本。
 

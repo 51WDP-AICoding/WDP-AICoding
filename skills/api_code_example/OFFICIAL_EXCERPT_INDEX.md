@@ -1,4 +1,4 @@
-﻿# API Code Example Index（新版后台摘录）
+# API Code Example Index（新版后台摘录）
 
 版本基线：WDP API 2.2.1
 （BIM 条线基线：BIM API 2.1.1）

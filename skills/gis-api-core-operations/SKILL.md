@@ -1,4 +1,4 @@
-﻿---
+---
 name: gis-api-core-operations
 description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi 插件安装、GeoLayer 图层接入、图层更新/显隐/偏移/高亮与 GIS 事件联动实现。
 ---

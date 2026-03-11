@@ -1,4 +1,4 @@
-﻿/**
+/**
  * initialize-scene.template.js
  * 用途：WDP 场景初始化、启动、场景 ready 门禁。
  * 版本：WDP API 2.2.1

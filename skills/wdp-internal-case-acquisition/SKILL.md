@@ -1,4 +1,4 @@
-﻿---
+---
 name: wdp-internal-case-acquisition
 description: 内部验证用案例源码拉取、解压、分析技能。用于从 51CMP 平台按条件批量下载源码，并生成分析报告供 skills 交叉验证。
 ---

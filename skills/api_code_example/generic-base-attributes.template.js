@@ -1,4 +1,4 @@
-﻿/**
+/**
  * generic-base-attributes.template.js
  * 用途：通用基础属性读取/更新（模式化封装）。
  * 版本：WDP API 2.2.1

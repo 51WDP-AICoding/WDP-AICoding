@@ -1,61 +1,61 @@
-﻿---
-name: wdp-api-material-settings
-description: å¤„ç† WDP æè´¨è®¾ç½® API çš„å®žçŽ°ä¸ŽæŽ’éšœã€‚ç”¨äºŽæè´¨å®žä¾‹åˆ›å»ºã€æè´¨æ‹¾å–ã€æ¨¡åž‹æè´¨æ›¿æ¢å’Œæè´¨é«˜äº®æŽ§åˆ¶ï¼›æ¶‰åŠæ¨¡åž‹æè´¨å˜æ›´æ—¶ä½¿ç”¨æœ¬æŠ€èƒ½ã€‚
----
-
-# WDP æè´¨è®¾ç½®å­æŠ€èƒ½
-
-è¦†ç›–èŒƒå›´ï¼šæ¨¡åž‹æè´¨æ›¿æ¢ã€æ¨¡åž‹æè´¨é«˜äº®ã€‚
-
-## å‰ç½®æ¡ä»¶
-
-1. `App` å·²åˆå§‹åŒ–ä¸”æ¸²æŸ“å¯ç”¨ã€‚
-2. ç›®æ ‡æ¨¡åž‹å¯¹è±¡å¯æ£€ç´¢ï¼ˆ`GetByEids` æˆ–çŽ°æœ‰å¯¹è±¡å¼•ç”¨ï¼‰ã€‚
-3. æè´¨æ›¿æ¢å‰å¯èŽ·å– `meshName/materialIndex/materialEid`ã€‚
-
-## æ ‡å‡†æµç¨‹
-
-1. åˆ›å»ºæè´¨å®žä¾‹ã€‚
-- `new App.Material({ seedId })` åŽ `App.Scene.Add(material)`ã€‚
-
-2. èŽ·å–ç›®æ ‡æè´¨æ§½ä½ã€‚
-- é€šè¿‡ `App.Tools.PickerMaterial.Start/GetMaterials/End`ã€‚
-- æˆ– `App.DataModel.Material.GetList([modelObj])`ã€‚
-
-3. æ‰§è¡Œæ›¿æ¢æˆ–é«˜äº®ã€‚
-- æ›¿æ¢ï¼š`SetModelMaterial` æˆ– `Apply`ã€‚
-- é«˜äº®ï¼š`SetEntitySlotsHighlight`ã€‚
-
-4. æ ¡éªŒç»“æžœã€‚
-- å¯¹è±¡çº§å›žè¯»ï¼š`modelObj.GetMaterial()`ã€‚
-- è®°å½•æ›¿æ¢ç›®æ ‡å’Œç»“æžœçŠ¶æ€ã€‚
-
-## è´¨é‡é—¨æ§›
-
-1. æ›¿æ¢å‰å¿…é¡»æ ¡éªŒç›®æ ‡æ§½ä½æ•°ç»„éžç©ºã€‚
-2. æè´¨é«˜äº®ä¸Žæ›¿æ¢ä¸èƒ½æ··ç”¨åŒä¸€ä¸´æ—¶å‚æ•°å¯¹è±¡ã€‚
-3. æ‰¹é‡æ“ä½œå‰å…ˆè¾“å‡ºç›®æ ‡ EID å’Œ mesh æ‘˜è¦ã€‚
-
-## é«˜é¢‘é—®é¢˜
-
-1. æ›¿æ¢æŽ¥å£æˆåŠŸä½†æ¨¡åž‹æ— å˜åŒ–ã€‚
-- æ£€æŸ¥ `meshName/materialIndex` æ˜¯å¦åŒ¹é…ç›®æ ‡æ¨¡åž‹ã€‚
-
-2. é«˜äº®æœªç”Ÿæ•ˆã€‚
-- æ£€æŸ¥ `MaterialIndex` ä¸Ž `entity` å¯¹è±¡ç±»åž‹ã€‚
-
-3. æ‹¾å–ç»“æžœä¸ºç©ºã€‚
-- æ£€æŸ¥ `PickerMaterial` æ˜¯å¦å·²å¯åŠ¨ï¼Œä¸”åœºæ™¯ä¸­æœ‰å¯æ‹¾å–æè´¨ã€‚
-
-## å‚è€ƒèµ„æ–™ï¼ˆç›¸å¯¹è·¯å¾„ï¼‰
-
-- `../api_code_example/official-material-settings.md`
-- `../api_code_example/material-settings.template.js`
-
-## è¾“å‡ºè¦æ±‚
-
-å§‹ç»ˆè¾“å‡ºï¼š
-1. æè´¨ç›®æ ‡èŒƒå›´ï¼ˆå¯¹è±¡/æ§½ä½ï¼‰
-2. æ›¿æ¢æˆ–é«˜äº®è°ƒç”¨é“¾è·¯
-3. éªŒè¯æ­¥éª¤ä¸Žç»“æžœ
-4. å›žæ»šå»ºè®®ï¼ˆå¦‚æœ‰ï¼‰
+---
+name: wdp-api-material-settings
+description: 处理 WDP 材质设置 API 的实现与排障。用于材质实例创建、材质拾取、模型材质替换和材质高亮控制；涉及模型材质变更时使用本技能。
+---
+
+# WDP 材质设置子技能
+
+覆盖范围：模型材质替换、模型材质高亮。
+
+## 前置条件
+
+1. `App` 已初始化且渲染可用。
+2. 目标模型对象可检索（`GetByEids` 或现有对象引用）。
+3. 材质替换前可获取 `meshName/materialIndex/materialEid`。
+
+## 标准流程
+
+1. 创建材质实例。
+- `new App.Material({ seedId })` 后 `App.Scene.Add(material)`。
+
+2. 获取目标材质槽位。
+- 通过 `App.Tools.PickerMaterial.Start/GetMaterials/End`。
+- 或 `App.DataModel.Material.GetList([modelObj])`。
+
+3. 执行替换或高亮。
+- 替换：`SetModelMaterial` 或 `Apply`。
+- 高亮：`SetEntitySlotsHighlight`。
+
+4. 校验结果。
+- 对象级回读：`modelObj.GetMaterial()`。
+- 记录替换目标和结果状态。
+
+## 质量门槛
+
+1. 替换前必须校验目标槽位数组非空。
+2. 材质高亮与替换不能混用同一临时参数对象。
+3. 批量操作前先输出目标 EID 和 mesh 摘要。
+
+## 高频问题
+
+1. 替换接口成功但模型无变化。
+- 检查 `meshName/materialIndex` 是否匹配目标模型。
+
+2. 高亮未生效。
+- 检查 `MaterialIndex` 与 `entity` 对象类型。
+
+3. 拾取结果为空。
+- 检查 `PickerMaterial` 是否已启动，且场景中有可拾取材质。
+
+## 参考资料（相对路径）
+
+- `../api_code_example/official-material-settings.md`
+- `../api_code_example/material-settings.template.js`
+
+## 输出要求
+
+始终输出：
+1. 材质目标范围（对象/槽位）
+2. 替换或高亮调用链路
+3. 验证步骤与结果
+4. 回滚建议（如有）

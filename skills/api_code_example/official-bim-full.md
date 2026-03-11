@@ -1,4 +1,4 @@
-﻿# official-bim-full（BIM 2.1.1 在线完整摘录）
+# official-bim-full（BIM 2.1.1 在线完整摘录）
 
 来源：`https://wdpapidoc-admin.51aes.com/manual/doc` 对应在线接口。
 

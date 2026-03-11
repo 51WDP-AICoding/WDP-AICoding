@@ -1,4 +1,4 @@
-﻿---
+---
 name: wdp-frontend-integration
 description: 处理 WDP 在前端页面中的接入与排障。用于校验容器挂载、SDK 加载顺序、页面交互层级和启动入口一致性；涉及 HTML/CSS/前端启动问题时使用本技能。
 ---

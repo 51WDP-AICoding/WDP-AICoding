@@ -1,4 +1,4 @@
-﻿/**
+/**
  * scene-camera.template.js
  * 用途：相机信息读取、飞行、聚焦。
  * 版本：WDP API 2.2.1

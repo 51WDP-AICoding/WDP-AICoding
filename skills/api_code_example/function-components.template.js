@@ -1,4 +1,4 @@
-﻿/**
+/**
  * function-components.template.js
  * 用途：环境/控件/工具/设置的常用调用包装。
  * 版本：WDP API 2.2.1

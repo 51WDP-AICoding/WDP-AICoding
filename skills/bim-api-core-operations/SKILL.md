@@ -1,4 +1,4 @@
-﻿---
+---
 name: bim-api-core-operations
 description: 处理 BIM API 2.1.1 的模型/构件/空间核心能力编排与排障。用于 BIM 接入、模型行为调用、构件联动与空间操作实现。
 ---

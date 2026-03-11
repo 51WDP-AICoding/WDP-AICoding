@@ -1,4 +1,4 @@
-﻿/**
+/**
  * general-event-registration.template.js
  * 用途：统一注册通用事件，避免重复监听。
  * 版本：WDP API 2.2.1

@@ -1,4 +1,4 @@
-﻿---
+---
 name: wdp-api-general-event-registration
 description: 处理 WDP 通用事件注册与治理。用于规范事件注册时机、回调守卫、重复绑定回收和日志可观测性；涉及事件不触发或重复触发时使用本技能。
 ---
