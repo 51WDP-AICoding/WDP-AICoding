@@ -93,6 +93,20 @@ console.log(res);
 ```javascript
 const res = await App.CameraControl.GetCameraPose();
 console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      location: [121.4853, 31.2384, 900],  // 相机 GIS 坐标 [lng, lat, z]
+      rotation: {
+        pitch: -35,   // 俯仰角（-90~0）
+        yaw: 0        // 偏航角（-180~180）
+      }
+    }
+  }
+*/
 ```
 
 - 设置镜头位置
@@ -109,6 +123,7 @@ const jsondata = {
 
 const res = await App.CameraControl.SetCameraPose(jsondata);
 console.log(res);
+// 出参: { success: boolean, message: string }
 ```
 
 - 重置镜头位置
@@ -122,6 +137,7 @@ const jsondata = {
 
 const res = await App.CameraControl.ResetCameraPose(jsondata);
 console.log(res);
+// 出参: { success: boolean, message: string }
 ```
 
 - 参数 
@@ -136,6 +152,19 @@ console.log(res);
 ```javascript
 const res = await App.CameraControl.GetCameraLimit();
 console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      locationLimit: [[lng,lat], ...],  // 位置区域限制（多边形顶点）
+      pitchLimit: [-80, 0],             // 俯仰角范围
+      yawLimit: [-180, 180],            // 偏航角范围
+      viewDistanceLimit: [100, 5000]    // 视距范围（单位：米）
+    }
+  }
+*/
 ```
 
 - 设置镜头Limit值
@@ -170,13 +199,13 @@ const res = await App.CameraControl.SetCameraLockLimit(jsondata);
 console.log(res);
 ```
 
-- 重制镜头Limit值
+- 重置镜头Limit值
 
 ```javascript
 const res = await App.CameraControl.ResetCameraLimit('Default');
 // Default: 相机初始Limit; Free: 无Limit限制
-
 console.log(res);
+// 出参: { success: boolean, message: string }
 ```
 
 - 设置镜头速度
@@ -224,6 +253,23 @@ console.log(res);
 ```javascript
 const res = await App.CameraControl.GetCameraInfo();
 console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      location: [121.4853, 31.2384, 900],
+      rotation: { pitch: -35, yaw: 0 },
+      locationLimit: [],
+      pitchLimit: [-90, 0],
+      yawLimit: [-180, 180],
+      viewDistanceLimit: [0, 10000],
+      fieldOfView: 90,
+      controlMode: 'RTS'
+    }
+  }
+*/
 ```
 
 - 更新相机信息
@@ -612,7 +658,9 @@ const jsondata = {
   entity: [pathObject], //实体对象
 };
 
-await App.CameraControl.Focus(jsondata);
+const res = await App.CameraControl.Focus(jsondata);
+console.log(res);
+// 出参: { success: boolean, message: string }
 ```
 
 - 按类型聚焦实体
@@ -670,6 +718,67 @@ await App.CameraControl.Follow(jsondata);
 ```javascript
 await App.CameraControl.Stop();
 ```
+
+---
+
+## 条目：相机机位（Camera 对象）（id: 1348-ext）
+
+- Camera 对象（机位预设）
+
+```javascript
+// 创建机位对象
+const cameraObj = new App.Camera({
+  location: [121.4853, 31.2384, 500],
+  rotation: { pitch: -30, yaw: 0 },
+  locationLimit: [],
+  pitchLimit: [-90, 0],
+  yawLimit: [-180, 180],
+  viewDistanceLimit: [0, 10000],
+  fieldOfView: 90,
+  controlMode: 'RTS',
+  entityName: '机位1'
+});
+
+// 添加到场景
+const res = await App.Scene.Add(cameraObj);
+console.log(res);
+// 出参: { success: boolean, message: string, result: { object: CameraObject } }
+
+// 应用机位（飞行到该机位）
+const applyRes = await App.CameraControl.Apply(cameraObj, 1); // 第二参数为 flyTime（秒）
+console.log(applyRes);
+// 出参: { success: boolean, message: string }
+
+// 获取机位信息
+const getRes = await cameraObj.Get();
+console.log(getRes);
+
+// 更新机位
+await cameraObj.Update({
+  location: [121.4900, 31.2400, 600],
+  rotation: { pitch: -25, yaw: 45 }
+});
+```
+
+- CameraStart 对象（初始相机）
+
+```javascript
+// 获取初始相机对象
+const startRes = await App.Scene.GetCameraStart();
+const cameraStart = startRes.result.object;
+
+// 读取初始相机属性
+console.log(cameraStart.location);   // 初始位置 [lng, lat, z]
+console.log(cameraStart.rotation);   // 初始朝向 { pitch, yaw }
+
+// 更新初始相机（修改场景默认视角）
+await cameraStart.Update({
+  location: [121.4853, 31.2384, 800],
+  rotation: { pitch: -40, yaw: 0 }
+});
+```
+
+---
 
 ## 条目：相机漫游（id: 1349）
 
@@ -870,8 +979,20 @@ await App.CameraControl.PlayCameraRoam(roamObj, args);
 - 获取镜头漫游进度
 
 ```javascript
-await App.CameraControl.GetCameraRoamingInfo(obj); // 漫游对象
-
+const res = await App.CameraControl.GetCameraRoamingInfo(obj); // 漫游对象
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      progressRatio: 0.45,   // 当前漫游进度比例 [0,1]
+      isPlaying: true,       // 是否正在播放
+      isPaused: false        // 是否已暂停
+    }
+  }
+*/
 ```
 
 - 参数 
@@ -891,11 +1012,25 @@ await App.CameraControl.GetCameraRoamingInfo(obj); // 漫游对象
 // roamObj 为 new App.CameraRoam({...}) 时创建的对象;
 const _res = await roamObj.Get();
 console.log(_res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      object: {
+        frames: [...],
+        bAutoRotation: false,
+        bResetAfterFinished: true
+      }
+    }
+  }
+*/
 ```
 
 - 停止相机漫游
 
 ```javascript
-await App.CameraControl.Stop()
+await App.CameraControl.Stop();
 ```
 

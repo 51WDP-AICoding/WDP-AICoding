@@ -585,3 +585,136 @@ console.log(res);
 const res = await App.Setting.GetScreenPercentage();
 console.log(res);
 ```
+
+---
+
+## Topic: 屏幕拾取扩展（id: 1408-picker）
+
+- 通过屏幕坐标拾取实体
+
+```javascript
+// 点击屏幕某点，获取该点对应的三维实体
+const res = await App.Tools.Picker.PickByScreenPos([960, 540]);
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    result: {
+      eid: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+      oType: 'Static',
+      object: EntityObject,
+      worldPos: [12345.67, 23456.78, 5.2],
+      location: [121.4853, 31.2384, 5.2]
+    }
+  }
+*/
+```
+
+- 通过屏幕坐标拾取 AES Tiles 节点
+
+```javascript
+// 点击 AES 底板上的单体，获取其 nodeId
+const res = await App.Tools.Picker.PickAesTilesNodeByScreenPos([960, 540]);
+console.log(res);
+// 出参: { success: true, result: { nodeId: '895874688', tilesObject, worldPos } }
+
+// 框选屏幕区域，获取区域内所有 AES 底板单体的 nodeId
+const res2 = await App.Tools.Picker.PickAesTilesNodesByRectangle({
+  p0: [100, 100],  // 矩形左上角屏幕坐标
+  p1: [800, 600]   // 矩形右下角屏幕坐标
+});
+console.log(res2);
+// 出参: { success: true, result: { nodeIds: ['895874688', ...], tilesObject } }
+```
+
+- 通过屏幕坐标拾取材质
+
+```javascript
+const res = await App.Tools.Picker.PickMaterialByScreenPos([960, 540]);
+console.log(res);
+// 出参: { success: true, result: { materialId, materialName, eid } }
+```
+
+- 取线工具（PickerPolyline）
+
+```javascript
+// 启动取线工具（用户在场景中依次点击获取折线坐标）
+await App.Tools.PickerPolyline.StartPickPolyline();
+
+// 监听取线事件
+App.Renderer.RegisterSceneEvent([{
+  name: 'OnPickPolylineEvent',
+  func: async (res) => {
+    // res.result.polyline: [{ location, worldPos }, ...]
+    console.log(res);
+  }
+}]);
+
+// 获取已取线列表
+const lines = await App.Tools.PickerPolyline.GetPickedPolylines();
+
+// 结束取线工具
+await App.Tools.PickerPolyline.EndPickPolyline();
+```
+
+---
+
+## Topic: DOM 坐标绑定（Screen）（id: 1408-screen）
+
+```javascript
+// 将 DOM 元素绑定到场景中某个 GIS 坐标，随相机移动自动更新位置
+const res = await App.Tools.Screen.AddScreenPosBound({
+  id: 'my-dom-element',              // DOM 元素 ID
+  location: [121.4853, 31.2384, 10], // 绑定的 GIS 坐标
+  offset: [0, -50],                  // 偏移量 [x, y]（单位：像素）
+  bAutoHide: true                    // 坐标不可见时自动隐藏 DOM
+});
+
+// 更新绑定坐标
+await App.Tools.Screen.UpdateScreenPosBound({
+  id: 'my-dom-element',
+  location: [121.4900, 31.2400, 15]
+});
+
+// 移除绑定
+await App.Tools.Screen.RemoveScreenPosBound('my-dom-element');
+```
+
+---
+
+## Topic: 资产加载（AssetLoader）（id: 1408-asset）
+
+```javascript
+// 通过资产 ID 加载模型资产
+const res = await App.DataModel.AssetLoader.LoadAssetById('asset-id-xxxx');
+// 出参: { success: true, result: { assetId, meshSize: { x, y, z } } }  // 单位：厘米
+
+// 替换场景中某实体的资产
+await App.DataModel.AssetLoader.ReplaceAssetById(entityObj, 'new-asset-id-xxxx');
+
+// 获取资产的网格尺寸
+const sizeRes = await App.DataModel.AssetLoader.GetMeshSizeById('asset-id-xxxx');
+// 出参: { success: true, result: { size: { x, y, z } } }  // 单位：厘米
+```
+
+---
+
+## Topic: 云盘数据（DaaS）（id: 1408-daas）
+
+```javascript
+// 获取云盘文件列表
+const res = await App.DataModel.DaaS.GetCloudDiskFileList({
+  folderId: 'folder-id-xxxx',  // 文件夹 ID（可选，不填则获取根目录）
+  fileType: 'model'            // 文件类型过滤（可选）：model / texture / all
+});
+/*
+  出参示例：
+  {
+    success: true,
+    result: {
+      files: [{ fileId, fileName, fileType, size, updateTime }]
+    }
+  }
+*/
+```

@@ -479,3 +479,179 @@ async function SetNodesVisibility() {
   console.log(res);
 }
 ```
+
+---
+
+## Topic: AES Tiles 激活与停用（id: 1396-ext）
+
+- 激活 / 停用 AES Tiles 底板
+
+```javascript
+// 激活 AES Tiles（使底板进入可交互状态）
+const res = await App.Scene.Tiles.ActivateAesTiles(tilesObj);
+console.log(res);
+// 出参: { success: boolean, message: string }
+
+// 停用 AES Tiles
+const res2 = await App.Scene.Tiles.DeactivateAesTiles(tilesObj);
+console.log(res2);
+
+// 查询 AES Tiles 是否已激活
+const res3 = await App.Scene.Tiles.IsActivated(tilesObj);
+console.log(res3);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: { bActivated: true }
+  }
+*/
+```
+
+- 在场景外创建 AES Tiles 实体（不通过 GRPC）
+
+```javascript
+// 适用于需要手动指定底板数据源的场景
+const res = await App.Scene.Tiles.CreateAesTilesEntityWithOutGRPC({
+  url: 'http://example.com/tiles-data',  // 底板数据 URL
+  entityName: '自定义底板',
+  customId: 'my-tiles'
+});
+console.log(res);
+// 出参: { success: boolean, message: string, result: { object: TilesObject } }
+```
+
+---
+
+## Topic: 节点可见性分组（id: 1396-node）
+
+- 添加节点可见性分组
+
+```javascript
+// 将一批 nodeId 归入一个命名分组，便于批量控制显隐
+const tilesRes = await App.Scene.GetTiles();
+const tilesObj = tilesRes.result[0].Tiles[0];
+
+const res = await App.Scene.Node.AddVisibilityGroup(tilesObj, {
+  groupName: 'floor-1',                          // 分组名称
+  nodeIds: ['895874688', '882098004', '901234567']  // 分组内的 nodeId 列表
+});
+console.log(res);
+// 出参: { success: boolean, message: string }
+```
+
+- 更新节点可见性分组
+
+```javascript
+const res = await App.Scene.Node.UpdateVisibilityGroup(tilesObj, {
+  groupName: 'floor-1',
+  nodeIds: ['895874688', '882098004'],  // 更新后的 nodeId 列表
+  bVisible: false                        // 同时设置分组显隐（可选）
+});
+console.log(res);
+```
+
+- 移除节点可见性分组
+
+```javascript
+const res = await App.Scene.Node.RemoveVisibilityGroup(tilesObj, 'floor-1');
+console.log(res);
+// 出参: { success: boolean, message: string }
+```
+
+- 获取节点可见性分组信息
+
+```javascript
+const res = await App.Scene.Node.GetVisibilityGroup(tilesObj, 'floor-1');
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      groupName: 'floor-1',
+      nodeIds: ['895874688', '882098004'],
+      bVisible: true
+    }
+  }
+*/
+```
+
+---
+
+## Topic: 节点选择器完整操作（id: 1365-ext）
+
+- 添加选中单体并绘制描边
+
+```javascript
+const tilesRes = await App.Scene.GetTiles();
+const tilesObj = tilesRes.result[0].Tiles[0];
+
+// 添加选中
+await App.Scene.NodeSelection.Add(tilesObj, ['895874688', '882098004']);
+
+// 绘制描边（选中后调用才会显示描边效果）
+await App.Scene.NodeSelection.Draw();
+
+// 添加并立即绘制（合并操作）
+await App.Scene.NodeSelection.AddDraw(tilesObj, ['895874688']);
+```
+
+- 移除选中单体
+
+```javascript
+// 移除指定 nodeId 的选中状态
+await App.Scene.NodeSelection.Remove(tilesObj, ['895874688']);
+
+// 移除并重绘（合并操作）
+await App.Scene.NodeSelection.RemoveDraw(tilesObj, ['895874688']);
+```
+
+- 清除所有选中单体
+
+```javascript
+// 清除选中状态（不清除描边）
+await App.Scene.NodeSelection.Clear();
+
+// 清除选中状态并清除描边（合并操作）
+await App.Scene.NodeSelection.ClearDraw();
+```
+
+---
+
+## Topic: 节点包围盒（id: 1396-bbox）
+
+> 版本要求：>=2.2.1
+
+- 获取指定节点的包围盒
+
+```javascript
+// 获取 AES 底板上指定 nodeId 的三维包围盒
+const tilesRes = await App.Scene.GetTiles();
+const tilesObj = tilesRes.result[0].Tiles[0];
+
+const res = await tilesObj.GetNodesBoundingBox(['895874688', '882098004']);
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      center: [121.4853, 31.2384, 25],   // 包围盒中心 GIS 坐标 [lng, lat, z]
+      size: [30, 20, 50]                 // 包围盒尺寸 [宽, 高, 深]（单位：米）
+    }
+  }
+*/
+
+// 用途：获取单体包围盒后，可用于相机聚焦或空间分析
+const center = res.result.center;
+await App.CameraControl.FlyTo({
+  targetPosition: center,
+  rotation: { pitch: -30, yaw: 0 },
+  distance: 200,
+  flyTime: 1
+});
+```

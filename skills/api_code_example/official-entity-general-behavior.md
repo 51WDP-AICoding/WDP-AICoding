@@ -2015,6 +2015,199 @@ await App.Scene.Add(entityObj).then(async res => {
 })
 ```
 
+## Topic: 场景管理高级操作 (id: 1357-ext)
+
+- 获取实体包围盒
+
+```javascript
+// 获取一个或多个实体的包围盒（传入实体对象数组）
+const allRes = await App.Scene.GetAll();
+const entities = allRes.result.objects;
+
+const res = await App.Scene.GetBoundingBox(entities);
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      center: [121.4853, 31.2384, 50],   // 包围盒中心 GIS 坐标 [lng, lat, z]
+      size: [500, 300, 100]              // 包围盒尺寸 [宽, 高, 深]（单位：米）
+    }
+  }
+*/
+```
+
+- 通过 Eids 获取实体类型
+
+```javascript
+const res = await App.Scene.GetTypesByEids(['eid1', 'eid2']);
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      objects: [
+        { eid: 'eid1', oType: 'Poi' },
+        { eid: 'eid2', oType: 'Path' }
+      ]
+    }
+  }
+*/
+```
+
+- 获取场景全局对象
+
+```javascript
+const res = await App.Scene.GetGlobal();
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      geoReference: GeoReferenceObject,
+      cameraStart: CameraStartObject,
+      wdpGlobalSettings: { ... }
+    }
+  }
+*/
+```
+
+- 获取底板对象
+
+```javascript
+// 获取场景中的 Tiles 底板对象
+const res = await App.Scene.GetTiles();
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      Tiles: [TilesObject, ...]
+    }
+  }
+*/
+
+// 获取工程底板对象
+const res2 = await App.Scene.GetProject();
+console.log(res2);
+```
+
+- 批量阵列复制实体
+
+```javascript
+// 将一组实体按指定方向/旋转/缩放复制 n 份
+const res = await App.Scene.ArrayDuplicate({
+  entities: [poiObj, pathObj],   // 要复制的实体对象数组
+  num: 5,                        // 复制数量
+  translation: [100, 0, 0],      // 每份的位移偏移量 [x, y, z]（单位：米）
+  rotator: { pitch: 0, yaw: 10, roll: 0 },  // 每份的旋转增量（可选）
+  scale: [1, 1, 1],              // 每份的缩放（可选）
+  coordType: 'GIS',              // 坐标类型：GIS / Cartesian（可选）
+  bInstance: false,              // 是否以 Instance 方式复制（可选）
+  instanceName: 'myInstance'     // Instance 名称（bInstance=true 时有效）
+});
+console.log(res);
+// 出参: { success: boolean, message: string, result: { objects: EntityObject[] } }
+```
+
+- 设置场景风格
+
+```javascript
+// 设置场景渲染风格
+const res = await App.Scene.SetSceneStyle('comic');
+// 可选风格：'comic'（漫画风）/ 'default'（默认）/ 'night'（夜间）等
+console.log(res);
+// 出参: { success: boolean, message: string }
+```
+
+- 场景回到初始化状态
+
+```javascript
+const res = await App.Scene.ResetSceneState();
+console.log(res);
+// 出参: { success: boolean, message: string }
+```
+
+- 实体沿路径移动（Scene.Move）
+
+```javascript
+// 让实体沿指定路径移动（与 Bound 覆盖物方式不同，此为直接调用）
+const res = await App.Scene.Move({
+  path: pathObj,       // 路径实体对象
+  entity: particleObj, // 要移动的实体对象
+  moving: {
+    time: 30,          // 总时长（单位：秒）
+    bLoop: true,       // 是否循环
+    bReverse: false,   // 是否反向
+    state: 'play'      // play / pause / stop
+  }
+});
+console.log(res);
+// 出参: { success: boolean, message: string }
+```
+
+- 执行/结束/获取场景动作
+
+```javascript
+// 执行场景预设动作（如场景中预设的动画序列）
+const res = await App.Scene.RunAction('actionName');
+console.log(res);
+
+// 结束场景动作
+const res2 = await App.Scene.EndAction('actionName');
+console.log(res2);
+
+// 获取场景动作列表
+const res3 = await App.Scene.GetAction();
+console.log(res3);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      actions: ['actionName1', 'actionName2', ...]
+    }
+  }
+*/
+```
+
+- 通过 GeoJson 批量创建实体
+
+```javascript
+// 从 GeoJSON 数据批量创建实体
+const geoJson = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [121.4853, 31.2384, 10] },
+      properties: { entityName: 'poi1', customId: 'id1' }
+    }
+  ]
+};
+
+const res = await App.Scene.CreateByGeoJson({
+  type: 'Poi',          // 实体类型
+  geoJson: geoJson,
+  poiStyle: {           // 对应实体类型的样式
+    markerNormalUrl: 'http://example.com/marker.png',
+    markerSize: [50, 114]
+  }
+});
+console.log(res);
+```
+
+---
+
 ## Topic: 实体滑过事件 (id: 1372)
 
 - 实体滑过事件

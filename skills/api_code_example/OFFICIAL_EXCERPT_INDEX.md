@@ -29,21 +29,23 @@
 
 说明：
 - 若后台草稿与线上已发布文档不一致，开发默认以线上发布口径为准，除非用户明确指定按后台草稿执行。
+- 每次对本目录的实质性变更（新增/修正/合并/删除）均记录在 `CHANGELOG.md`。
 
 ## 按官网分类的整理进度（WDP API 2.2.1）
 
 1. 通用事件监听：已整理
-2. 场景初始：已整理
-3. 场景相机：已整理
+2. 场景初始：已整理（补充完整事件列表 + Renderer控制方法）
+3. 场景相机：已整理（补充Camera机位对象 + CameraStart完整用法）
 4. 通用基础属性：已整理
-5. 实体/单体通用行为：已整理（当前为“实体一般行为”）
-6. 实体覆盖物：已整理（完整）
-7. 图层/模型：已整理
+5. 实体/单体通用行为：已整理（补充GetBoundingBox/ArrayDuplicate/RunAction/CreateByGeoJson等）
+6. 实体覆盖物：已整理（补充CustomPoi/Group/智能建模系列/StaticInstance/UI事件监听）
+7. 图层/模型：已整理（补充Tiles激活/节点分组/NodeSelection/GetNodesBoundingBox）
 8. 材质设置：已整理
 9. 点聚合【私有化环境/lite】：已整理
-10. 功能组件：已整理
-11. BIM API（全量分类）：已整理（基于在线文档管理平台）
-12. GIS API（全量分类）：已整理（基于在线文档管理平台，GIS 2.1.0）
+10. 功能组件：已整理（补充屏幕拾取/PickerPolyline/DOM坐标绑定/AssetLoader/DaaS）
+11. 空间理解（新增）：已整理（坐标转换/GetGlobal/GetAll/GetBoundingBox/取点工具）
+12. BIM API（全量分类）：已整理（基于在线文档管理平台）
+13. GIS API（全量分类）：已整理（基于在线文档管理平台，GIS 2.1.0）
 
 ## 交叉验证补充（案例驱动）
 

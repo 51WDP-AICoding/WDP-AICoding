@@ -1391,3 +1391,213 @@ const res = await App.Scene.Add(highlightarea, {
   obj.Get();
   obj.Delete();
 ```
+
+---
+
+## Topic: 自定义 POI（CustomPoi）(id: 1395-ext)
+
+> 版本要求：>=1.16.2 & >=2.1.2
+
+```javascript
+// CustomPoi：支持三态样式（normal/hover/active）的 POI
+const customPoi = new App.CustomPoi({
+  location: [121.4853, 31.2384, 10],
+  entityName: '自定义POI',
+  customId: 'my-custom-poi',
+  bVisible: true,
+  generalLabelStyle: {
+    bgColor: 'ffffff80',
+    textColor: 'ffffffff',
+    fontSize: 14,
+    borderColor: '00aaff',
+    borderWidth: 1,
+    padding: [8, 12],
+    offset: [0, -60]
+  },
+  specificLabelStyle: {
+    normal:  { bgColor: 'ffffff80', textColor: 'ffffffff' },
+    hover:   { bgColor: '00aaffcc', textColor: 'ffffffff' },
+    active:  { bgColor: 'ff6600ff', textColor: 'ffffffff' }
+  },
+  labelStyle: {
+    content: '<div style="padding:8px">{{name}}</div>',
+    data: { name: '我的自定义POI' }
+  }
+});
+const res = await App.Scene.Add(customPoi);
+// 出参: { success: boolean, message: string, result: { object: CustomPoiObject } }
+
+// 更新数据
+await customPoi.Update({ labelStyle: { data: { name: '更新后的POI' } } });
+customPoi.SetVisible(true);
+customPoi.Get();
+customPoi.Delete();
+```
+
+---
+
+## Topic: 实体组（Group）(id: 1395-group)
+
+```javascript
+// Group：将多个实体组合为一个组，统一管理
+const group = new App.Group({ entityName: '我的组', customId: 'my-group', bVisible: true });
+const groupRes = await App.Scene.Add(group);
+const groupObj = groupRes.result.object;
+
+await groupObj.Add([poiObj, pathObj, particleObj]);  // 添加成员
+await groupObj.Remove([poiObj]);                      // 移除成员
+await groupObj.UnGroup();                             // 解散组（成员保留）
+await groupObj.SetVisible(false);
+await groupObj.Get();    // 出参含成员列表
+await groupObj.Delete(); // 删除组及所有成员
+```
+
+---
+
+## Topic: 智能建模系列（id: 1395-modeler）
+
+```javascript
+// 区域植被（Vegetation）
+const vegetation = new App.Vegetation({
+  polygon2D: { coordinates: [[[121.4853,31.2384],[121.4900,31.2384],[121.4900,31.2420],[121.4853,31.2420]]] },
+  entityName: '区域植被', customId: 'my-vegetation', bVisible: true,
+  vegetationStyle: { density: 0.8, type: 'tree_broad', scale: [1,1,1] }
+});
+await App.Scene.Add(vegetation);
+
+// 挡水岸堤（ModelerEmbank）
+const embank = new App.ModelerEmbank({
+  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2400,0]] },
+  entityName: '挡水岸堤', customId: 'my-embank', bVisible: true,
+  embankStyle: { width: 20, height: 5, slope: 1.5 }
+});
+await App.Scene.Add(embank);
+
+// 水面水体（ModelerWater）
+const water = new App.ModelerWater({
+  polygon2D: { coordinates: [[[121.4853,31.2384],[121.4900,31.2384],[121.4900,31.2420]]] },
+  entityName: '水面水体', customId: 'my-water', bVisible: true,
+  waterStyle: { waterLevel: 5, color: '0066ffaa', waveSpeed: 1.0, waveHeight: 0.5 }
+});
+await App.Scene.Add(water);
+
+// 河道水岸（ModelerRiver）
+const river = new App.ModelerRiver({
+  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2400,0]] },
+  entityName: '河道水岸', customId: 'my-river', bVisible: true,
+  riverStyle: { width: 50, waterLevel: 2, bankHeight: 3 }
+});
+await App.Scene.Add(river);
+
+// 智能建模围栏（ModelerFence）
+const fence = new App.ModelerFence({
+  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2384,0],[121.4900,31.2420,0],[121.4853,31.2420,0]] },
+  entityName: '围栏', customId: 'my-fence', bVisible: true,
+  fenceStyle: { height: 3, type: 'iron', bClosed: true }
+});
+await App.Scene.Add(fence);
+
+// 智能建模楼板（ModelerFloor）
+const floor = new App.ModelerFloor({
+  polygon2D: { coordinates: [[[121.4853,31.2384],[121.4900,31.2384],[121.4900,31.2420],[121.4853,31.2420]]] },
+  entityName: '楼板', customId: 'my-floor', bVisible: true,
+  floorStyle: { height: 0, thickness: 0.3, color: 'ccccccff' }
+});
+await App.Scene.Add(floor);
+```
+
+---
+
+## Topic: 静态实例模型（StaticInstance）(id: 1395-instance)
+
+```javascript
+// StaticInstance：静态模型的实例化，适合大量重复模型（如树木、路灯）
+const staticInstance = new App.StaticInstance({
+  entityName: '静态实例', customId: 'my-static-instance', bVisible: true,
+  assetId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+  instanceComponentInfos: [
+    { location: [121.4853,31.2384,0], rotator: {pitch:0,yaw:0,roll:0}, scale3d: [50,50,50], customId: 'inst-0' },
+    { location: [121.4870,31.2390,0], rotator: {pitch:0,yaw:90,roll:0}, scale3d: [50,50,50], customId: 'inst-1' }
+  ]
+});
+const res = await App.Scene.Add(staticInstance);
+
+// 更新某个实例的位置（通过 customId 定位）
+await staticInstance.Update({
+  instanceComponentInfos: [{ customId: 'inst-0', location: [121.4860,31.2385,0] }]
+});
+```
+
+---
+
+## Topic: UI 组件事件监听与坐标跟随（id: 1374-1376-1379-ext）
+
+> 补充：WindowUI / PoiUI / VideoUI 的事件监听和坐标跟随更新（基础创建用法见上方各 Topic）
+
+- PoiUI 点击 / 悬停事件
+
+```javascript
+// PoiUI 支持 onClick / onHover 事件
+const poiUI = new App.PoiUI({
+  poiUIContent: {
+    normalImage: 'http://example.com/marker.png',
+    activeImage: 'http://example.com/marker_active.png',
+    content: '<div>{{name}}</div>',
+    data: { name: '我的POI' }
+  },
+  windowStyle: { width: '79px', height: '180px', position: 'absolute', left: '500px', top: '200px', zIndex: '1000', background: 'none' }
+});
+const res = App.Component.PoiUI.Add([poiUI]);
+const obj = res.result.objects[0];
+
+// 注册点击事件
+obj.onClick((ev) => {
+  console.log('PoiUI clicked', ev);
+  // ev.result: { object: PoiUIObject, customId, customData }
+});
+
+// 注册悬停事件
+obj.onHover((ev) => {
+  console.log('PoiUI hovered', ev);
+});
+```
+
+- PoiUI 坐标跟随更新
+
+```javascript
+// PoiUI 本身位置固定（基于 CSS），若需跟随三维坐标移动，
+// 配合 App.Tools.Screen.AddScreenPosBound 实现：
+const screenRes = await App.Tools.Screen.AddScreenPosBound({
+  id: 'my-poi-ui-dom-id',          // PoiUI 对应的 DOM 元素 ID
+  location: [121.4853, 31.2384, 10],
+  offset: [0, -90],
+  bAutoHide: true
+});
+
+// 当实体位置变化时更新绑定坐标
+await App.Tools.Screen.UpdateScreenPosBound({
+  id: 'my-poi-ui-dom-id',
+  location: [121.4900, 31.2400, 10]
+});
+```
+
+- WindowUI 与内嵌页面双向通信
+
+```javascript
+// WindowUI 内嵌页面 → 外部：使用 w51_event
+// （在内嵌 HTML 页面中调用）
+w51_event('MyCustomEvent', { key: 'value' });
+
+// 外部监听 WindowUI 发出的事件
+App.Renderer.RegisterSceneEvent([{
+  name: 'OnWebJSEvent',
+  func: (data) => {
+    // data.result: { name: 'MyCustomEvent', args: { key: 'value' } }
+    console.log('WindowUI event:', data);
+  }
+}]);
+
+// 外部 → WindowUI 内嵌页面：通过 postMessage
+const windowUIObj = res.result.objects[0];
+windowUIObj.PostMessage({ type: 'update', payload: { value: 42 } });
+```

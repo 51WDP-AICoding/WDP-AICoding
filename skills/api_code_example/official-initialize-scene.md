@@ -130,9 +130,11 @@ await App.System.SetTimeoutTime(30000); //30s; 默认: 10s
 - 启动场景
 
 ```javascript
+// Renderer.Start() 出参：{ success: boolean, message: string }
 App.Renderer.Start().then((res: any) => {
     if (res.success) {
-        // 初始场景事件
+
+        // ── 视频流事件（RegisterEvent）──────────────────────────────
         App.Renderer.RegisterEvent([
             {
                 name: 'onVideoReady', func: async function (res: any) {
@@ -143,45 +145,79 @@ App.Renderer.Start().then((res: any) => {
                 name: 'onStopedRenderCloud', func: async function (res: any) {
                     // 渲染服务中断
                 }
+            },
+            {
+                name: 'onVideoStart', func: async function (res: any) {
+                    // 视频流开始播放
+                }
+            },
+            {
+                name: 'onVideoStop', func: async function (res: any) {
+                    // 视频流停止
+                }
+            },
+            {
+                name: 'onVideoError', func: async function (res: any) {
+                    // 视频流错误
+                }
             }
-        ])
-        // 场景事件回调
+        ]);
+
+        // ── 错误事件（RegisterErrorEvent）──────────────────────────
+        App.Renderer.RegisterErrorEvent([
+            {
+                name: 'OnValidateError', func: async function (res: any) {
+                    // 鉴权失败事件回调
+                    // res.result: { code: number, message: string }
+                }
+            }
+        ]);
+
+        // ── 场景事件（RegisterSceneEvent）──────────────────────────
         App.Renderer.RegisterSceneEvent([
             {
                 name: 'OnWdpSceneIsReady', func: async function (res: any) {
-                    if(res.result.progress === 100) {
+                    // 场景加载进度回调
+                    // res.result: { progress: number }  // progress === 100 时加载完成
+                    if (res.result.progress === 100) {
                         // 场景加载完成
                     }
                 }
             },
             {
                 name: 'OnEntityClicked', func: async function (res: any) {
-                    // Entity被点击事件回调; 包含数据信息与实体对象
+                    // Entity 被点击事件回调
+                    // res.result: { eid: string, oType: string, object: EntityObject, screenPos: [x,y] }
                 }
             },
             {
                 name: 'OnMouseEnterEntity', func: async function (res: any) {
-                    // 鼠标滑入实体事件回调; 包含数据信息与实体对象
+                    // 鼠标滑入实体事件回调
+                    // res.result: { eid: string, oType: string, object: EntityObject }
                 }
             },
             {
                 name: 'OnMouseOutEntity', func: async function (res: any) {
-                    // 鼠标滑出实体事件回调; 包含数据信息与实体对象
+                    // 鼠标滑出实体事件回调
+                    // res.result: { eid: string, oType: string, object: EntityObject }
                 }
             },
             {
                 name: 'OnWebJSEvent', func: async function (res: any) {
-                    // 接收widnow内嵌页面发送的数据
+                    // 接收 Window 内嵌页面发送的数据
+                    // res.result: { data: any }
                 }
             },
             {
                 name: 'MeasureResult', func: async function (res: any) {
                     // 测量工具数据回调
+                    // res.result: { type: string, value: number, unit: string }
                 }
             },
             {
                 name: 'OnMoveAlongPathEndEvent', func: async function (res: any) {
                     // 覆盖物移动结束信息回调
+                    // res.result: { eid: string }
                 }
             },
             {
@@ -197,20 +233,34 @@ App.Renderer.Start().then((res: any) => {
             {
                 name: 'PickPointEvent', func: async function (res: any) {
                     // 取点工具取点数据回调
+                    // res.result: { location: [lng,lat,z], worldPos: [x,y,z] }
                 }
             },
             {
                 name: 'OnEntitySelectionChanged', func: async function (res: any) {
-                    // 实体被选取、数据回调
+                    // 实体被选取数据回调
+                    // res.result: { eids: string[], objects: EntityObject[] }
                 }
             },
             {
                 name: 'OnEntityReady', func: async function (res: any) {
-                    // 3DTilesEntity，WMSEntity，WMTSEntity 加载完成;
-                    // {success: true, message: '', result: { object: 对象, progress: 100 }}
+                    // 3DTilesEntity / WMSEntity / WMTSEntity 加载完成
+                    // res.result: { object: EntityObject, progress: 100 }
+                }
+            },
+            {
+                name: 'OnRoamFinished', func: async function (res: any) {
+                    // 相机漫游结束回调
+                    // res.result: { eid: string }
+                }
+            },
+            {
+                name: 'OnPickPolylineEvent', func: async function (res: any) {
+                    // 取线工具取线数据回调
+                    // res.result: { polyline: [[lng,lat,z], ...] }
                 }
             }
-        ])
+        ]);
     }
 }).catch(err => {
     console.log(err)
@@ -224,8 +274,9 @@ App.Renderer.Start().then((res: any) => {
 
 ```javascript
 const path = new App.Path({ "polyline":  { "coordinates": [121.50007292,31.22579403,30]}, "pathStyle":  style })
-cosnt res = await App.Scene.Add(path);
+const res = await App.Scene.Add(path);
 console.log(res);
+// 出参: { success: boolean, message: string, result: { object: EntityObject } }
 ```
 
 - Covering.Clear() 
@@ -235,5 +286,152 @@ console.log(res);
 
 ```javascript
 await App.Scene.ResetSceneState();
+// 出参: { success: boolean, message: string }
+```
+
+---
+
+## 条目：Renderer 控制方法（id: 1344-ext）
+
+- 停止/重启渲染
+
+```javascript
+// 停止渲染
+const res = await App.Renderer.Stop();
+// 出参: { success: boolean, message: string }
+
+// 重启渲染
+const res2 = await App.Renderer.Restart();
+// 出参: { success: boolean, message: string }
+```
+
+- 通过 TaskId 启动渲染
+
+```javascript
+// 适用于已有任务 ID 的场景
+const res = await App.Renderer.StartByTaskId(io, taskId);
+// 出参: { success: boolean, message: string }
+```
+
+- 设置分辨率倍率
+
+```javascript
+// 设置渲染分辨率倍率（相对于容器尺寸）
+const res = await App.Renderer.SetResolutionMultiple(1.5); // 1.5倍
+// 出参: { success: boolean, message: string }
+```
+
+- 设置固定分辨率
+
+```javascript
+const res = await App.Renderer.SetResolution(1920, 1080);
+// 出参: { success: boolean, message: string }
+```
+
+- 设置帧率上限
+
+```javascript
+const res = await App.Renderer.SetFrameRateLimit(60); // 单位: fps
+// 出参: { success: boolean, message: string }
+```
+
+- 设置码率
+
+```javascript
+const res = await App.Renderer.SetBitrate(8); // 单位: Mbps
+// 出参: { success: boolean, message: string }
+```
+
+- 获取渲染实时状态
+
+```javascript
+const res = await App.Renderer.GetStats();
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      fps: 60,           // 当前帧率
+      bitrate: 8.2,      // 当前码率（Mbps）
+      latency: 45,       // 延迟（ms）
+      resolution: [1920, 1080]  // 当前分辨率
+    }
+  }
+*/
+```
+
+- 截图（获取当前画面 base64 图片）
+
+```javascript
+const res = await App.Renderer.GetSnapshot([1920, 1080], 0.9);
+// 参数1: 截图分辨率 [宽, 高]（可选，默认当前分辨率）
+// 参数2: 图片质量 0~1（可选，默认 0.9）
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      base64: 'data:image/jpeg;base64,/9j/4AAQ...'  // base64 图片字符串
+    }
+  }
+*/
+```
+
+- 注销事件
+
+```javascript
+// 注销视频流事件
+App.Renderer.UnRegisterEvent(['onVideoReady', 'onStopedRenderCloud']);
+
+// 注销错误事件
+App.Renderer.UnRegisterErrorEvent(['OnValidateError']);
+
+// 注销场景事件
+App.Renderer.UnRegisterSceneEvent(['OnEntityClicked', 'OnWdpSceneIsReady']);
+```
+
+---
+
+## 条目：系统信息与版本（id: 1344-sys）
+
+- 获取系统信息
+
+```javascript
+const res = await App.System.GetInfomation();
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      platform: 'web',
+      browserVersion: 'Chrome/120.0',
+      sdkVersion: '2.2.1',
+      rendererVersion: '5.x.x'
+    }
+  }
+*/
+```
+
+- 获取 API 版本
+
+```javascript
+const res = await App.Setting.GetApiVersion();
+console.log(res);
+/*
+  出参示例：
+  {
+    success: true,
+    message: '',
+    result: {
+      version: '2.2.1'
+    }
+  }
+*/
 ```
 
