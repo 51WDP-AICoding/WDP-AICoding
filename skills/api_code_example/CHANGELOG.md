@@ -1,6 +1,35 @@
 # Skills API Code Example — 更新日志
 
-记录每次对 `api_code_example/` 目录的实质性变更，包括新增内容、修正、合并与删除。
+记录每次对 `skills/` 目录的实质性变更，包括新增内容、修正、合并与删除。
+
+---
+
+## [2026-03-12] 空间基准探查固化为接入标准流程
+
+### 背景
+接入新渲染场景时，需要在场景就绪后立即获取空间基础信息（坐标系原点、相机位置、实体分布、包围盒、底板图层），作为后续业务开发的前置确认。将此步骤固化为强制标准流程，避免每次接入遗漏。
+
+### 更新文件
+
+#### `skills/wdp-api-initialize-scene/SKILL.md`
+- 在"标准时序"中新增**第6步：执行空间基准探查（强制，每次接入执行一次）**
+- 明确触发时机：`OnWdpSceneIsReady && progress === 100` 后立即执行
+- 指向 `wdp-api-spatial-understanding/SKILL.md` 获取具体实现
+
+#### `skills/wdp-api-spatial-understanding/SKILL.md`
+- 新增**定位说明**：明确本技能是每次接入的强制步骤，由 initialize-scene 第6步触发
+- 新增**可复用探查函数模板** `exploreSpatialBaseline()`，包含6个探查项：
+  1. 坐标系原点与坐标系类型（GetGlobal）
+  2. 相机默认位置（GetCameraPose）
+  3. 实体列表与类型分布（GetAll + reduce 统计）
+  4. 场景整体包围盒（GetBoundingBox）
+  5. AES 底板图层（GetTiles + GetLayers，按需）
+  6. 坐标系往返验证（GISToCartesian → CartesianToGIS，误差 <0.000001）
+- 探查结果存入 `window._wdpSpatialBaseline`，供后续业务使用
+
+### 影响范围
+- 所有新接入 WDP 场景的项目，均应在 `OnWdpSceneIsReady` 回调中调用 `exploreSpatialBaseline()`
+- 未完成探查前不得开始业务编码（坐标系类型未确认时，GIS 坐标可能存在 GCJ02 偏移风险）
 
 ---
 
