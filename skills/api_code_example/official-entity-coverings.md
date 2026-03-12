@@ -1463,7 +1463,25 @@ const vegetation = new App.Vegetation({
   entityName: '区域植被', customId: 'my-vegetation', bVisible: true,
   vegetationStyle: { density: 0.8, type: 'tree_broad', scale: [1,1,1] }
 });
-await App.Scene.Add(vegetation);
+const vegRes = await App.Scene.Add(vegetation);
+const vegObj = vegRes.result.object;
+
+// Vegetation 额外方法（剔除区域管理）
+// cullRegions 结构：[{ index: -1, name: "testName", bEnable: true, loopPoints: [[100,100],[300,300]] }]
+// index: -1 表示新增；>=0 表示更新已有区域
+
+// 查询剔除区域
+const queryRes = await vegObj.QueryRegion();
+// 出参: { success: boolean, result: { cullRegions: [...] } }
+
+// 移除剔除区域（传入 index 数组）
+await vegObj.RemoveRegion([0, 1]);
+
+// 更新剔除区域名称
+await vegObj.UpdateRegionName([{ index: 0, name: 'AAA' }]);
+
+// 启用/禁用剔除区域
+await vegObj.ToggleRegion([{ index: 0, bEnable: true }]);
 
 // 挡水岸堤（ModelerEmbank）
 const embank = new App.ModelerEmbank({
@@ -1512,20 +1530,60 @@ await App.Scene.Add(floor);
 
 ```javascript
 // StaticInstance：静态模型的实例化，适合大量重复模型（如树木、路灯）
+// instanceComponentInfos 完整结构（来自 docx 原始文档）：
 const staticInstance = new App.StaticInstance({
   entityName: '静态实例', customId: 'my-static-instance', bVisible: true,
-  assetId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-  instanceComponentInfos: [
-    { location: [121.4853,31.2384,0], rotator: {pitch:0,yaw:0,roll:0}, scale3d: [50,50,50], customId: 'inst-0' },
-    { location: [121.4870,31.2390,0], rotator: {pitch:0,yaw:90,roll:0}, scale3d: [50,50,50], customId: 'inst-1' }
-  ]
+  instanceComponentInfos: [{
+    componentName: '实验学校06',       // 组件名称
+    parentName: '',                    // 父组件名称（顶层为空）
+    assetId: '883786d39171015f0fc8396ae4115a66', // 资产 ID
+    meshName: 'WZ_WZSYXX_06',         // 网格名称
+    componentLocation: [0, 0, 0],     // 组件自身位置（笛卡尔，单位：厘米）
+    componentRotator: { pitch: 0, yaw: 0, roll: 0 },
+    componentScale: [1, 1, 1],
+    nodeIds: [10000001, 10000002],     // 实例节点 ID 列表
+    positions: [[0,0,0], [5000,0,0]], // 各节点位置（笛卡尔，单位：厘米）
+    idToRotator: {},                  // 节点 ID → 旋转（可选，覆盖默认）
+    idToScale: {},                    // 节点 ID → 缩放（可选，覆盖默认）
+    hiddenIds: []                     // 隐藏的节点 ID 列表
+  }]
 });
 const res = await App.Scene.Add(staticInstance);
 
-// 更新某个实例的位置（通过 customId 定位）
+// 更新某个实例的位置（通过 nodeId 定位）
 await staticInstance.Update({
-  instanceComponentInfos: [{ customId: 'inst-0', location: [121.4860,31.2385,0] }]
+  instanceComponentInfos: [{ nodeIds: [10000001], positions: [[1000,0,0]] }]
 });
+
+// StaticInstance 额外方法（来自 docx 原始文档）：
+// 删除指定组件
+await staticInstance.DeleteComponents(['实验学校06']);
+
+// 设置组件变换（key 为 "componentName_meshName" 格式）
+await staticInstance.SetComponentsTransform({
+  '实验学校06_WZ_WZSYXX_06': {
+    rotator: { pitch: 0, yaw: 45, roll: 0 },
+    location: [0, 0, 0],
+    scale3d: [1, 1, 1]
+  }
+});
+
+// 删除指定节点
+await staticInstance.DeleteNodes([10000001, 10000002]);
+
+// 设置节点变换
+await staticInstance.SetNodesTransform([{
+  nodeIds: [10000001],
+  rotator: { pitch: 0, yaw: 30, roll: 0 },
+  location: [1000, 0, 0],
+  scale3d: [1, 1, 1]
+}]);
+
+// 描边指定组件（第二参数 true=开启, false=关闭）
+await staticInstance.OutlineComponents(['实验学校06'], true);
+
+// 聚焦指定组件
+await staticInstance.FocusComponents(['实验学校06']);
 ```
 
 ---

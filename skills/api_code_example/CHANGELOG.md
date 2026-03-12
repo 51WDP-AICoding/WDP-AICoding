@@ -1,6 +1,27 @@
-# Skills API Code Example — 更新日志
 
 记录每次对 `skills/` 目录的实质性变更，包括新增内容、修正、合并与删除。
+
+---
+
+## [2026-03-12] 第二轮补充：基于 docx 原始文档填补 API 缺口
+
+### 背景
+读取 `WDPAPI 文档（补充出入参信息）.docx` 原始文档，精准补完上一轮遗留的 API 缺口。
+
+### 更新文件
+
+#### `official-entity-coverings.md`
+- **Vegetation 剔除区域管理**：补充 `QueryRegion`（查询）、`RemoveRegion`（移除）、`UpdateRegionName`（改名）、`ToggleRegion`（启用/禁用）四个方法，含 `cullRegions` 完整结构说明
+- **StaticInstance 完整 instanceComponentInfos 结构**：补充 `componentName/parentName/assetId/meshName/componentLocation/componentRotator/componentScale/nodeIds/positions/idToRotator/idToScale/hiddenIds` 全字段说明
+- **StaticInstance 额外方法**：补充 `DeleteComponents`、`SetComponentsTransform`（key 格式为 `componentName_meshName`）、`DeleteNodes`、`SetNodesTransform`、`OutlineComponents`、`FocusComponents` 六个方法
+
+#### `official-function-components.md`
+- **修正 `Screen.AddScreenPosBound` 入参**：原文档入参为单个 `id/location/offset/bAutoHide`，修正为正确的批量入参 `locations`（数组）+ `enableChangeNotify`（数组），出参为 `{ ids: [...] }`
+- **新增 `Cluster.Start/End/Modify`**：补充完整的 DaaS 数据聚合 API，含 `openOnClick/mode/url/aggregationLimit/algorithm/filters.attr` 完整结构，`aggicon/covering` 样式配置，以及 `Modify` 的可选参数说明
+
+### 确认已完整（无需修改）
+- `official-entity-general-behavior.md`：`GetTypesByEids` 出参、`Scene.Move` 完整入参已在上一轮补充
+- `official-initialize-scene.md`：`StartByTaskId`、`SetResolutionMultiple`、`GetInfomation`、`GetApiVersion` 已在上一轮补充
 
 ---
 
@@ -34,37 +55,6 @@
 ---
 
 ## [2026-03-11] 第一轮系统性补充（WDP API 2.2.1 基线）
-
-### 背景
-基于 `wdpapidoc-admin` 后台接口完成第一轮方法级摘录后，发现以下问题：
-1. 多个文件缺少出参结构，AI 生成代码时无法验证返回值
-2. 部分新增实体类型（CustomPoi、Group、智能建模系列）未覆盖
-3. 工具类（屏幕拾取、DOM坐标绑定、取线工具）完全缺失
-4. 空间理解（坐标转换、包围盒）无独立 skill 文件
-
-### 新增文件
-
-| 文件 | 内容说明 |
-|------|---------|
-| `official-spatial-understanding.md` | 空间理解与坐标转换：GetGlobal/GetAll/GetBoundingBox/GIS↔Cartesian/取点工具 |
-| `skills/wdp-api-spatial-understanding/SKILL.md` | 空间理解 sub-skill，含路由规则与典型用法 |
-
-### 更新文件（补充缺失内容）
-
-#### `official-initialize-scene.md`
-- 补充完整事件列表（OnVideoStreamConnected/OnVideoStreamDisconnected/OnVideoStreamError 等 5 个视频流事件）
-- 补充 `App.Renderer` 控制方法出参结构（Stop/Restart/GetStats/GetSnapshot）
-- 补充 `OnSceneError` 错误事件及错误码说明
-
-#### `official-scene-camera.md`
-- 补充所有关键方法出参结构（FlyTo/Focus/GetCameraInfo 等）
-- 新增 Camera 机位对象完整用法（含 SaveCamera/LoadCamera/DeleteCamera）
-- 新增 CameraStart 对象（场景初始相机配置）完整参数说明
-
-#### `official-entity-general-behavior.md`
-- 补充场景管理高级操作：`GetBoundingBox`（多实体包围盒）、`ArrayDuplicate`（阵列复制）
-- 补充 `SetSceneStyle`（场景风格化）、`RunAction`/`EndAction`（矢量工具编排）
-- 补充 `CreateByGeoJson`（GeoJSON 批量创建实体）
 - 补充 `ClearByTypes`（按类型批量清除）
 
 #### `official-entity-coverings.md`

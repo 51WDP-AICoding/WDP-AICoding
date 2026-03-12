@@ -663,22 +663,26 @@ await App.Tools.PickerPolyline.EndPickPolyline();
 ## Topic: DOM 坐标绑定（Screen）（id: 1408-screen）
 
 ```javascript
-// 将 DOM 元素绑定到场景中某个 GIS 坐标，随相机移动自动更新位置
+// 将多个 DOM 元素批量绑定到场景中 GIS 坐标，随相机移动自动更新位置
+// 注意：locations 和 enableChangeNotify 均为数组（支持批量）
 const res = await App.Tools.Screen.AddScreenPosBound({
-  id: 'my-dom-element',              // DOM 元素 ID
-  location: [121.4853, 31.2384, 10], // 绑定的 GIS 坐标
-  offset: [0, -50],                  // 偏移量 [x, y]（单位：像素）
-  bAutoHide: true                    // 坐标不可见时自动隐藏 DOM
+  locations: [
+    [121.4853, 31.2384, 10],   // 第一个绑定坐标
+    [121.4900, 31.2400, 10]    // 第二个绑定坐标
+  ],
+  enableChangeNotify: [true, false]  // 是否在坐标变化时触发通知（与 locations 一一对应）
 });
+// 出参: { success: boolean, result: { ids: ['xxx', 'yyy'] } }
+// ids 为系统分配的绑定 ID，用于后续更新/移除
 
-// 更新绑定坐标
+// 更新绑定坐标（通过 id）
 await App.Tools.Screen.UpdateScreenPosBound({
-  id: 'my-dom-element',
+  id: 'xxx',                          // AddScreenPosBound 返回的 id
   location: [121.4900, 31.2400, 15]
 });
 
 // 移除绑定
-await App.Tools.Screen.RemoveScreenPosBound('my-dom-element');
+await App.Tools.Screen.RemoveScreenPosBound('xxx');
 ```
 
 ---
@@ -717,4 +721,67 @@ const res = await App.DataModel.DaaS.GetCloudDiskFileList({
     }
   }
 */
+```
+
+---
+
+## Topic: 数据聚合（Cluster）（id: 1408-cluster）
+
+```javascript
+// Cluster：对 DaaS 数据进行空间聚合展示（POI 聚合）
+// 完整参数结构（来自 docx 原始文档）：
+const clusterOpt = {
+  openOnClick: true,          // 点击聚合点时是否展开
+  mode: 'local',              // 数据模式：local（本地）/ remote（远程）
+  url: 'http://your-daas-url', // DaaS 数据地址（mode=remote 时有效）
+  aggregationLimit: 99,       // 聚合阈值：单个聚合点最多包含的数据量
+  algorithm: {
+    type: 'squareD',          // 聚合算法：squareD（方形距离）
+    parameters: {
+      squareD: { length: '30' }  // 聚合格子边长（屏幕像素）
+    }
+  },
+  filters: {
+    attr: [{
+      queryId: 'AAA',                    // 查询 ID（自定义，用于区分多个过滤器）
+      gather: 'guangzhou_poi',           // DaaS 数据集名称
+      condition: { adname: ['白云区'] }, // 过滤条件（字段名: 值数组）
+      calculateCoordZ: {
+        coordZRef: 'surface',            // surface/ground/altitude
+        coordZOffset: 40                 // 高度偏移（单位：米）
+      },
+      aggicon: {                         // 聚合点样式
+        type: 'poi',
+        poiStyle: {
+          markerNormalUrl: 'http://example.com/agg_marker.png',
+          markerSize: [50, 50],
+          labelContent: ['{count}', 'ff0000ff', '16']  // 显示聚合数量
+        }
+      },
+      covering: {                        // 单体点样式（展开后）
+        type: 'poi',
+        poiStyle: {
+          markerNormalUrl: 'http://example.com/single_marker.png',
+          markerSize: [25, 57],
+          labelContent: ['{name}', '00ff00ff', '12']   // 显示数据字段
+        }
+      }
+    }]
+  }
+};
+
+// 启动聚合
+await App.DataModel.Cluster.Start(clusterOpt);
+
+// 结束聚合（清除所有聚合点）
+await App.DataModel.Cluster.End();
+
+// 修改聚合参数（所有参数均为可选，仅更新传入的字段）
+await App.DataModel.Cluster.Modify({
+  aggregationLimit: 50,
+  algorithm: {
+    type: 'squareD',
+    parameters: { squareD: { length: '50' } }
+  }
+});
 ```
