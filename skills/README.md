@@ -39,7 +39,10 @@
 
 ## 当前 API 资料状态
 
-- `api_code_example/official-*.md` 已完成一次方法级线上核对。
+- `api_code_example/official-*.md` 已完成两轮方法级补充（基线 WDP API 2.2.1）。
+- 第一轮：基于线上文档核对，补充 CustomPoi/Group/Vegetation/StaticInstance/Picker/Screen/AssetLoader 等。
+- 第二轮：基于 docx 原始文档，精准补完 Vegetation 剔除区域管理、StaticInstance 完整结构与额外方法、Screen.AddScreenPosBound 入参修正、Cluster.Start/End/Modify。
+- 新增 `official-spatial-understanding.md`：坐标转换、取点工具、空间基准探查。
 - 当前核对结果见：`./api_code_example/ONLINE_COVERAGE_AUDIT.md`
 - 当前同步脚本见：`./api_code_example/sync_public_official_excerpts.ps1`
 - 如果线上文档变化，优先同步 `official-*.md`，再更新对应 skill。
