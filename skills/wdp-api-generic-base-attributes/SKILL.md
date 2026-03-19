@@ -1,58 +1,59 @@
 ---
 name: wdp-api-generic-base-attributes
-description: 处理 WDP 通用基础属性 API 的读取与更新。用于规范属性调用时序、参数校验、回读确认和失败回退；涉及状态不一致或属性更新无效时使用本技能。
+description: 处理 WDP 通用基础属性 API 的实现与排障。用于规范实体属性读写、批量属性更新和属性变更监听；涉及实体属性操作时使用本技能。
 ---
 
-# WDP 基础属性子技能
+# WDP 通用基础属性子技能
 
-只负责基础属性域，不负责相机、覆盖物和前端布局。
+覆盖范围：实体属性读写、批量属性更新、属性变更监听。
 
 ## 前置条件
 
 1. `App` 已初始化且渲染可用。
-2. 依赖场景状态的操作在 `SceneReady(100%)` 后执行。
-3. 输入参数完成必填、类型、范围校验。
+2. 目标实体对象可检索（`GetByEids` 或现有对象引用）。
+3. 属性字段名和类型已确认。
 
 ## 标准流程
 
-1. 明确属性目标。
-- 定义读取或更新的属性项与目标值。
+1. 获取目标对象。
+- 使用 `App.Scene.GetByEids/GetByCustomId/GetByEntityName/GetByTypes` 获取对象。
 
-2. 执行读取或更新。
-- 优先先读后改，避免盲写。
+2. 执行属性读写。
+- 读取：`GetBaseAttribute/GetBaseAttributes`。
+- 写入：`SetBaseAttribute/SetBaseAttributes`。
 
-3. 回读确认结果。
-- 更新后再次读取并核对一致性。
+3. 监听属性变更。
+- 注册：`App.Event.On('EntityBaseAttributeChanged', callback)`。
+- 回收：`App.Event.Off('EntityBaseAttributeChanged', callback)`。
 
-4. 处理失败分支。
-- 记录属性名、输入摘要、错误对象。
+4. 校验结果。
+- 记录目标集合数量、成功/失败数量、失败对象摘要。
 
 ## 质量门槛
 
-1. 不在未满足时序时调用属性 API。
-2. 不跳过参数校验直接写关键属性。
-3. 不省略更新后的回读确认。
+1. 不对空对象集合直接调用批量行为。
+2. 批量更新前先输出目标清单摘要。
+3. 属性变更监听必须有解绑机制。
 
 ## 高频问题
 
-1. 更新无效。
-- 检查调用时机、参数类型、目标对象状态。
+1. 属性写入成功但读取为空。
+- 检查字段名大小写和类型。
 
-2. 更新后表现异常。
-- 检查是否被后续调用覆盖。
+2. 批量更新部分失败。
+- 检查失败对象的类型和状态。
 
-3. 偶发失败。
-- 检查并发冲突与重试节奏。
+3. 监听回调不触发。
+- 检查注册时机和事件名。
 
 ## 参考资料（相对路径）
 
-- `../api_code_example/official-generic-base-attributes.md`
-- `../api_code_example/generic-base-attributes.template.js`
+- `../official_api_code_example/official-generic-base-attributes.md`
 
 ## 输出要求
 
 始终输出：
-1. 属性调用链路改动点
-2. 对行为一致性的影响
+1. 目标实体筛选方式
+2. 属性操作与影响范围
 3. 验证步骤与结果
-4. 最小复现与修复说明
+4. 回滚建议（如有）

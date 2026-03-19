@@ -8,7 +8,7 @@
 ## 固定测试参数
 
 - 渲染地址：`https://dtp-api.51aes.com`
-- 渲染口令：`35c7d23d58998c9402ed87b45ee70473`
+- 渲染口令：`e840179f3b38beb39e6502e6f35c9922
 - 目标实体 EID：`-9149062448540868842`
 - SDK 依赖：
   - `https://wdpapi.51aes.com/sdk/wdpApi.min.js`（该文件提供 `CloudApi` 运行时）

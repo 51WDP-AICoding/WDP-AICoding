@@ -3,7 +3,7 @@ window.projectGlobalConfigs = {
     id: 'player',
     env: {
       url: 'https://dtp-api.51aes.com',
-      order: '35c7d23d58998c9402ed87b45ee70473'
+      order: '509a500113ad623443c1edc0600cb5aa'
     },
     prefix: '',
     resolution: [1920, 1080],
@@ -12,7 +12,7 @@ window.projectGlobalConfigs = {
     keyboard: { normal: true, func: true }
   },
   testTarget: {
-    eid: '-9149062448540868842',
+    eid: '-9151314331662183055',
     focus: {
       rotation: {
         pitch: -30,

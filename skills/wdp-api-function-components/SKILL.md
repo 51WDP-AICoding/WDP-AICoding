@@ -1,90 +1,68 @@
 ---
 name: wdp-api-function-components
-description: 处理 WDP 功能组件 API 的实现与排障。用于环境（时间/天气/风格）、控件（信息/统计/指南针/小地图）、工具（坐标、测量、取点、剖切、截图等）和设置（渲染模式、码率、帧率、超时、音量等）调用。
+description: 处理 WDP 功能组件 API 的实现与排障。用于天气、水面、天空盒、粒子特效、后处理等功能组件的创建、配置与控制；涉及场景特效和环境组件时使用本技能。
 ---
 
 # WDP 功能组件子技能
 
-覆盖范围：环境、控件、工具、设置。
+覆盖范围：天气、水面、天空盒、粒子特效、后处理。
 
 ## 前置条件
 
 1. `App` 已初始化且渲染可用。
-2. 工具类调用前确认场景就绪与权限。
-3. 设置项变更前明确目标环境（开发/演示/生产）。
-
-## 参数信息门禁（强制）
-
-- 对天气、时间、风格、渲染参数等高敏感字段，若无明确取值，不得直接猜测并落代码。
-- 天气枚举值必须满足以下任一来源：
-  1. 在线文档参数表明确列出；
-  2. 用户明确指定取值；
-  3. 运行时探测验证后确认可用。
-- 当前本地官方摘录仅明确示例：`SetSceneWeather('Sunny', 3, false)`。
-- 对“冬季/下雪”等效果需求，若未确认有效枚举，必须先向用户索取或执行探测流程。
+2. 场景已完成基础加载（`SceneReady(100%)`）。
+3. 功能组件参数已完成基础校验。
 
 ## 标准流程
 
-1. 环境控制。
-- 时间与天气：`Environment.Get/Set...`
-- 场景风格：`Scene.SetSceneStyle`
+1. 创建功能组件。
+- 天气：`App.Weather.Create(opt)`。
+- 水面：`App.Water.Create(opt)`。
+- 天空盒：`App.SkyBox.Create(opt)`。
+- 粒子特效：`App.ParticleEffect.Create(opt)`。
+- 后处理：`App.PostProcess.Create(opt)`。
 
-2. 控件启停。
-- 小地图：`Tools.MiniMap.Start/End`
-- 指南针：`Tools.Compass.Start/End`
-- 统计与信息：`Renderer.GetStats/System.GetInfomation`
+2. 配置组件参数。
+- 使用 `Update/Set` 系列方法更新参数。
 
-3. 工具调用。
-- 坐标转换：`Tools.Coordinate.*`
-- 取点/测量：`Tools.PickerPoint`、`Tools.Measure`
-- 剖切：`Scene.Section.Start/End`
-- 截图：`Renderer.GetSnapshot`
+3. 控制组件状态。
+- 启停：`Start/Stop/Pause/Resume`。
+- 显隐：`Show/Hide`。
 
-4. 设置调优。
-- 渲染模式/帧率/码率：`Renderer.Set*`
-- 超时/键盘/音量/画质比例：`System.Set*`、`Setting.Set*`
-
-## 天气枚举探测流程（推荐）
-
-当需求包含“下雪/下雨”等效果时，先执行一次候选值探测：
-
-```javascript
-const candidates = ['Sunny', 'Cloudy', 'Rain', 'Snow', 'Snowy', 'HeavySnow'];
-for (const weather of candidates) {
-  const res = await App.Environment.SetSceneWeather(weather, 1, false);
-  console.log(weather, res);
-}
-```
-
-将 `success=true` 且视觉效果符合预期的值记录到项目配置，再用于功能按钮切换。
+4. 销毁组件。
+- 使用 `Destroy` 方法销毁组件。
 
 ## 质量门槛
 
-1. 设置项调整要记录默认值和回滚值。
-2. 工具启用后必须提供关闭路径。
-3. 高风险设置（码率/帧率/分辨率）变更后必须复测稳定性。
-4. 天气效果提交前必须附“枚举值 + 成功截图/日志”。
+1. 创建前检查环境支持度。
+2. 参数更新前做类型和范围校验。
+3. 组件销毁前先停止运行。
+
+## 特殊编排流警告 (天气动态嗅探相关)
+
+如果涉及到**"天气组件的动态嗅探、自适应降级、兜底保护"**操作：
+请立即停止拼接此处的原子API！
+请直接查阅：`../workflows/workflow-weather-dynamic-sniffing.md` 剧本进行降级控制编排。
 
 ## 高频问题
 
-1. 工具调用无响应。
-- 检查是否已注册相关事件与场景状态。
+1. 组件创建成功但无效果。
+- 检查参数配置和场景状态。
 
-2. 设置变更后画面异常。
-- 检查码率、帧率、分辨率组合是否越界。
+2. 组件更新无效。
+- 检查组件实例是否有效，参数是否正确。
 
-3. 天气切换成功但视觉无变化。
-- 检查天气枚举是否为当前运行时支持值；必要时重做探测。
+3. 组件性能问题。
+- 检查组件数量和参数复杂度。
 
 ## 参考资料（相对路径）
 
-- `../api_code_example/official-function-components.md`
-- `../api_code_example/function-components.template.js`
+- `../official_api_code_example/official-function-components.md`
 
 ## 输出要求
 
 始终输出：
-1. 功能组件分类与目标调用
-2. 关键参数与影响面
+1. 组件类型与配置摘要
+2. 调用链路与影响范围
 3. 验证步骤与结果
 4. 回滚建议（如有）
