@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "wdp-context-memory-schema",
+  "title": "WDP Context Memory Schema",
+  "description": "结构化状态管理Schema，用于WDP技能库的上下文一致性维护",
+  "version": "1.0.0",
+  
+  "definitions": {
+    "Vector3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "三维坐标/向量 [x, y, z]"
+    },
+    "Rotator": {
+      "type": "object",
+      "properties": {
+        "pitch": { "type": "number", "description": "俯仰角(度)" },
+        "yaw": { "type": "number", "description": "偏航角(度)" },
+        "roll": { "type": "number", "description": "翻滚角(度)" }
+      },
+      "required": ["pitch", "yaw", "roll"]
+    },
+    "EntityRef": {
+      "type": "object",
+      "properties": {
+        "eid": { "type": "string", "description": "实体唯一标识" },
+        "entityName": { "type": "string", "description": "实体名称" },
+        "customId": { "type": "string", "description": "自定义ID" },
+        "type": { 
+          "type": "string", 
+          "enum": ["HierarchyMeshEntity", "Tile", "Poi", "Coverage"],
+          "description": "实体类型" 
+        }
+      },
+      "required": ["eid", "type"]
+    }
+  },
+
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "元信息",
+      "properties": {
+        "taskId": { "type": "string", "description": "当前任务ID" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "storagePath": { "type": "string", "description": "持久化存储路径" },
+        "version": { "type": "string", "default": "1.0.0" }
+      }
+    },
+
+    "transient": {
+      "type": "object",
+      "description": "【瞬时工作区/Hot Memory】高频读写，随操作快速更新",
+      "properties": {
+        "selection": {
+          "type": "object",
+          "description": "当前选中对象",
+          "properties": {
+            "entity": { "$ref": "#/definitions/EntityRef" },
+            "nodeId": { "type": "string", "description": "BIM构件Node ID" },
+            "screenPosition": { 
+              "type": "object", 
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" }
+              }
+            }
+          }
+        },
+        "camera": {
+          "type": "object",
+          "description": "当前相机参数",
+          "properties": {
+            "location": { "$ref": "#/definitions/Vector3" },
+            "rotation": { "$ref": "#/definitions/Rotator" },
+            "zoom": { "type": "number" },
+            "distanceFactor": { "type": "number" }
+          }
+        },
+        "lastApiCall": {
+          "type": "object",
+          "description": "上一次API调用记录",
+          "properties": {
+            "method": { "type": "string", "description": "API方法名" },
+            "params": { "type": "object" },
+            "response": { 
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "message": { "type": "string" },
+                "timestamp": { "type": "string" }
+              }
+            },
+            "timestamp": { "type": "string" }
+          }
+        },
+        "interactionMode": {
+          "type": "string",
+          "enum": ["select", "move", "rotate", "scale", "measure", "section", "none"],
+          "description": "当前交互模式"
+        }
+      }
+    },
+
+    "spatial": {
+      "type": "object",
+      "description": "【空间与环境上下文/Warm Memory】跨指令有效，场景重置时变更",
+      "properties": {
+        "coordinateSystem": {
+          "type": "string",
+          "enum": ["global", "local", "relative"],
+          "default": "global",
+          "description": "当前坐标系参考"
+        },
+        "sceneOrigin": {
+          "type": "object",
+          "description": "场景原点/锚点",
+          "properties": {
+            "location": { "$ref": "#/definitions/Vector3" },
+            "crs": { "type": "string", "description": "坐标参考系EPSG代码" }
+          }
+        },
+        "activeLayers": {
+          "type": "array",
+          "description": "已激活的环境图层",
+          "items": {
+            "type": "object",
+            "properties": {
+              "layerId": { "type": "string" },
+              "layerName": { "type": "string" },
+              "visible": { "type": "boolean" },
+              "opacity": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        },
+        "spatialAnchors": {
+          "type": "array",
+          "description": "用户提及的空间锚点",
+          "items": {
+            "type": "object",
+            "properties": {
+              "anchorId": { "type": "string" },
+              "label": { "type": "string", "description": "用户描述(如'主入口')" },
+              "location": { "$ref": "#/definitions/Vector3" },
+              "createdAt": { "type": "string" }
+            }
+          }
+        },
+        "loadedEntities": {
+          "type": "array",
+          "description": "已加载的实体清单",
+          "items": { "$ref": "#/definitions/EntityRef" }
+        }
+      }
+    },
+
+    "task": {
+      "type": "object",
+      "description": "【任务进度树/Cold Memory】宏观目标追踪",
+      "properties": {
+        "goal": {
+          "type": "string",
+          "description": "最终目标描述"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "completed", "failed"],
+          "default": "pending"
+        },
+        "completedSteps": {
+          "type": "array",
+          "description": "已完成步骤",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stepId": { "type": "string" },
+              "description": { "type": "string" },
+              "completedAt": { "type": "string" },
+              "result": { "type": "string", "enum": ["success", "partial", "skipped"] }
+            }
+          }
+        },
+        "pendingSteps": {
+          "type": "array",
+          "description": "待执行步骤",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stepId": { "type": "string" },
+              "description": { "type": "string" },
+              "dependencies": { 
+                "type": "array", 
+                "items": { "type": "string" },
+                "description": "依赖的前置步骤ID"
+              },
+              "blocking": { "type": "boolean", "description": "是否为阻塞性步骤" }
+            }
+          }
+        },
+        "slots": {
+          "type": "object",
+          "description": "待确认的参数槽位",
+          "properties": {
+            "required": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slotId": { "type": "string" },
+                  "description": { "type": "string" },
+                  "expectedType": { "type": "string" },
+                  "status": { "type": "string", "enum": ["empty", "filled", "confirmed"] },
+                  "value": {}
+                }
+              }
+            },
+            "optional": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "slotId": { "type": "string" },
+                  "description": { "type": "string" },
+                  "status": { "type": "string", "enum": ["empty", "filled", "confirmed"] },
+                  "value": {}
+                }
+              }
+            }
+          }
+        },
+        "validationRules": {
+          "type": "array",
+          "description": "任务校验规则",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ruleId": { "type": "string" },
+              "description": { "type": "string" },
+              "check": { "type": "string", "description": "校验逻辑描述" },
+              "critical": { "type": "boolean", "description": "是否为关键规则" }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "required": ["_meta", "transient", "spatial", "task"]
+}

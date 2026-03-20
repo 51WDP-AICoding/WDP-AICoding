@@ -1,0 +1,12 @@
+# WDP Context Memory 持久化数据（自动忽略）
+.context-memory/
+*.memory.json
+*.archive.json
+manifest.json
+
+# 本地开发配置
+local-config.json
+
+# 日志文件
+*.log
+logs/
