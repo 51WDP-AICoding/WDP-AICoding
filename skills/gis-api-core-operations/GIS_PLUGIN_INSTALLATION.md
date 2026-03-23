@@ -51,6 +51,10 @@ if (!installResult.success) {
 await App.Renderer.Start();
 ```
 
+### 时序要求
+
+⚠️ **`App.Plugin.Install(GisApi)` 必须在 `App.Renderer.Start()` 之前执行。GIS 业务 API 调用必须在场景就绪（progress === 100）之后执行。**
+
 ## 验证 GIS 插件是否安装成功
 
 安装 GIS 插件后，可以通过以下方式验证是否安装成功：

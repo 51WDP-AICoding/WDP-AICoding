@@ -51,9 +51,13 @@ if (!installResult.success) {
 await App.Renderer.Start();
 ```
 
-### 在最新版本的 SDK 中
+### 版本基线说明
 
-在某些最新版本的 SDK 中，BIM 功能可能已经集成，不需要单独安装。在这种情况下，可以直接使用 BIM 相关功能，无需调用 `App.Plugin.Install()`。
+当前 WDP API 2.2.1 版本基线下，BIM 插件必须通过上述方式显式安装，不存在自动集成的例外情况。
+
+### 时序要求
+
+⚠️ **`App.Plugin.Install(BimApi)` 必须在 `App.Renderer.Start()` 之前执行。BIM 业务 API 调用必须在场景就绪（progress === 100）之后执行。**
 
 ## 验证 BIM 插件是否安装成功
 
@@ -82,7 +86,7 @@ console.log('BIM 插件版本信息:', versionInfo);
 2. 使用 npm 安装 BIM API 包：`npm install @wdp-api/bim-api`
 3. 在代码中使用 `import BimApi from '@wdp-api/bim-api'` 然后 `App.Plugin.Install(BimApi)`
 4. 确保在项目文件夹下安装依赖，而不是在工作库文件夹下
-5. 在某些最新版本的 SDK 中，可能不需要单独安装 BIM 插件
+5. `Plugin.Install(BimApi)` 必须在 `Renderer.Start()` 之前执行
 6. 安装后，使用 `App.DCP.GetVersion()` 验证 BIM 插件是否安装成功
 
 正确安装 BIM 插件是使用 BIM 相关功能的前提，请确保按照上述最佳实践进行操作。

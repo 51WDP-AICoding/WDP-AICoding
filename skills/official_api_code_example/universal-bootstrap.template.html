@@ -2,13 +2,15 @@
 <!--
 🚨 重要提示：此文件是WDP应用的标准骨架，必须作为所有WDP应用的起点
 - 不要从头编写代码，应该基于此模板修改
-- 保持初始化流程不变：new WdpApi() -> App.Renderer.Start() -> RegisterEvents
-- 所有业务逻辑应添加到指定区域，不要修改核心初始化流程
+- 本模板采用 npm + ES Module 范式，不使用 CDN script-tag
+- 保持初始化流程不变：new WdpApi() → Plugin.Install(按需) → Renderer.Start() → RegisterEvents
+- 所有业务逻辑应添加到 main.js 的指定区域，不要修改核心初始化流程
+- 使用前必须先执行 npm install 安装依赖
 -->
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>WDP 原生单文件开箱即用模板</title>
+    <title>WDP 原生开箱即用模板</title>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #000; color: #fff; font-family: sans-serif; }
         #player { width: 100vw; height: 100vh; position: absolute; z-index: 1; }
@@ -26,13 +28,6 @@
         button:hover:not(:disabled) { background: #2980b9; }
         #status-bar { margin-top: 15px; font-size: 14px; color: #f39c12; }
     </style>
-
-    <!-- ============================================== -->
-    <!-- WDP SDK 依赖项引入 (必须保持此顺序且不可用 defer/async) -->
-    <!-- 注意：此处若未正确配置实际环境可访问的库路径，页面会报错 -->
-    <!-- ============================================== -->
-    <script src="https://wdpapi.51aes.com/sdk/wdpApi.min.js"></script>
-    <script src="https://unpkg.com/wdpapi@2.2.1/dist/wdpApi.min.js"></script>
 </head>
 <body>
 
@@ -50,88 +45,30 @@
         <div id="status-bar">系统状态：等待初始化...</div>
     </div>
 
-    <script>
-        // ==============================================
-        // === 用户配置区：非开发人员请只修改这里的内容 ===
-        // ==============================================
-        const WDP_CONFIG = {
-            SERVER_URL: '在此填写您的服务器地址(http/https结尾)', // 例: http://192.168.1.100:8888
-            ORDER_CODE: '在此填写您的三十六位验证口令',
-            TARGET_EID: '在此填写默认想操作的模型实体编号' // 可选
-        };
+    <!-- ============================================== -->
+    <!-- 主逻辑入口（ES Module 方式）                     -->
+    <!-- 必须配合 package.json 中的 "type": "module" 使用 -->
+    <!-- ============================================== -->
+    <script type="module" src="./main.js"></script>
 
-        // UI 状态反馈快捷函数
-        function showStatus(msg, isError = false) {
-            const bar = document.getElementById('status-bar');
-            bar.innerText = `系统状态：${msg}`;
-            bar.style.color = isError ? '#e74c3c' : '#2ecc71';
-            console[isError ? 'error' : 'log'](msg);
-        }
-
-        // 解锁业务按钮
-        function unlockUI() {
-            document.querySelectorAll('#ui-panel button').forEach(btn => btn.disabled = false);
-        }
-
-        // ==============================================
-        // 核心加载与初始化逻辑 (严格的 Promise 时序)
-        // ==============================================
-        let App = null;
-
-        async function bootstrap() {
-            try {
-                showStatus('检查 SDK...');
-                if (typeof WdpApi === 'undefined') throw new Error('找不到 WdpApi 库，请检查上方 script src 路径！');
-
-                showStatus('初始化场景...');
-                App = new WdpApi({
-                    id: 'player',
-                    url: WDP_CONFIG.SERVER_URL,
-                    order: WDP_CONFIG.ORDER_CODE
-                });
-
-
-                showStatus('开始渲染...');
-                const startRes = await App.Renderer.Start();
-                if (!startRes.success) throw new Error('渲染启动失败: ' + (startRes.message || '口令或服务端错误'));
-
-                // 监听场景完成事件
-                await App.Renderer.RegisterSceneEvent([{
-                    name: 'OnWdpSceneIsReady',
-                    func: async (res) => {
-                        const progress = res?.result?.progress || 0;
-                        if (progress === 100) {
-                            showStatus('场景已就绪，可用！');
-                            unlockUI();
-                            
-                            // 🏁 在此处可以放置自动执行的默认动作
-                            // executeAutoActions();
-                        }
-                    }
-                }]);
-
-            } catch (err) {
-                showStatus(err.message, true);
-                alert("严重错误: " + err.message);
-            }
-        }
-
-        // ==============================================
-        // === 业务逻辑区：所有的 DOM 点击、动画、模型显隐均写于此 ===
-        // ==============================================
-        
-        document.getElementById('btn-action-1').addEventListener('click', async () => {
-            // [AI 注意] 这里填充你查找到的各种 WDP API 逻辑
-            alert("你点击了动作 1，但我还没绑定具体的 WDP API。");
-        });
-
-        document.getElementById('btn-action-2').addEventListener('click', async () => {
-            alert("你点击了动作 2，但这只是个空壳。");
-        });
-
-        // 启动主干
-        bootstrap();
-
-    </script>
 </body>
 </html>
+<task_progress>
+- [x] 阅读全部相关 skill 文件
+- [x] 分析 AI 忽略插件安装的根因
+- [x] 重新审视 npm 安装方式的特殊约束
+- [x] 搜索残留的 workflow 引用
+- [x] 搜索其他历史残留引用
+- [x] 输出完整修改建议
+- [ ] P0: 重写 universal-bootstrap.template.html
+- [ ] P0: 创建 universal-bootstrap.template.main.js
+- [ ] P0: 创建 universal-bootstrap.template.package.json
+- [ ] P1: 修改 wdp-api-initialization-unified/SKILL.md
+- [ ] P1: 修改 wdp-entry-agent/SKILL.md
+- [ ] P2: 修改 wdp-api-function-components/SKILL.md
+- [ ] P2: 修改 BIM_PLUGIN_INSTALLATION.md
+- [ ] P2: 修改 GIS_PLUGIN_INSTALLATION.md
+- [ ] P3: 修改 wdp-api-bim-unified/SKILL.md
+- [ ] P3: 修改 gis-api-core-operations/SKILL.md
+</task_progress>
+</write_to_file>

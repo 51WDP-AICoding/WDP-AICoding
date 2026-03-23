@@ -12,9 +12,9 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 任何使用本库的AI必须首先执行以下步骤，否则生成的代码将无法正常工作：
 
 1. 读取本文件完成路由判断
-2. 读取`../offical_api_code_example/universal-bootstrap.template.html`作为基础骨架
+2. 读取`../official_api_code_example/universal-bootstrap.template.html`、`universal-bootstrap.template.main.js`、`universal-bootstrap.template.package.json`作为基础骨架
 3. 按照路由规则读取对应子技能
-4. 生成代码时必须使用`new WdpApi()`初始化和`App.Renderer.Start()`启动渲染器
+4. 生成代码时必须使用`new WdpApi()`初始化，**根据业务需求在`Renderer.Start()`之前通过`App.Plugin.Install()`安装对应插件**，然后`App.Renderer.Start()`启动渲染器
 
 警告：跳过上述任何步骤将导致生成的代码无法正常工作！
 
@@ -50,7 +50,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 如果只是想知道"这个具体的参数能不能填 `true`"或遇到某条控制台抛出的运行错误，去阅读底层的 `official-*.md` 等基础词典会比看大剧本快得多。
 
 ## 小白友好的"参数提问与开箱即用"原则
-由于我们的受众可能是对代码或产品不熟悉的用户，必须放弃提供"一跑就报错的半成品"。如果你接到的是一个"完整的端到端需求（例如：帮我写一个显示大楼并能点击隐藏的一整套代码）"，**你必须先读取 `../offical_api_code_example/universal-bootstrap.template.html` 作为骨架**，再将具体的业务 API 查验后注入到该外壳中，而不是直接输出残缺的 JS 片段。
+由于我们的受众可能是对代码或产品不熟悉的用户，必须放弃提供"一跑就报错的半成品"。如果你接到的是一个"完整的端到端需求（例如：帮我写一个显示大楼并能点击隐藏的一整套代码）"，**你必须先读取 `../official_api_code_example/universal-bootstrap.template.html`、`universal-bootstrap.template.main.js`、`universal-bootstrap.template.package.json` 作为骨架**，再将具体的业务 API 查验后注入到该外壳中，而不是直接输出残缺的 JS 片段。
 
 面对核心 WDP 参数（如决定应用能否启动的 URL，口令 Order，必须操作的特定 EID 等）缺失时：
 
@@ -85,8 +85,8 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 1. 校验渲染口令：`env.url` 与 `env.order` 是否匹配环境。
 2. 校验 SDK 依赖链：必须先有 `CloudApi`，再有 `WdpApi`；BIM/GIS 必须通过 `Plugin.Install`。
 
-## 路由规则 (兜底排障层)
-> 注意：若是整链路的开发需求，必须先切至 Workflow 编排（见前文）。以下仅仅用于定位某类单一报错或单一参数改动：
+## 路由规则（问题分类与子技能映射）
+> 注意：以下路由用于定位单一报错或单一参数改动。整链路开发需求应按路由合并加载多个子技能，并交叉检查初始化链路中的插件安装步骤。
 
 1. 启动/接入失败、渲染不可用、页面容器、脚本接入、交互层级问题。
 - `../wdp-api-initialization-unified/SKILL.md`
@@ -202,9 +202,9 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 任何使用本库的AI必须执行以下步骤，否则生成的代码将无法正常工作：
 
 1. 读取本文件完成路由判断
-2. 读取`../official_api_code_example/universal-bootstrap.template.html`作为基础骨架
+2. 读取`../official_api_code_example/universal-bootstrap.template.html`、`universal-bootstrap.template.main.js`、`universal-bootstrap.template.package.json`作为基础骨架
 3. 按照路由规则读取对应子技能
 4. 读取相关官方文档摘录
-5. 生成代码时必须使用`new WdpApi()`初始化和`App.Renderer.Start()`启动渲染器
+5. 生成代码时必须使用`new WdpApi()`初始化，**根据业务需求在`Renderer.Start()`之前通过`App.Plugin.Install()`安装对应插件**，然后`App.Renderer.Start()`启动渲染器
 
 请确保遵循上述步骤并参考"小白友好的参数提问与开箱即用"原则，确保生成的代码可以直接运行。

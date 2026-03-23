@@ -9,9 +9,9 @@ description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi
 
 任何使用GIS API的代码必须遵循以下要求：
 1. 必须使用`new WdpApi()`创建实例
-2. 必须显式调用`App.Plugin.Install(GisApi)`安装GIS插件
+2. 必须在`Renderer.Start()`之前调用`App.Plugin.Install(GisApi)`安装GIS插件
 3. 必须验证插件安装成功后才能调用GIS相关接口
-4. 必须在场景就绪后(progress === 100)才执行GIS操作
+4. 必须在场景就绪后(progress === 100)才执行GIS业务操作
 5. 必须使用官方文档指定的方法名、参数结构和返回字段
 
 如果上述任何一点不满足，GIS相关代码将无法正常工作！
@@ -339,9 +339,9 @@ async function registerFeatureClickEvent(eid) {
 
 任何使用GIS API的代码必须遵循以下要求：
 1. 必须使用`new WdpApi()`创建实例
-2. 必须显式调用`App.Plugin.Install(GisApi)`安装GIS插件
+2. 必须在`Renderer.Start()`之前调用`App.Plugin.Install(GisApi)`安装GIS插件
 3. 必须验证插件安装成功后才能调用GIS相关接口
-4. 必须在场景就绪后(progress === 100)才执行GIS操作
+4. 必须在场景就绪后(progress === 100)才执行GIS业务操作
 5. 必须使用官方文档指定的方法名、参数结构和返回字段
 
 忽略这些要求将导致GIS操作失败、图层显示错误或应用崩溃。无论任何情况，都需要先确认GIS插件安装成功，再进行后续操作。
