@@ -24,8 +24,10 @@ const installResult = await App.Plugin.Install(['BIM']);
 ```bash
 # 在项目目录中执行
 npm install wdpapi
-npm install @wdp-api/bim-api
+npm install @wdp-api/bim-api@^2.1.1
 ```
+
+> ⚠️ **版本注意**：BIM 插件最新版为 2.1.1，不存在 2.2.x 版本。不要填写 `^2.2.1`，否则会导致 `No matching version found` 安装失败。
 
 然后在代码中正确引入和安装：
 

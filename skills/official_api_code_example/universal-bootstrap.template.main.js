@@ -2,8 +2,8 @@
 // === 插件导入区：根据业务需求取消注释 ===
 // ==============================================
 import WdpApi from 'wdpapi';
-// import BimApi from '@wdp-api/bim-api';  // 使用 BIM 功能时取消注释，并执行 npm install @wdp-api/bim-api
-// import GisApi from '@wdp-api/gis-api';  // 使用 GIS 功能时取消注释，并执行 npm install @wdp-api/gis-api
+// import BimApi from '@wdp-api/bim-api';  // 使用 BIM 功能时取消注释，并执行 npm install @wdp-api/bim-api@^2.1.1（⚠️ 不是 ^2.2.1！）
+// import GisApi from '@wdp-api/gis-api';  // 使用 GIS 功能时取消注释，并执行 npm install @wdp-api/gis-api@^2.1.0（⚠️ 不是 ^2.2.1！）
 
 // ==============================================
 // === 用户配置区：非开发人员请只修改这里的内容 ===
@@ -104,10 +104,7 @@ document.getElementById('btn-action-2').addEventListener('click', async () => {
 bootstrap();
 <task_progress>
 - [x] 阅读全部相关 skill 文件
-- [x] 分析 AI 忽略插件安装的根因
 - [x] 重新审视 npm 安装方式的特殊约束
-- [x] 搜索残留的 workflow 引用
-- [x] 搜索其他历史残留引用
 - [x] 输出完整修改建议
 - [x] P0: 重写 universal-bootstrap.template.html
 - [ ] P0: 创建 universal-bootstrap.template.main.js

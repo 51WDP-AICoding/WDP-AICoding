@@ -49,15 +49,25 @@ if (res.result.progress === 100) {
   };
   
   // 获取当前相机位置
-  const cameraRes = await App.Camera.GetCurrentState();
+  // ⚠️ 方法名以 official-scene-camera.md 为准，不要使用 GetCurrentState（不存在）
+  const cameraRes = await App.CameraControl.GetCameraPose();
   if (cameraRes.success) {
     spatialBaseline.cameraPosition = cameraRes.result;
   }
   
   // 获取坐标系信息
+  // ⚠️ 返回对象含循环引用，禁止直接 JSON.stringify，需提取原始类型字段
   const globalRes = await App.Scene.GetGlobal();
   if (globalRes.success) {
-    spatialBaseline.coordSystem = globalRes.result;
+    const r = globalRes.result;
+    const safeInfo = {};
+    for (const k of Object.keys(r)) {
+      const v = r[k];
+      if (v === null || v === undefined || typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+        safeInfo[k] = v;
+      }
+    }
+    spatialBaseline.coordSystem = safeInfo;
   }
   
   console.log('空间基准信息:', spatialBaseline);
@@ -168,6 +178,7 @@ if (historyRes.success) {
 ## 参考资料（相对路径）
 
 - `../official_api_code_example/official-spatial-understanding.md`
+- `../official_api_code_example/official-scene-camera.md` — 相机方法真值来源（GetCameraPose、GetCameraInfo 等）
 - `../wdp-api-initialization-unified/SKILL.md`
 
 ## 输出要求

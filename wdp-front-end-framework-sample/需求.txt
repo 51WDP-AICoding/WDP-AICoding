@@ -1,0 +1,9 @@
+帮我搭建一个，干净的接入wdp服务的前端工程，能正常推流，安装好wdp、bim、gis插件，前端ui简单显示下当前的版本信息，以及场景的一些基础空间信息，增加一个按钮回到默认视角的镜头。
+    // WDP 服务器地址（http/https 结尾）
+    SERVER_URL: 'https://dtp-api.51aes.com',
+    // 32位十六进制验证口令
+    ORDER_CODE: '509a500113ad623443c1edc0600cb5aa',
+    // 渲染容器 ID
+    CONTAINER_ID: 'player',
+    // 分辨率
+    RESOLUTION: [1920, 1080]

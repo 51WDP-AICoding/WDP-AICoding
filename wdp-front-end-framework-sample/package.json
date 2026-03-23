@@ -1,0 +1,17 @@
+{
+  "name": "wdp-framework-sample",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "wdpapi": "^2.2.1",
+    "@wdp-api/bim-api": "^2.1.1",
+    "@wdp-api/gis-api": "^2.1.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

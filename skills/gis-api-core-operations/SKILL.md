@@ -13,6 +13,7 @@ description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi
 3. 必须验证插件安装成功后才能调用GIS相关接口
 4. 必须在场景就绪后(progress === 100)才执行GIS业务操作
 5. 必须使用官方文档指定的方法名、参数结构和返回字段
+6. 🚨 **npm 安装时必须使用 `@wdp-api/gis-api@^2.1.0`，不存在 2.2.x 版本，填写 `^2.2.1` 会导致安装失败**
 
 如果上述任何一点不满足，GIS相关代码将无法正常工作！
 
@@ -291,6 +292,7 @@ async function registerFeatureClickEvent(eid) {
 
 ## 参考资料（相对路径）
 
+- `./GIS_PLUGIN_INSTALLATION.md` - GIS 插件安装最佳实践
 - `../official_api_code_example/official-gis-full.md`
 
 ## 常见问题解决

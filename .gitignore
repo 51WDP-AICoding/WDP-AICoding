@@ -30,6 +30,12 @@ build/
 *.temp
 .cache/
 
+# Local optimization tracking (not for team use)
+temp_optimization/
+
+# Local requirement architect (pulled from Skill-Repository, not for team use)
+wdp-requirement-architect/
+
 # IDE files (optional)
 .idea/
 *.swp
