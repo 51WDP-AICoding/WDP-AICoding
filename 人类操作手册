@@ -1,12 +1,12 @@
 在ai开发环境中按需求输入“ ”中的指令：
 1）默认加载、启动工作库：
 “
-- 阅读`D:\WorkFiles_Codex\WDP_AIcoding\skills\wdp-entry-agent\SKILL.md`，了解路由规则和调度机制
+- 阅读`\WorkFiles_Codex\WDP_AIcoding\skills\wdp-entry-agent\SKILL.md`，了解路由规则和调度机制
 ”
 
 2）如果需要根据需求生成demo使用以下指令，注意ai对于我们空间能力很弱，相关参数需要给出具体坐标；如果涉及对象的，必须给出eid或nodeid等信息，或可针对ai给出的需求补充信息进行补充描述，以下为参考：
 “
-- 先使用'XX\WDP_AIcoding\skills\wdp-input-requirements-clarification'帮我结构化梳理下在”XXXXX“路径下的”XXXX“需求文件，并输出一份结构化梳理完成的.md文件，输出在”XXXXX“路径下，请注意不要在输出后立刻执行代码的编写，需要进一步询问我是否有特定的实现方式。
+- 先使用'\WDP_AIcoding\skills\wdp-intent-orchestrator'帮我结构化梳理下在”XXXXX“路径下的”XXXX“需求文件，并输出一份结构化梳理完成的《系统意图与架构设计报告》.md文件，输出在”XXXXX“路径下，请注意不要在输出后立刻执行代码的编写，需要进一步询问我是否有特定的实现方式。
 ”
 
 生成梳理过的结构化需求文档后，使用以下指令：

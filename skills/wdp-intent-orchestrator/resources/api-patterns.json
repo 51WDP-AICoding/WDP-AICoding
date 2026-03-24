@@ -1,0 +1,45 @@
+{
+  "patterns": [
+    {
+      "id": "poi-interaction",
+      "name": "单点交互模式",
+      "description": "用于处理地图上单个兴趣点（POI）的交互场景，包括点击、悬停、信息展示等操作",
+      "api_sequence": [
+        "map.on",
+        "map.flyTo",
+        "new mapboxgl.Popup",
+        "popup.setLngLat",
+        "popup.setHTML",
+        "popup.addTo"
+      ],
+      "notes": [
+        "确保在地图加载完成后再绑定事件监听器",
+        "使用 map.on('click', layer-id) 可以监听特定图层的点击事件",
+        "flyTo 动画时长建议设置为 1000-2000ms 以获得良好的用户体验",
+        "Popup 内容应该简洁明了，避免过多信息导致性能问题",
+        "记得在适当时机移除 Popup 以避免内存泄漏"
+      ]
+    },
+    {
+      "id": "path-animation",
+      "name": "路径动画模式",
+      "description": "用于在地图上展示动态路径动画，如车辆轨迹、路线规划等场景",
+      "api_sequence": [
+        "map.addSource",
+        "map.addLayer",
+        "map.getSource",
+        "source.setData",
+        "requestAnimationFrame",
+        "map.setPaintProperty"
+      ],
+      "notes": [
+        "使用 GeoJSON LineString 类型作为路径数据源",
+        "通过 requestAnimationFrame 实现平滑的动画效果",
+        "可以使用 turf.js 库进行路径点的插值计算",
+        "动画过程中建议使用 line-dasharray 和 line-dashoffset 实现移动效果",
+        "注意控制动画帧率，避免性能问题",
+        "可以结合 map.flyTo 或 map.fitBounds 自动调整视角跟随路径"
+      ]
+    }
+  ]
+}
