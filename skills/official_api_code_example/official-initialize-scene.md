@@ -360,10 +360,15 @@ console.log(res);
     success: true,
     message: '',
     result: {
-      fps: 60,           // 当前帧率
-      bitrate: 8.2,      // 当前码率（Mbps）
-      latency: 45,       // 延迟（ms）
-      resolution: [1920, 1080]  // 当前分辨率
+      bitrate: 8.2,                // 当前码率（Mbps）
+      avgBitrate: 8.0,             // 平均码率
+      framerate: 60,               // 实时帧率
+      avgframerate: 59.5,          // 平均帧率
+      currentRoundTripTime: 0.045, // 当前网络往返延迟（秒）
+      packetsLost: 0,              // 丢失的数据包数量
+      bytesReceived: 10485760,     // 接收的总字节数
+      video_codec: 'H264'          // 视频编解码器类型
+      // ... (其他如 bytesReceivedStart, framesDecoded 等)
     }
   }
 */

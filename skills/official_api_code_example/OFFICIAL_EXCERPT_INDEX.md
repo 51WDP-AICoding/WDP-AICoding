@@ -34,10 +34,10 @@
 ## 按官网分类的整理进度（WDP API 2.2.1）
 
 1. 通用事件监听：已整理
-2. 场景初始：已整理（补充完整事件列表 + Renderer控制方法）
+2. 场景初始：已整理（补充完整事件列表 + Renderer控制方法：包含Base64截图、码率帧率和分辨率缩放控制、网络传输质量GetStats监控）
 3. 场景相机：已整理（补充Camera机位对象 + CameraStart完整用法）
 4. 通用基础属性：已整理
-5. 实体/单体通用行为：已整理（补充GetBoundingBox/ArrayDuplicate/RunAction/CreateByGeoJson等）
+5. 实体/单体通用行为：已整理（补充GetBoundingBox/ArrayDuplicate/RunAction/CreateByGeoJson等、补充 OnWdpMaterialHit 材质级与子构件级击中事件）
 6. 实体覆盖物：已整理（补充CustomPoi/Group/智能建模系列/StaticInstance/UI事件监听）
 7. 图层/模型：已整理（补充Tiles激活/节点分组/NodeSelection/GetNodesBoundingBox）
 8. 材质设置：已整理

@@ -19,8 +19,9 @@ description: 处理 WDP 材质设置 API 的实现与排障。用于材质实例
 - `new App.Material({ seedId })` 后 `App.Scene.Add(material)`。
 
 2. 获取目标材质槽位。
-- 通过 `App.Tools.PickerMaterial.Start/GetMaterials/End`。
-- 或 `App.DataModel.Material.GetList([modelObj])`。
+- 方式A（工具模式）：通过 `App.Tools.PickerMaterial.Start/GetMaterials/End`。
+- 方式B（事件模式）：注册 `OnWdpMaterialHit` 事件。抛出的 `res.result` 包含精确被点击面的 `eid`/`meshName`/`materialIndex`，这是实现“点击模型某面改变特定部分颜色”的关键链路。
+- 方式C（数据查询）：通过 `App.DataModel.Material.GetList([modelObj])`。
 
 3. 执行替换或高亮。
 - 替换：`SetModelMaterial` 或 `Apply`。

@@ -10,6 +10,21 @@
 
 ## 条目：通用事件监听（id: 1343）
 
+## 补充条目：渲染服务网络与底座错误码参考
+
+| 状态码(code) | 错误信息(message) | 说明 |
+|--------|----------|------|
+| 13000 | SystemErr | 系统错误 |
+| 13001 | OriginInvalid | 来源无效，请求来源不合法 |
+| 13002 | TaskIdInvalid | 任务 ID 无效 |
+| 13003 | RepeatJoin | 重复加入，已存在相同的连接 |
+| 13004 | RemoteOccupy | 远程资源被占用 |
+| 13005 | ConnectTimeout | 连接超时 |
+| 13006 | PortOccupied | 端口被占用 |
+| 13007 | PortInvalid | 端口无效 |
+
+（注：上述错误码通常在 `onInternalError` 和 `onConnectError` 事件的回调 `res.code` 中抛出）
+
 - 注册云渲染(建立连接)生命周期错误与异常事件
 
 ```javascript
