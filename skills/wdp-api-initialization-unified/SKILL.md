@@ -99,6 +99,8 @@ npx vite . --port 8090
 ```
 
 > ⚠️ AI不执行`npm install`，请用户手动运行
+> 
+> **重要**：如果修改了 package.json 中的版本号，必须重新运行 `npm install` 才能生效！
 
 ### 2. 核心代码模板
 
