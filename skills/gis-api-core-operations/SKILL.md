@@ -1,6 +1,6 @@
 ---
 name: gis-api-core-operations
-description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi 插件安装、GeoLayer 图层接入、图层更新/显隐/偏移/高亮与 GIS 事件联动实现。
+description: 处理 GIS API 的核心能力编排与排障。用于 GisApi 插件安装、GeoLayer 图层接入、图层更新/显隐/偏移/高亮与 GIS 事件联动实现。API版本请参考 ../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md
 ---
 
 # GIS 核心操作子技能
@@ -13,7 +13,7 @@ description: 处理 GIS API 2.1.0 的核心能力编排与排障。用于 GisApi
 3. 必须验证插件安装成功后才能调用GIS相关接口
 4. 必须在场景就绪后(progress === 100)才执行GIS业务操作
 5. 必须使用官方文档指定的方法名、参数结构和返回字段
-6. 🚨 **npm 安装时必须使用 `@wdp-api/gis-api@^2.1.0`，不存在 2.2.x 版本，填写 `^2.2.1` 会导致安装失败**
+6. 🚨 **npm 安装时必须使用 `@wdp-api/gis-api`，具体版本请参考 `../wdp-api-initialization-unified/SKILL.md`**
 
 如果上述任何一点不满足，GIS相关代码将无法正常工作！
 
@@ -186,8 +186,26 @@ async function registerFeatureClickEvent(eid) {
         if (res.success && res.result.eid === eid) {
           console.log('图层要素被点击:', res.result);
           
-          // 获取要素ID和属性
-          const { featureId, properties } = res.result;
+          // 获取要素ID、类型和属性
+          // GIS 2.1.0 新增 featureType 字段，用于区分点/线/面
+          const { featureId, featureType, properties } = res.result;
+          console.log(`点击要素类型: ${featureType}`); // point | line | polygon
+          
+          // 根据要素类型执行不同逻辑
+          switch(featureType) {
+            case 'point':
+              console.log('点击了点要素');
+              // 点要素处理逻辑...
+              break;
+            case 'line':
+              console.log('点击了线要素');
+              // 线要素处理逻辑...
+              break;
+            case 'polygon':
+              console.log('点击了面要素');
+              // 面要素处理逻辑...
+              break;
+          }
           
           // 高亮点击的要素
           highlightFeature(eid, featureId, true);
@@ -214,40 +232,43 @@ async function registerFeatureClickEvent(eid) {
 
 ## 图层参数说明
 
+> **注意**：以下参数定义仅供参考，详细参数结构请以 `../official_api_code_example/official-gis-full.md` 为准。
+
 ### GeoJSON图层
 
-| 参数 | 类型 | 说明 | 是否必须 | 默认值 |
-|------|------|------|---------|--------|
-| `name` | String | 图层名称 | 是 | - |
-| `type` | String | 图层类型 | 是 | 'geojson' |
-| `url` | String | GeoJSON数据URL | 是 | - |
-| `visible` | Boolean | 是否可见 | 否 | true |
-| `style` | Object | 样式设置 | 否 | 见下方样式默认值 |
-| `coordZOffset` | Number | 高度偏移量(米) | 否 | 0 |
-
-**样式默认值**:
 ```javascript
 {
-  fillColor: [0.2, 0.5, 0.8, 0.6], // RGBA
-  lineColor: [0.1, 0.3, 0.6, 1],
-  lineWidth: 2,
-  pointSize: 6
+  name: 'GeoJsonLayer',      // 图层名称（必填）
+  type: 'geojson',           // 图层类型（必填）
+  url: 'data.geojson',       // GeoJSON数据URL（必填）
+  visible: true,             // 是否可见（可选，默认true）
+  style: {                   // 样式设置（可选）
+    fillColor: [0.2, 0.5, 0.8, 0.6],  // RGBA
+    lineColor: [0.1, 0.3, 0.6, 1],
+    lineWidth: 2,
+    pointSize: 6
+  },
+  coordZOffset: 0            // 高度偏移量，单位：米（可选，默认0）
 }
 ```
 
 ### WMS图层
 
-| 参数 | 类型 | 说明 | 是否必须 | 默认值 |
-|------|------|------|---------|--------|
-| `name` | String | 图层名称 | 是 | - |
-| `type` | String | 图层类型 | 是 | 'wms' |
-| `url` | String | WMS服务URL | 是 | - |
-| `layers` | String | WMS图层名称 | 是 | - |
-| `format` | String | 图像格式 | 否 | 'image/png' |
-| `transparent` | Boolean | 是否透明 | 否 | true |
-| `version` | String | WMS版本 | 否 | '1.1.1' |
-| `srs` | String | 坐标参考系统 | 否 | 'EPSG:4326' |
-| `visible` | Boolean | 是否可见 | 否 | true |
+```javascript
+{
+  name: 'WMSLayer',          // 图层名称（必填）
+  type: 'wms',               // 图层类型（必填）
+  url: 'wms-service-url',    // WMS服务URL（必填）
+  layers: 'layer-name',      // WMS图层名称（必填）
+  format: 'image/png',      // 图像格式（可选，默认'image/png'）
+  transparent: true,         // 是否透明（可选，默认true）
+  version: '1.1.1',          // WMS版本（可选，默认'1.1.1'）
+  srs: 'EPSG:4326',          // 坐标参考系统（可选，默认'EPSG:4326'）
+  visible: true              // 是否可见（可选，默认true）
+}
+```
+
+> 📖 **完整参数定义**：请参考 `../official_api_code_example/official-gis-full.md`
 
 ## 能力范围
 

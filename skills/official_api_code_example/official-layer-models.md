@@ -1,6 +1,6 @@
 # Official excerpt sync: 图层/模型
 
-Version baseline: WDP API 2.2.1
+Version baseline: WDP API 2.3.0
 Source: public wdpapidoc API (category: 图层/模型, categoryId: 573)
 
 ## Notes
@@ -623,7 +623,7 @@ await App.Scene.NodeSelection.ClearDraw();
 
 ## Topic: 节点包围盒（id: 1396-bbox）
 
-> 版本要求：>=2.2.1
+> 版本要求：>=2.3.0
 
 - 获取指定节点的包围盒
 

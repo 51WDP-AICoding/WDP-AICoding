@@ -139,7 +139,9 @@ if (historyRes.success) {
 }
 ```
 
-## 参数规则（2.2.1 基线）
+## 参数规则（WDP API 基线）
+
+> API 版本请参考 `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md`
 
 1. **坐标格式统一**
    - GIS 坐标：`[lng, lat, z]`（经度、纬度、高度，单位：度/米）

@@ -1,7 +1,18 @@
 # API Code Example Index（新版后台摘录）
 
-版本基线：WDP API 2.2.1
-（BIM 条线基线：BIM API 2.1.1）
+版本基线：WDP API 2.3.0
+- GIS API 2.1.0 (2026.03.26)
+- BIM API 2.2.0 (2026.03.26)
+
+## 本轮 API 更新摘要（2026.03.26）
+
+| API | 版本 | 更新内容 | 对应 Skill |
+|-----|------|---------|-----------|
+| **GIS API** | 2.1.0 | `OnGeoLayerFeatureClicked` 新增 `featureType` 字段 (point/line/polygon) | `gis-api-core-operations` |
+| **BIM API** | 2.2.0 | 新增 `SetNodesHighlight` 批量构件专题高亮 | `wdp-api-bim-unified` |
+| **WDP API** | 2.3.0 | 鼠标事件扩展 `layerType` 字段，支持 3DT/WMS/WMTS/矢量图层识别 | `wdp-api-general-event-registration` |
+
+> **更新说明**：以上更新已同步至 official_api_code_example 各摘录文件，skills 已引用最新 API 能力。
 
 ## 来源与边界
 
@@ -31,7 +42,7 @@
 - 若后台草稿与线上已发布文档不一致，开发默认以线上发布口径为准，除非用户明确指定按后台草稿执行。
 - 每次对本目录的实质性变更（新增/修正/合并/删除）均记录在 `CHANGELOG.md`。
 
-## 按官网分类的整理进度（WDP API 2.2.1）
+## 按官网分类的整理进度（WDP API 2.3.0）
 
 1. 通用事件监听：已整理
 2. 场景初始：已整理（补充完整事件列表 + Renderer控制方法：包含Base64截图、码率帧率和分辨率缩放控制、网络传输质量GetStats监控）

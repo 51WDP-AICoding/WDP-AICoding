@@ -1,6 +1,6 @@
 # 官方脚本摘录（新版后台）：场景初始
 
-版本基线：WDP API 2.2.1
+版本基线：WDP API 2.3.0
 来源：wdpapidoc-admin（鉴权后台接口）
 
 ## 使用说明
@@ -423,7 +423,7 @@ console.log(res);
     result: {
       platform: 'web',
       browserVersion: 'Chrome/120.0',
-      sdkVersion: '2.2.1',
+      sdkVersion: '2.3.0',
       rendererVersion: '5.x.x'
     }
   }
@@ -441,7 +441,7 @@ console.log(res);
     success: true,
     message: '',
     result: {
-      version: '2.2.1'
+      version: '2.3.0'
     }
   }
 */

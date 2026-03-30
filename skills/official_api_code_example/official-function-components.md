@@ -1,6 +1,6 @@
 # Official excerpt sync: 功能组件
 
-Version baseline: WDP API 2.2.1
+Version baseline: WDP API 2.3.0
 Source: public wdpapidoc API (category: 功能组件, categoryId: 576)
 
 ## Notes
@@ -271,6 +271,31 @@ const coords = [
  */
 const res = await App.Tools.Coordinate.Exchange('+proj=longlat +datum=WGS84 +no_defs', '+proj=tmerc +lat_0=0 +lon_0=117 +k=1 +x_0=500000 +y_0=0 +ellps=GRS80 +units=m +no_defs', [[120.433311998519, 5.73111656594612, 10], [120.433311998519, 5.73111656594612, 5]]);
 console.log(res);
+```
+
+- 坐标点高度转换（TransformPointsByCoordZRef）
+
+```javascript
+/**
+ * 将坐标点按指定高度参考系进行转换
+ * @param points: Array (required) 坐标数组 [[lng, lat, z], ...]
+ * @param coordZRef: string (required) 高度参考系：'surface'(表面), 'ground'(地面), 'altitude'(海拔)
+ * @param coordZOffset: number (required) 高度偏移量（单位：米）
+ * @returns {Promise<{success: boolean, result: {points: Array}}>} 转换后的坐标点
+ */
+const pointZ = await App.Tools.Coordinate.TransformPointsByCoordZRef({
+    points: [[-154.29668951,483.69997297,34], [-154.32559641,483.7124225,2]],
+    coordZRef: 'surface',  // surface:表面; ground:地面; altitude:海拔
+    coordZOffset: 50       // 高度偏移(单位:米)
+});
+console.log(pointZ);
+// 出参示例：
+// {
+//   success: true,
+//   result: {
+//     points: [[-154.29668951,483.69997297,84], [-154.32559641,483.7124225,52]]
+//   }
+// }
 ```
 
 - 取点工具

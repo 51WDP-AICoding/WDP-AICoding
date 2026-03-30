@@ -1,6 +1,6 @@
 # Official excerpt sync: 材质设置
 
-Version baseline: WDP API 2.2.1
+Version baseline: WDP API 2.3.0
 Source: public wdpapidoc API (category: 材质设置, categoryId: 574)
 
 ## Notes

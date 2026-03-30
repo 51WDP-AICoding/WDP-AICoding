@@ -39,8 +39,8 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 ## 统一基线
 
-- API 基线：`WDP API 2.2.1`。
-- 插件版本基线：BIM `@wdp-api/bim-api@^2.1.1`、GIS `@wdp-api/gis-api@^2.1.0`（均不存在 2.2.x 版本，照搬 wdpapi 的 `^2.2.1` 会导致 npm install 失败）。
+- API 基线：`WDP API 2.3.0`。
+- 插件版本基线：BIM `@wdp-api/bim-api@^2.2.0`、GIS `@wdp-api/gis-api@^2.1.0`。
 - 先满足时序和依赖，再做参数调优。
 - 参数先用默认值，再按用户意图做最小改动。
 

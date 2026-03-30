@@ -1,4 +1,4 @@
-# official-bim-core-operations（BIM 2.1.1 首批可用脚本摘录）
+# official-bim-core-operations（BIM 2.2.0 首批可用脚本摘录）
 
 补充：BIM 全量分类请优先查看 `official-bim-full.md`。
 

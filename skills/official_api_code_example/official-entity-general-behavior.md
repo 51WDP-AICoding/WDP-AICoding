@@ -1,6 +1,6 @@
 # Official excerpt sync: 实体/单体通用行为
 
-Version baseline: WDP API 2.2.1
+Version baseline: WDP API 2.3.0
 Source: public wdpapidoc API (category: 实体/单体通用行为, categoryId: 571)
 
 ## Notes
@@ -1821,6 +1821,7 @@ if (success) {
 - 更新实体移动
 
 ```javascript
+// 方式一：直接更新路径点
 const jsondata = {
   "moving":particle, //移动的覆盖物；particle为创建的对象
   "path": path, //路径；path为创建的对象
@@ -1839,6 +1840,40 @@ const jsondata = {
     "forward": 20, // 沿着路径的前后调整，前+，后-，单位：米
     "up": 10 // 相对路径走向的垂直上下，上+，下-，单位：米
   }, // 原始设置清空，使用自动匹配，相对位置调整用offset
+}
+const res = await cache.get('moveObj').Update(jsondata);
+console.log(res);
+```
+
+- 更新实体移动（使用 TransformPointsByCoordZRef 转换坐标高度）
+
+```javascript
+// 方式二：使用 TransformPointsByCoordZRef 更新路径偏移高度，获取更新后的路径坐标
+const pointZ = await App.Tools.Coordinate.TransformPointsByCoordZRef({
+    points: [[-154.29668951,483.69997297,34], [-154.32559641,483.7124225,2]],
+    coordZRef: 'surface',  // surface:表面; ground:地面; altitude:海拔
+    coordZOffset: 50       // 高度偏移(单位:米)
+});
+console.log(pointZ);  // 返回转换后的坐标点
+
+const jsondata = {
+  "moving":particle, //移动的覆盖物；particle为创建的对象
+  "path": path, //路径；path为创建的对象
+  "boundStyle": {
+    "bLoop": true, //是否循环(true/false)
+    "state":"play", //play:移动；pause:暂停；stop：停止
+    "pathUpdatePoints": pointZ.result.points //使用转换后的路径更新点
+  },
+  "rotator":{
+    "pitch": 10, // 相对路径的俯仰角，上+，下-，参考(-180~180)
+    "yaw": 20, // 相对路径的偏航角, 左+，右-，参考(0沿路径, -180~180)
+    "roll": 30 // 相对路径的翻滚角,左+，右-， 参考(-180~180)
+  },
+  "offset":{
+    "left": 50, // 相对路径走向的左右调整，左+，右-，单位：米
+    "forward": 20, // 沿着路径的前后调整，前+，后-，单位：米
+    "up": 10 // 相对路径走向的垂直上下，上+，下-，单位：米
+  }
 }
 const res = await cache.get('moveObj').Update(jsondata);
 console.log(res);

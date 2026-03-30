@@ -1,8 +1,10 @@
-# official-gis-full（GIS 2.1.0 在线完整摘录）
+# official-gis-full（GIS 2.1.0 在线完整摘录 - 2026.03.26 更新）
 
 来源：`https://wdpapidoc-admin.51aes.com/manual/doc` 对应在线接口。
 
 整理规则：只使用在线文档管理平台数据；其他资料本轮不参与。
+
+> **版本更新**：GIS API 2.1.0 (2026.03.26) 新增 `OnGeoLayerFeatureClicked` 回调 `featureType` 字段
 
 ## 通用事件监听
 
@@ -805,6 +807,7 @@ App.Renderer.RegisterSceneEvent([
            // 回调的res数据:
            {
                "FeatureId": "0",
+               "featureType": "point", // 新增字段：用于区分点/线/面 (point/line/polygon)
                "BasicInfo": {
                   "gml_id": "clip.3606",
                 }
@@ -820,6 +823,8 @@ App.Renderer.RegisterSceneEvent([
 | featureId | string | Yes | 要素id，通过要素点击事件获取 |
 | highlightColor | string | No | / |
 | bHighlight | boolean | No | 默认为true代表高亮；设为false，取消高亮 |
+
+> **版本更新说明**：GIS API 2.1.0 (2026.03.26) 中，`OnGeoLayerFeatureClicked` 回调数据新增 `featureType` 字段，用于区分点/线/面类型。
 
 
 ### 矢量图层点击事件（id: 1338）

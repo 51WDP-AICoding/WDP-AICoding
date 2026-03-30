@@ -1,4 +1,4 @@
-# official-bim-full（BIM 2.1.1 在线完整摘录）
+# official-bim-full（BIM 2.2.0 在线完整摘录 - 2026.03.26 更新）
 
 来源：`https://wdpapidoc-admin.51aes.com/manual/doc` 对应在线接口。
 
@@ -986,5 +986,38 @@ console.log(res);
 | yaw | number | 偏航角 | [-180, 180]，默认0 | 否 |
 | distanceFactor | number | 视野参数范围（屏幕占比） | [0.1, 1.0]，默认0.8 | 否 |
 | flyTime | number | 过渡时长（单位：秒） | 大于0的数字，默认1 | 否 |
+
+
+## 批量构件专题高亮（新增于 2.2.0）
+
+### 批量构件专题高亮（id: 1738）
+
+```javascript
+// entity为所控制的模型实体
+await entity.SetNodesHighlight([
+    {
+      nodeId: "597",  // string | Array<string> 可为单个构件id字符串或多个构件id组成的字符串数组
+      color: "76fffc", 
+      hightlight: true,
+      opacity: 1, 
+      bCanBeOccluded: true
+    },
+    {
+      nodeId: "598",
+      color: "00B3E6", 
+      hightlight: false,
+      opacity: 1, 
+      bCanBeOccluded: true
+    }
+  ]);
+```
+
+| 参数名 | 类型 | 描述 | 取值范围 | 是否必填 |
+| --- | --- | --- | --- | --- |
+| nodeId | string \| Array<string> | 构件节点ID，可为单个字符串或多个构件id组成的数组 | 如："597" 或 ["597", "598"] | 是 |
+| color | string | 高亮颜色（HEX值） | 颜色字符串，如："76fffc" | 是 |
+| hightlight | boolean | 是否高亮 | true / false | 是 |
+| opacity | number | 高亮透明度 | 0.0 ~ 1.0 | 否 |
+| bCanBeOccluded | boolean | 是否可被遮挡 | true / false | 否 |
 
 

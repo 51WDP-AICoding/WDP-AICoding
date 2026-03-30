@@ -10,7 +10,7 @@ import GisApi from '@wdp-api/gis-api';
 // ==============================================
 const WDP_CONFIG = {
     SERVER_URL: 'https://dtp-api.51aes.com',
-    ORDER_CODE: '509a500113ad623443c1edc0600cb5aa',
+    ORDER_CODE: 'a5d66f1612f3d2aae0278e08dcebdc72',
     CONTAINER_ID: 'player',
     RESOLUTION: [1920, 1080]
 };
