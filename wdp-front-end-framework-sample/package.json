@@ -7,8 +7,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "wdpapi": "^2.2.1",
-    "@wdp-api/bim-api": "^2.1.1",
+    "wdpapi": "^2.3.0",
+    "@wdp-api/bim-api": "^2.2.0",
     "@wdp-api/gis-api": "^2.1.0"
   },
   "devDependencies": {

@@ -158,6 +158,29 @@ async function bootstrap() {
                     await onSceneReady();
                 }
             }
+        }, {
+            // WDP 2.3.0+ 鼠标点击事件增强：支持 triggerType 和 layerType
+            name: 'OnEntityClicked',
+            func: async (res) => {
+                const { eid, triggerType, layerType, position } = res?.result || {};
+                console.log('[WDP] 实体点击:', { eid, triggerType, layerType, position });
+                // triggerType: 'LeftMouseButton' | 'RightMouseButton' | 'MiddleMouseButton'
+                // layerType: '3dtiles' | 'wms' | 'wmts' | 'vector' | 'poi' | 'entity'
+            }
+        }, {
+            // WDP 2.3.0+ 鼠标双击事件
+            name: 'OnEntityDbClicked',
+            func: async (res) => {
+                console.log('[WDP] 实体双击:', res?.result?.eid);
+            }
+        }, {
+            // GIS 2.1.0+ 要素点击事件：支持 featureType (point/line/polygon)
+            name: 'OnGeoLayerFeatureClicked',
+            func: async (res) => {
+                const { eid, featureId, featureType, properties } = res?.result || {};
+                console.log('[WDP] GIS 要素点击:', { eid, featureId, featureType, properties });
+                // featureType: 'point' | 'line' | 'polygon'
+            }
         }]);
         console.log('[WDP] 场景事件已注册，准备启动渲染器');
 
