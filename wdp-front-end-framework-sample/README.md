@@ -36,36 +36,6 @@ wdp-front-end-framework-sample/
 
 ---
 
-## 新 API 特性示例
-
-### WDP 2.3.0+ 鼠标事件增强
-
-```javascript
-// 支持 triggerType 和 layerType
-await App.Renderer.RegisterSceneEvent([{
-    name: 'OnEntityClicked',
-    func: async (res) => {
-        const { eid, triggerType, layerType } = res.result;
-        // triggerType: 'LeftMouseButton' | 'RightMouseButton' | 'MiddleMouseButton'
-        // layerType: '3dtiles' | 'wms' | 'wmts' | 'vector' | 'poi' | 'entity'
-    }
-}]);
-```
-
-### GIS 2.1.0+ featureType 支持
-
-```javascript
-await App.Renderer.RegisterSceneEvent([{
-    name: 'OnGeoLayerFeatureClicked',
-    func: async (res) => {
-        const { featureId, featureType } = res.result;
-        // featureType: 'point' | 'line' | 'polygon'
-    }
-}]);
-```
-
----
-
 ## 配置说明
 
 修改 `main.js` 中的配置：
