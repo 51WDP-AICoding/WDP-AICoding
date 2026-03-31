@@ -17,6 +17,8 @@ body { overflow: hidden; background-color: #000; color: #fff; font-family: -appl
 .btn-action:hover:not(:disabled) { background: #2980b9; }
 .btn-action.secondary { background: #27ae60; }
 .btn-action.secondary:hover:not(:disabled) { background: #219a52; }
+.btn-action.tertiary { background: #8e44ad; }
+.btn-action.tertiary:hover:not(:disabled) { background: #7d3c98; }
 #status-bar { margin-top: 12px; font-size: 12px; color: #f39c12; }
 </style>
 </head>
@@ -29,8 +31,8 @@ body { overflow: hidden; background-color: #000; color: #fff; font-family: -appl
 <div class="info-section"><div class="label">GIS 插件版本</div><div class="value" id="info-gis-version">加载中...</div></div>
 <div class="info-section"><div class="label">坐标系信息</div><div class="value" id="info-coord-system">加载中...</div></div>
 <div class="info-section"><div class="label">相机初始位置</div><div class="value" id="info-camera-pos">加载中...</div></div>
-<button class="btn-action secondary" id="btn-fetch-info" disabled>手动获取空间信息</button>
 <button class="btn-action" id="btn-reset-view" disabled>回到默认视角</button>
+<button class="btn-action secondary" id="btn-fetch-info" disabled>获取当前镜头</button>
 <div id="status-bar">系统状态：等待初始化...</div>
 </div>
 <script type="module" src="./main.js"></script>

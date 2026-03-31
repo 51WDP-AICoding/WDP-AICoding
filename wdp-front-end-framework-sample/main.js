@@ -33,7 +33,6 @@ function setInfo(id, text) {
 function unlockUI() {
     document.getElementById('btn-fetch-info').disabled = false;
     document.getElementById('btn-reset-view').disabled = false;
-    document.getElementById('btn-show-default-view').disabled = false;
     document.getElementById('btn-fetch-coord').disabled = false;
 }
 
@@ -68,32 +67,14 @@ function safeStringify(obj, indent) {
 function addDebugButtons() {
     const btnContainer = document.getElementById('btn-fetch-info').parentElement;
     
-    // 将原"获取空间信息"按钮改名为"获取当前镜头"
-    document.getElementById('btn-fetch-info').textContent = '获取当前镜头';
-    
-    // 在"回到默认视角"后面插入"显示已保存的默认视角"
-    const btnResetView = document.getElementById('btn-reset-view');
-    const btnShowDefault = document.createElement('button');
-    btnShowDefault.id = 'btn-show-default-view';
-    btnShowDefault.disabled = true;
-    btnShowDefault.textContent = '显示已保存的默认视角';
-    btnShowDefault.style.cssText = 'margin: 4px; padding: 6px 12px; cursor: pointer;';
-    btnResetView.after(btnShowDefault);
-    
-    // 在"显示已保存的默认视角"后面插入"获取坐标系信息"
+    // 在"获取当前镜头"后面插入"获取坐标系信息"（紫色，区别于其他按钮）
+    const btnFetchInfo = document.getElementById('btn-fetch-info');
     const btnFetchCoord = document.createElement('button');
     btnFetchCoord.id = 'btn-fetch-coord';
     btnFetchCoord.disabled = true;
     btnFetchCoord.textContent = '获取坐标系信息';
-    btnFetchCoord.style.cssText = 'margin: 4px; padding: 6px 12px; cursor: pointer;';
-    btnShowDefault.after(btnFetchCoord);
-    
-    // 坐标系信息显示区域
-    const coordDiv = document.createElement('div');
-    coordDiv.id = 'info-coord-system';
-    coordDiv.style.cssText = 'margin: 8px 0; padding: 8px; background: #1a1a2e; border-radius: 4px; white-space: pre-wrap; font-family: monospace; font-size: 12px; color: #ccc; max-height: 200px; overflow-y: auto;';
-    coordDiv.innerText = '（点击"获取坐标系信息"按钮）';
-    btnContainer.parentElement.appendChild(coordDiv);
+    btnFetchCoord.className = 'btn-action tertiary';
+    btnFetchInfo.after(btnFetchCoord);
     
     // 整个UI面板改为可滚动
     const panel = btnContainer.parentElement;
@@ -376,33 +357,6 @@ async function onSceneReady() {
 // ==============================================
 let savedDefaultPose = null; // { location: [lng,lat,z], rotation: {pitch, yaw} }
 
-// 显示已保存的默认视角坐标（精简版）
-async function showDefaultView() {
-    if (!savedDefaultPose) {
-        setInfo('info-camera-pos', '默认视角未保存');
-        return;
-    }
-    
-    try {
-        const currentRes = await App.CameraControl.GetCameraPose();
-        const cur = currentRes.success && currentRes.result ? currentRes.result : null;
-        
-        let output = '【已保存的默认视角】\n';
-        output += '位置: [' + savedDefaultPose.location.join(', ') + ']\n';
-        output += '旋转: pitch=' + savedDefaultPose.rotation.pitch + ', yaw=' + savedDefaultPose.rotation.yaw;
-        
-        if (cur) {
-            output += '\n\n【当前相机位置】\n';
-            output += '位置: [' + cur.location.join(', ') + ']\n';
-            output += '旋转: pitch=' + cur.rotation.pitch + ', yaw=' + cur.rotation.yaw;
-        }
-        
-        setInfo('info-camera-pos', output);
-    } catch (e) {
-        setInfo('info-camera-pos', '获取出错: ' + e.message);
-    }
-}
-
 // 回到默认视角（使用 SetCameraPose 直接设置，避免 Apply 的未知行为）
 async function resetToDefaultView() {
     try {
@@ -443,9 +397,7 @@ document.getElementById('btn-reset-view').addEventListener('click', async () => 
 
 // 动态按钮在 addDebugButtons() 中创建，这里用事件委托
 document.addEventListener('click', async (e) => {
-    if (e.target.id === 'btn-show-default-view') {
-        await showDefaultView();
-    } else if (e.target.id === 'btn-fetch-coord') {
+    if (e.target.id === 'btn-fetch-coord') {
         await fetchCoordInfo();
     }
 });
