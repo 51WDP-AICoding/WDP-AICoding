@@ -33,9 +33,11 @@ function setInfo(id, text) {
 function unlockUI() {
     document.getElementById('btn-fetch-info').disabled = false;
     document.getElementById('btn-reset-view').disabled = false;
+    document.getElementById('btn-show-default-view').disabled = false;
+    document.getElementById('btn-fetch-coord').disabled = false;
 }
 
-// 安全序列化（只提取原始类型字段，不展开嵌套对象，避免 WDP 代理对象卡死）
+// 安全序列化
 function safeStringify(obj, indent) {
     try {
         return JSON.stringify(obj, null, indent);
@@ -61,52 +63,162 @@ function safeStringify(obj, indent) {
 }
 
 // ==============================================
-// === 空间信息获取（可自动/手动调用） ===
+// === 动态添加按钮（避免修改HTML） ===
+// ==============================================
+function addDebugButtons() {
+    const btnContainer = document.getElementById('btn-fetch-info').parentElement;
+    
+    // 将原"获取空间信息"按钮改名为"获取当前镜头"
+    document.getElementById('btn-fetch-info').textContent = '获取当前镜头';
+    
+    // 在"回到默认视角"后面插入"显示已保存的默认视角"
+    const btnResetView = document.getElementById('btn-reset-view');
+    const btnShowDefault = document.createElement('button');
+    btnShowDefault.id = 'btn-show-default-view';
+    btnShowDefault.disabled = true;
+    btnShowDefault.textContent = '显示已保存的默认视角';
+    btnShowDefault.style.cssText = 'margin: 4px; padding: 6px 12px; cursor: pointer;';
+    btnResetView.after(btnShowDefault);
+    
+    // 在"显示已保存的默认视角"后面插入"获取坐标系信息"
+    const btnFetchCoord = document.createElement('button');
+    btnFetchCoord.id = 'btn-fetch-coord';
+    btnFetchCoord.disabled = true;
+    btnFetchCoord.textContent = '获取坐标系信息';
+    btnFetchCoord.style.cssText = 'margin: 4px; padding: 6px 12px; cursor: pointer;';
+    btnShowDefault.after(btnFetchCoord);
+    
+    // 坐标系信息显示区域
+    const coordDiv = document.createElement('div');
+    coordDiv.id = 'info-coord-system';
+    coordDiv.style.cssText = 'margin: 8px 0; padding: 8px; background: #1a1a2e; border-radius: 4px; white-space: pre-wrap; font-family: monospace; font-size: 12px; color: #ccc; max-height: 200px; overflow-y: auto;';
+    coordDiv.innerText = '（点击"获取坐标系信息"按钮）';
+    btnContainer.parentElement.appendChild(coordDiv);
+    
+    // 整个UI面板改为可滚动
+    const panel = btnContainer.parentElement;
+    if (panel) {
+        panel.style.overflowY = 'auto';
+        panel.style.maxHeight = '100vh';
+    }
+}
+
+// ==============================================
+// === 坐标系信息获取（多种方式尝试） ===
+// ==============================================
+async function fetchCoordInfo() {
+    showStatus('正在获取坐标系信息...');
+    const results = [];
+
+    // 方式1: GetGlobal + geoReference
+    try {
+        console.log('[WDP] 方式1: App.Scene.GetGlobal()...');
+        const globalRes = await App.Scene.GetGlobal();
+        console.log('[WDP] GetGlobal 返回:', globalRes);
+        results.push('【方式1: GetGlobal】');
+        results.push('  success: ' + globalRes.success);
+        if (globalRes.success && globalRes.result) {
+            results.push('  result keys: ' + Object.keys(globalRes.result).join(', '));
+            const geoRef = globalRes.result.geoReference;
+            if (geoRef) {
+                results.push('  geoReference 存在，类型: ' + typeof geoRef);
+                try {
+                    const info = await geoRef.Get();
+                    results.push('  geoRef.Get(): ' + safeStringify(info));
+                } catch (e) {
+                    results.push('  geoRef.Get() 失败: ' + e.message);
+                    // 直接访问属性
+                    try {
+                        results.push('  直接访问: coordSystem=' + geoRef.coordSystem + ', origin=' + safeStringify(geoRef.origin));
+                    } catch (e2) {
+                        results.push('  直接访问也失败: ' + e2.message);
+                    }
+                }
+            } else {
+                results.push('  geoReference 不存在');
+            }
+        }
+    } catch (e) {
+        results.push('【方式1: GetGlobal】异常: ' + e.message);
+    }
+
+    // 方式2: GetGlobalSettings
+    try {
+        console.log('[WDP] 方式2: App.Scene.GetGlobalSettings()...');
+        const settingsRes = await App.Scene.GetGlobalSettings();
+        console.log('[WDP] GetGlobalSettings 返回:', settingsRes);
+        results.push('\n【方式2: GetGlobalSettings】');
+        results.push('  success: ' + settingsRes.success);
+        if (settingsRes.success && settingsRes.result) {
+            results.push('  result: ' + safeStringify(settingsRes.result));
+        } else {
+            results.push('  message: ' + (settingsRes.message || ''));
+        }
+    } catch (e) {
+        results.push('【方式2: GetGlobalSettings】异常: ' + e.message);
+    }
+
+    // 方式3: GetCameraStart（获取初始相机，包含坐标系原点信息）
+    try {
+        console.log('[WDP] 方式3: App.Scene.GetCameraStart()...');
+        const startRes = await App.Scene.GetCameraStart();
+        console.log('[WDP] GetCameraStart 返回:', startRes);
+        results.push('\n【方式3: GetCameraStart】');
+        results.push('  success: ' + startRes.success);
+        if (startRes.success && startRes.result) {
+            const obj = startRes.result.object;
+            if (obj) {
+                try {
+                    const info = await obj.Get();
+                    results.push('  CameraStart: ' + safeStringify(info));
+                } catch (e) {
+                    results.push('  直接访问: location=' + safeStringify(obj.location) + ', rotation=' + safeStringify(obj.rotation));
+                }
+            } else {
+                results.push('  result: ' + safeStringify(startRes.result));
+            }
+        }
+    } catch (e) {
+        results.push('【方式3: GetCameraStart】异常: ' + e.message);
+    }
+
+    // 方式4: GetCameraInfo（包含坐标系相关字段）
+    try {
+        console.log('[WDP] 方式4: App.CameraControl.GetCameraInfo()...');
+        const infoRes = await App.CameraControl.GetCameraInfo();
+        console.log('[WDP] GetCameraInfo 返回:', infoRes);
+        results.push('\n【方式4: GetCameraInfo（含坐标系字段）】');
+        if (infoRes.success && infoRes.result) {
+            results.push('  location: ' + safeStringify(infoRes.result.location));
+            results.push('  rotation: ' + safeStringify(infoRes.result.rotation));
+            results.push('  fieldOfView: ' + infoRes.result.fieldOfView);
+            results.push('  controlMode: ' + infoRes.result.controlMode);
+            // 检查是否有坐标系相关字段
+            const extraKeys = Object.keys(infoRes.result).filter(k => !['location', 'rotation', 'fieldOfView', 'controlMode', 'locationLimit', 'pitchLimit', 'yawLimit', 'viewDistanceLimit'].includes(k));
+            if (extraKeys.length > 0) {
+                results.push('  其他字段: ' + extraKeys.join(', '));
+                extraKeys.forEach(k => {
+                    try { results.push('    ' + k + ': ' + safeStringify(infoRes.result[k])); } catch(_) {}
+                });
+            }
+        }
+    } catch (e) {
+        results.push('【方式4: GetCameraInfo】异常: ' + e.message);
+    }
+
+    const output = results.join('\n');
+    setInfo('info-coord-system', output);
+    console.log('[WDP] 坐标系获取结果:\n' + output);
+    showStatus('坐标系信息获取完成（详见下方）');
+}
+
+// ==============================================
+// === 空间信息获取（相机位置） ===
 // ==============================================
 async function fetchSpatialInfo() {
     showStatus('正在获取空间信息...');
 
-    // 坐标系信息（GetGlobal 返回含循环引用，不能用 JSON.stringify）
-    try {
-        console.log('[WDP] 调用 App.Scene.GetGlobal()...');
-        const globalRes = await App.Scene.GetGlobal();
-        console.log('[WDP] GetGlobal success:', globalRes.success);
-        console.log('[WDP] GetGlobal result:', globalRes.result);
-        if (globalRes.success && globalRes.result) {
-            // 坐标系信息在 geoReference 对象中
-            const geoRef = globalRes.result.geoReference;
-            if (geoRef) {
-                // 尝试直接读取属性（可能是代理对象）
-                const info = await geoRef.Get();
-                if (info && info.result) {
-                    setInfo('info-coord-system', safeStringify(info.result, 2));
-                    showStatus('坐标系信息获取成功');
-                } else {
-                    // 备用方案：尝试直接访问属性
-                    const coordInfo = {
-                        coordSystem: geoRef.coordSystem,
-                        origin: geoRef.origin,
-                        rotation: geoRef.rotation,
-                        scale: geoRef.scale
-                    };
-                    setInfo('info-coord-system', safeStringify(coordInfo, 2));
-                    showStatus('坐标系信息获取成功');
-                }
-            } else {
-                setInfo('info-coord-system', '坐标系信息为空 (geoReference未找到)');
-                showStatus('坐标系信息为空', true);
-            }
-        } else {
-            setInfo('info-coord-system', '获取失败: success=' + globalRes.success + ', message=' + (globalRes.message || ''));
-            showStatus('坐标系信息获取失败', true);
-        }
-    } catch (e) {
-        console.error('[WDP] GetGlobal 异常:', e);
-        setInfo('info-coord-system', '异常: ' + e.message);
-        showStatus('坐标系信息获取异常', true);
-    }
-
-    // 相机位置（正确方法名: GetCameraPose 或 GetCameraInfo，不是 GetCurrentState）
+    // 相机位置
     try {
         console.log('[WDP] 调用 App.CameraControl.GetCameraPose()...');
         const cameraRes = await App.CameraControl.GetCameraPose();
@@ -140,6 +252,9 @@ let App = null;
 
 async function bootstrap() {
     try {
+        // 动态添加调试按钮
+        addDebugButtons();
+
         showStatus('初始化 WdpApi...');
         App = new WdpApi({
             id: WDP_CONFIG.CONTAINER_ID,
@@ -157,7 +272,6 @@ async function bootstrap() {
         if (!gisRes.success) throw new Error('GIS 插件安装失败: ' + (gisRes.message || '未知错误'));
         showStatus('GIS 插件安装成功');
 
-        // 先注册事件监听，再启动渲染器（避免竞态）
         showStatus('注册场景就绪事件...');
         await App.Renderer.RegisterSceneEvent([{
             name: 'OnWdpSceneIsReady',
@@ -170,27 +284,21 @@ async function bootstrap() {
                 }
             }
         }, {
-            // WDP 2.3.0+ 鼠标点击事件增强：支持 triggerType 和 layerType
             name: 'OnEntityClicked',
             func: async (res) => {
                 const { eid, triggerType, layerType, position } = res?.result || {};
                 console.log('[WDP] 实体点击:', { eid, triggerType, layerType, position });
-                // triggerType: 'LeftMouseButton' | 'RightMouseButton' | 'MiddleMouseButton'
-                // layerType: '3dtiles' | 'wms' | 'wmts' | 'vector' | 'poi' | 'entity'
             }
         }, {
-            // WDP 2.3.0+ 鼠标双击事件
             name: 'OnEntityDbClicked',
             func: async (res) => {
                 console.log('[WDP] 实体双击:', res?.result?.eid);
             }
         }, {
-            // GIS 2.1.0+ 要素点击事件：支持 featureType (point/line/polygon)
             name: 'OnGeoLayerFeatureClicked',
             func: async (res) => {
                 const { eid, featureId, featureType, properties } = res?.result || {};
                 console.log('[WDP] GIS 要素点击:', { eid, featureId, featureType, properties });
-                // featureType: 'point' | 'line' | 'polygon'
             }
         }]);
         console.log('[WDP] 场景事件已注册，准备启动渲染器');
@@ -208,24 +316,35 @@ async function bootstrap() {
 
 async function onSceneReady() {
     try {
-        showStatus('场景已就绪，等待 2 秒后自动获取信息...');
-        console.log('[WDP] progress=100，2 秒后执行自动获取');
-
-        // 等待 2 秒，确保内部对象就绪
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        showStatus('场景已就绪，等待 3 秒确保内部对象就绪...');
+        console.log('[WDP] progress=100');
+        await new Promise(resolve => setTimeout(resolve, 3000));
 
         // 保存初始视角
         try {
-            await saveDefaultView();
-            console.log('[WDP] 初始视角已保存');
+            const cameraRes = await App.CameraControl.GetCameraPose();
+            console.log('[WDP] 初始视角相机位置:', safeStringify(cameraRes));
+            
+            if (cameraRes.success && cameraRes.result) {
+                const { location, rotation } = cameraRes.result;
+                const [lng, lat, z] = location;
+                console.log('[WDP] 初始视角坐标: lng=' + lng + ', lat=' + lat + ', z=' + z);
+                
+                if (lng === 0 && lat === 0 && z === 0) {
+                    console.warn('[WDP] 警告: 初始视角为000点！');
+                    showStatus('警告: 初始视角为000点，请手动保存视角', true);
+                } else {
+                    savedDefaultPose = { location, rotation };
+                    console.log('[WDP] 初始视角已保存:', savedDefaultPose);
+                }
+            }
         } catch (e) {
-            console.warn('[WDP] 保存初始视角失败:', e);
+            console.warn('[WDP] 保存初始视角异常:', e);
         }
 
         // 获取插件版本
         try {
             const bimVerRes = await App.DCP.GetVersion();
-            console.log('[WDP] BIM GetVersion 返回:', JSON.stringify(bimVerRes));
             if (bimVerRes.success && bimVerRes.result) {
                 setInfo('info-bim-version', 'API: ' + (bimVerRes.result.apiVersion || '-') + ', SDK: ' + (bimVerRes.result.sdkVersion || '-'));
             }
@@ -233,13 +352,12 @@ async function onSceneReady() {
 
         try {
             const gisVerRes = await App.gis.GetVersion();
-            console.log('[WDP] GIS GetVersion 返回:', JSON.stringify(gisVerRes));
             if (gisVerRes.success && gisVerRes.result) {
                 setInfo('info-gis-version', 'GisApiJsSdk: ' + (gisVerRes.result.GisApiJsSdk || '-') + ', ScenePlugins: ' + (gisVerRes.result.GisApiScenePlugins || '-'));
             }
         } catch (e) { console.warn('[WDP] 获取 GIS 版本失败:', e); }
 
-        // 自动获取空间信息
+        // 自动获取相机位置
         await fetchSpatialInfo();
 
         // 解锁按钮
@@ -256,50 +374,52 @@ async function onSceneReady() {
 // ==============================================
 // === 视角管理 ===
 // ==============================================
-let defaultCameraObj = null;
+let savedDefaultPose = null; // { location: [lng,lat,z], rotation: {pitch, yaw} }
 
-// 保存默认视角（使用 Camera 对象）
-async function saveDefaultView() {
+// 显示已保存的默认视角坐标（精简版）
+async function showDefaultView() {
+    if (!savedDefaultPose) {
+        setInfo('info-camera-pos', '默认视角未保存');
+        return;
+    }
+    
     try {
-        // 获取当前相机位置
-        const cameraRes = await App.CameraControl.GetCameraPose();
-        if (!cameraRes.success || !cameraRes.result) {
-            console.warn('[WDP] 获取相机位置失败，无法保存默认视角');
-            return;
+        const currentRes = await App.CameraControl.GetCameraPose();
+        const cur = currentRes.success && currentRes.result ? currentRes.result : null;
+        
+        let output = '【已保存的默认视角】\n';
+        output += '位置: [' + savedDefaultPose.location.join(', ') + ']\n';
+        output += '旋转: pitch=' + savedDefaultPose.rotation.pitch + ', yaw=' + savedDefaultPose.rotation.yaw;
+        
+        if (cur) {
+            output += '\n\n【当前相机位置】\n';
+            output += '位置: [' + cur.location.join(', ') + ']\n';
+            output += '旋转: pitch=' + cur.rotation.pitch + ', yaw=' + cur.rotation.yaw;
         }
         
-        const { location, rotation } = cameraRes.result;
-        
-        // 创建 Camera 对象作为机位预设
-        defaultCameraObj = new App.Camera({
-            location: location,
-            rotation: rotation,
-            entityName: 'default-view'
-        });
-        
-        const res = await App.Scene.Add(defaultCameraObj);
-        if (res.success) {
-            console.log('[WDP] 默认视角已保存（Camera对象）');
-        } else {
-            console.warn('[WDP] 保存默认视角失败:', res.message);
-        }
+        setInfo('info-camera-pos', output);
     } catch (e) {
-        console.warn('[WDP] 保存默认视角异常:', e);
+        setInfo('info-camera-pos', '获取出错: ' + e.message);
     }
 }
 
-// 回到默认视角
+// 回到默认视角（使用 SetCameraPose 直接设置，避免 Apply 的未知行为）
 async function resetToDefaultView() {
     try {
         showStatus('正在回到默认视角...');
         
-        if (!defaultCameraObj) {
+        if (!savedDefaultPose) {
             showStatus('默认视角未保存', true);
             return;
         }
         
-        // 使用 CameraControl.Apply 应用机位
-        const res = await App.CameraControl.Apply(defaultCameraObj, 1); // 1秒过渡时间
+        console.log('[WDP] 使用 SetCameraPose 回到默认视角:', savedDefaultPose);
+        const res = await App.CameraControl.SetCameraPose({
+            location: savedDefaultPose.location,
+            rotation: savedDefaultPose.rotation,
+            flyTime: 1
+        });
+        
         if (res.success) {
             showStatus('已回到默认视角');
         } else {
@@ -319,6 +439,15 @@ document.getElementById('btn-fetch-info').addEventListener('click', async () => 
 
 document.getElementById('btn-reset-view').addEventListener('click', async () => {
     await resetToDefaultView();
+});
+
+// 动态按钮在 addDebugButtons() 中创建，这里用事件委托
+document.addEventListener('click', async (e) => {
+    if (e.target.id === 'btn-show-default-view') {
+        await showDefaultView();
+    } else if (e.target.id === 'btn-fetch-coord') {
+        await fetchCoordInfo();
+    }
 });
 
 // ==============================================

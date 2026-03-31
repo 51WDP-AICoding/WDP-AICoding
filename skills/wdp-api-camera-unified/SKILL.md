@@ -60,7 +60,9 @@ await App.CameraControl.Focus({ target: eid, duration: 1000 });
 
 ### 2. 视角切换
 - 预设视角切换：ResetCameraPose
-- 自定义视角保存与加载：SaveCurrentView、LoadSavedView、GetAllSavedViews
+- 设置绝对视角位置：SetCameraPose（推荐用于"回到某视角"场景）
+- 应用机位预设对象：Apply（仅用于 `new App.Camera()` 创建并 `Scene.Add()` 后的对象，**不要用 Apply 来恢复通过 GetCameraPose 获取的位置**）
+- ⚠️ **Apply vs SetCameraPose 区别**：`Apply` 接收 Camera 实体对象，内部可能有额外处理逻辑导致飞行目标偏移；`SetCameraPose` 接收 `{location, rotation, flyTime}` 纯数据，直接设置绝对坐标，行为可预测。**保存/恢复视角应使用 GetCameraPose + SetCameraPose 组合**。
 
 ### 3. 漫游路径
 - 路径加载与管理：CameraRoam 对象创建、Update

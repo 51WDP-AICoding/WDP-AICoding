@@ -132,7 +132,7 @@ Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
 | 14 | 意图编排、复杂任务分解、需求精确化 | `../wdp-intent-orchestrator/SKILL.md` |
 
 
-> 注：任务恢复、上下文丢失、"之前做了什么"、长对话状态不一致、跨会话续作等问题，请参考 [状态管理基线](#状态管理基线跨域基础设施) 章节，使用 `wdp-context-memory` 提供的 `ReadState`/`UpdateState` 等工具处理。
+> 注：任务恢复、上下文丢失、"之前做了什么"、长对话状态不一致、跨会话续作等问题，请参考 [状态管理基线] 章节，使用 `wdp-context-memory` 提供的 `ReadState`/`UpdateState` 等工具处理。
 
 ## 参考资料读取顺序（相对路径）
 
