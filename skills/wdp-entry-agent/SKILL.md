@@ -46,12 +46,18 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 ## 状态管理基线（跨域基础设施）
 
-`wdp-context-memory` 不是路由目标，而是包裹所有路由的底层设施。每次调度必须遵守：
+> 注意：`wdp-context-memory` 不是路由目标，而是包裹所有路由的底层设施。如需了解状态管理详情，参考 `../wdp-context-memory/SKILL.md`
+
+每次调度必须遵守：
 
 1. **执行前**：`ReadState("transient.selection")` 等获取前置上下文，禁止基于假设操作
 2. **执行后**：`UpdateState()` 回写所有状态变更，禁止私自缓存到局部变量
 3. **每 3-5 步**：`ValidateConsistency()` 校验状态与用户需求是否冲突
 4. **任务切换时**：触发自动修剪，归档 transient，保留 spatial/task 骨架
+
+### 上下文清理
+- 任务切换时使用 `/clear` 清理无关上下文
+- 使用 subagents 隔离不同任务，避免污染主对话
 
 参考规范：`../wdp-context-memory/INTEGRATION_SPEC.md`
 Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
@@ -108,72 +114,50 @@ Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
 ## 路由规则（问题分类与子技能映射）
 > 注意：以下路由用于定位单一报错或单一参数改动。整链路开发需求应按路由合并加载多个子技能，并交叉检查初始化链路中的插件安装步骤。
 
-1. 启动/接入失败、渲染不可用、页面容器、脚本接入、交互层级问题。
-- `../wdp-api-initialization-unified/SKILL.md`
+| # | 问题类型 | 目标 Skill |
+|---|---------|-----------|
+| 1 | 启动/接入失败、渲染不可用、页面容器、脚本接入、交互层级问题 | `../wdp-api-initialization-unified/SKILL.md` |
+| 2 | 事件不触发、重复触发、回调异常 | `../wdp-api-general-event-registration/SKILL.md` |
+| 3 | 镜头飞行、聚焦、视角异常、相机漫游问题 | `../wdp-api-camera-unified/SKILL.md` |
+| 4 | 属性获取与代理对象认知（.Get()方法、循环引用处理） | `../wdp-api-generic-base-attributes/SKILL.md` |
+| 5 | 实体检索、显隐、删除、落地等通用行为问题 | `../wdp-api-entity-general-behavior/SKILL.md` |
+| 6 | 覆盖物创建/更新/显隐/删除（实时视频、Window、POI、Web组件、HeatMap/Path/Bound、Scene.Create(s)、ClearByTypes）问题 | `../wdp-api-coverings-unified/SKILL.md` |
+| 7 | 图层控制、node控制、静态/骨骼/工程摆放模型问题 | `../wdp-api-layer-models/SKILL.md` |
+| 8 | 模型材质替换、材质高亮、材质拾取问题 | `../wdp-api-material-settings/SKILL.md` |
+| 9 | 点聚合数据部署、聚合样式、周边搜索问题（私有化/lite） | `../wdp-api-cluster/SKILL.md` |
+| 10 | 环境/控件/工具/设置等功能组件问题 | `../wdp-api-function-components/SKILL.md` |
+| 11 | BIM 模型/构件/空间行为问题、BIM 插件安装问题 | `../wdp-api-bim-unified/SKILL.md` |
+| 12 | GIS 图层接入与行为问题（GeoLayer、WMS/WMTS/3DTiles、GIS 事件） | `../gis-api-core-operations/SKILL.md` |
+| 13 | 空间理解、坐标转换、位置计算（GIS/Cartesian/屏幕坐标互转） | `../wdp-api-spatial-understanding/SKILL.md` |
+| 14 | 意图编排、复杂任务分解、需求精确化 | `../wdp-intent-orchestrator/SKILL.md` |
 
-2. 事件不触发、重复触发、回调异常。
-- `../wdp-api-general-event-registration/SKILL.md`
 
-3. 镜头飞行、聚焦、视角异常、相机漫游问题。
-- `../wdp-api-camera-unified/SKILL.md`
-
-4. 基础属性读取/写入、状态一致性问题。
-- `../wdp-api-generic-base-attributes/SKILL.md`
-
-5. 实体检索、显隐、删除、落地等通用行为问题。
-- `../wdp-api-entity-general-behavior/SKILL.md`
-
-6. 覆盖物创建/更新/显隐/删除（实时视频、Window、POI、Web组件、HeatMap/Path/Bound、Scene.Create(s)、ClearByTypes）问题。
-- `../wdp-api-coverings-unified/SKILL.md`
-
-7. 图层控制、node控制、静态/骨骼/工程摆放模型问题。
-- `../wdp-api-layer-models/SKILL.md`
-
-8. 模型材质替换、材质高亮、材质拾取问题。
-- `../wdp-api-material-settings/SKILL.md`
-
-9. 点聚合数据部署、聚合样式、周边搜索问题（私有化/lite）。
-- `../wdp-api-cluster/SKILL.md`
-
-10. 环境/控件/工具/设置等功能组件问题。
-- `../wdp-api-function-components/SKILL.md`
-
-11. BIM 模型/构件/空间行为问题、BIM 插件安装问题。
-- `../wdp-api-bim-unified/SKILL.md`
-
-12. GIS 图层接入与行为问题（GeoLayer、WMS/WMTS/3DTiles、GIS 事件）。
-- `../gis-api-core-operations/SKILL.md`
-
-13. 项目管理平台源码批量下载与解压需求（项目列表/版本管理/下载源码）。
-- `../wdp-internal-case-acquisition/SKILL.md`
-
-14. 任务恢复、上下文丢失、"之前做了什么"、长对话状态不一致、跨会话续作。
-- `../wdp-context-memory/SKILL.md`
+> 注：任务恢复、上下文丢失、"之前做了什么"、长对话状态不一致、跨会话续作等问题，请参考 [状态管理基线](#状态管理基线跨域基础设施) 章节，使用 `wdp-context-memory` 提供的 `ReadState`/`UpdateState` 等工具处理。
 
 ## 参考资料读取顺序（相对路径）
 
-1. 先读索引。
-- `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md`
-- `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md`
+| 顺序 | 文件路径 | 说明 |
+|------|---------|------|
+| 1 | `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md` | 索引文件 |
+| 2 | `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md` | 在线文档覆盖审计 |
+| 3 | `../wdp-context-memory/INTEGRATION_SPEC.md` | 状态管理规范 |
+| 4 | `../wdp-context-memory/MEMORY_SCHEMA.json` | Schema 定义 |
+| 5 | `../official_api_code_example/official-*.md` | 根据路由命中对应的官方摘录 |
 
-1.5 再读状态管理规范。
-- `../wdp-context-memory/INTEGRATION_SPEC.md`
-- `../wdp-context-memory/MEMORY_SCHEMA.json`
-
-2. 再读命中域的官方摘录。
-- `../official_api_code_example/official-initialize-scene.md`
-- `../official_api_code_example/official-general-event-registration.md`
-- `../official_api_code_example/official-scene-camera.md`
-- `../official_api_code_example/official-generic-base-attributes.md`
-- `../official_api_code_example/official-entity-general-behavior.md`
-- `../official_api_code_example/official-entity-coverings.md`
-- `../official_api_code_example/official-layer-models.md`
-- `../official_api_code_example/official-material-settings.md`
-- `../official_api_code_example/official-cluster.md`
-- `../official_api_code_example/official-function-components.md`
-- `../official_api_code_example/official-bim-core-operations.md`
-- `../official_api_code_example/official-bim-full.md`
-- `../official_api_code_example/official-gis-full.md`
+### 官方摘录文件列表
+- `official-initialize-scene.md` - 场景初始化
+- `official-general-event-registration.md` - 事件注册
+- `official-scene-camera.md` - 相机操作
+- `official-generic-base-attributes.md` - 基础属性
+- `official-entity-general-behavior.md` - 实体行为
+- `official-entity-coverings.md` - 覆盖物
+- `official-layer-models.md` - 图层模型
+- `official-material-settings.md` - 材质设置
+- `official-cluster.md` - 点聚合
+- `official-function-components.md` - 功能组件
+- `official-bim-core-operations.md` - BIM 核心操作
+- `official-bim-full.md` - BIM 完整文档
+- `official-gis-full.md` - GIS 完整文档
 
 
 ## 文档后台访问约束
@@ -196,46 +180,23 @@ Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
 
 每次产出实现方案时，必须显式给出以下 8 项：
 
-1. **触发源**
-   - 页面动作 / 场景事件 / 定时任务
-
-2. **前置条件**
-   - Scene Ready、对象可用、插件安装、关键参数确认完成
-
-3. **状态读取**
-   - 执行前 `ReadState` 了哪些 key_path，获取到了什么值
-
-4. **执行链**
-   - 主调用链顺序 + 失败分支（兜底处理）
-
-5. **状态回写**
-   - UI 状态、缓存对象、全局状态同步
-   - 执行后 `UpdateState` 了哪些字段，变更内容是什么
-
-6. **验证信号**
-   - API 返回值、事件回调、可视化结果
-
-7. **一致性校验**
-   - `ValidateConsistency` 结果，是否存在冲突及处理方式
-
-8. **回滚清理**
-   - 关闭路径、对象释放、失败恢复
+1. **触发源** - 页面动作 / 场景事件 / 定时任务
+2. **前置条件** - Scene Ready、对象可用、插件安装、关键参数确认完成
+3. **状态读取** - 执行前 `ReadState` 了哪些 key_path，获取到了什么值
+4. **执行链** - 主调用链顺序 + 失败分支（兜底处理）
+5. **状态回写** - 执行后 `UpdateState` 了哪些字段，变更内容是什么
+6. **验证信号** - API 返回值、事件回调、可视化结果
+7. **一致性校验** - `ValidateConsistency` 结果，是否存在冲突及处理方式
+8. **回滚清理** - 关闭路径、对象释放、失败恢复
 
 ## 编码前自检清单
 
-### API 相关
 - [ ] 事件回调/查询返回的 object 是否通过 `.Get()` 获取属性？（详见 `wdp-api-generic-base-attributes`"关键认知"）
 - [ ] 是否混淆了 nodeId 和 eid？（详见 `wdp-api-entity-general-behavior`"实体标识体系"）
 - [ ] 视觉反馈方式（描边/高亮/房间高亮）是否选型正确？（详见 `wdp-api-entity-general-behavior`"视觉反馈选型指南"）
 - [ ] 异步操作是否有 try-catch 防护？
-
-### CSS 层叠相关
-- [ ] 模块全屏容器是否声明了 z-index？
-- [ ] pointer-events 穿透结构是否正确？（详见 `wdp-css-layer-management`）
-
-### 交互逻辑相关
+- [ ] 模块全屏容器是否声明了 z-index？（详见 `wdp-css-layer-management`）
 - [ ] 每个可切换状态是否都有开启 + 关闭两条路径？
-- [ ] 危险操作是否有确认步骤？
 
 ## 输出格式
 
@@ -246,19 +207,3 @@ Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
 4. 验证步骤与通过标准
 5. 缺失信息与待补充 case（如有）
 6. 状态变更记录（`ReadState`/`UpdateState` 摘要）
-
----
-
-## 强制性检查点（再次强调）
-
-任何使用本库的AI必须执行以下步骤，否则生成的代码将无法正常工作：
-
-1. 读取本文件完成路由判断
-2. 检查是否存在未完成的 Context Memory（`.context-memory/` 目录），存在则 `ReadState` 恢复上下文，不存在则初始化新 Memory
-3. 读取`../official_api_code_example/universal-bootstrap.template.html`、`universal-bootstrap.template.main.js`、`universal-bootstrap.template.package.json`作为基础骨架
-4. 按照路由规则读取对应子技能
-5. 读取相关官方文档摘录
-6. 读取状态管理规范（`../wdp-context-memory/INTEGRATION_SPEC.md`、`MEMORY_SCHEMA.json`）
-7. 生成代码时必须使用`new WdpApi()`初始化，**根据业务需求在`Renderer.Start()`之前通过`App.Plugin.Install()`安装对应插件**，然后`App.Renderer.Start()`启动渲染器
-
-请确保遵循上述步骤并参考"小白友好的参数提问与开箱即用"原则，确保生成的代码可以直接运行。
