@@ -7,17 +7,56 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 作为对外分发时的唯一入口。只负责调度，不替代子 skill 的领域实现细节。
 
+## 执行流程（严格顺序）
+
+### Step 1: 意图解析（必须）
+读取 `wdp-intent-orchestrator/SKILL.md`
+- 解析用户需求的业务实体和隐藏模块
+- 输出《系统意图与架构设计报告》
+- 确定需要涉及的技能域（BIM/GIS/相机/实体行为等）
+- 校验核心参数（URL、Order、容器）
+
+### Step 2: 基础初始化（必须）
+读取 `wdp-api-initialization-unified/SKILL.md`
+- 获取 npm install wdpapi（必须先执行）
+- 获取 import → new WdpApi() → Renderer.Start() 链路（依赖npm install）
+
+### Step 3: 插件安装（按需）
+根据意图编排结果：
+- 如需BIM → 读取 `wdp-api-bim-unified`，获取 @wdp-api/bim-api 安装
+- 如需GIS → 读取 `gis-api-core-operations`，获取 @wdp-api/gis-api 安装
+
+### Step 4: 核心功能（按需）
+根据意图编排结果，读取对应技能：
+- 相机问题 → `wdp-api-camera-unified`
+- 实体行为 → `wdp-api-entity-general-behavior`
+- 覆盖物 → `wdp-api-coverings-unified`
+- 图层模型 → `wdp-api-layer-models`
+- 材质设置 → `wdp-api-material-settings`
+- 点聚合 → `wdp-api-cluster`
+- 功能组件 → `wdp-api-function-components`
+- 空间理解 → `wdp-api-spatial-understanding`
+
 ## 强制性检查点 (MANDATORY CHECKPOINT)
 
 任何使用本库的AI必须首先执行以下步骤，否则生成的代码将无法正常工作：
 
 1. 读取本文件完成路由判断
-2. 检查是否存在未完成的 Context Memory（`.context-memory/` 目录），存在则 `ReadState` 恢复上下文，不存在则初始化新 Memory
-3. 读取`../official_api_code_example/universal-bootstrap.template.html`、`universal-bootstrap.template.main.js`、`universal-bootstrap.template.package.json`作为基础骨架
-4. 按照路由规则读取对应子技能
-5. 生成代码时必须使用`new WdpApi()`初始化，**根据业务需求在`Renderer.Start()`之前通过`App.Plugin.Install()`安装对应插件**，然后`App.Renderer.Start()`启动渲染器
+2. **执行意图编排**：读取 `wdp-intent-orchestrator/SKILL.md`，输出《系统意图与架构设计报告》
+3. 检查是否存在未完成的 Context Memory（`.context-memory/` 目录），存在则 `ReadState` 恢复上下文，不存在则初始化新 Memory
+4. 读取`../official_api_code_example/universal-bootstrap.template.html`、`universal-bootstrap.template.main.js`、`universal-bootstrap.template.package.json`作为基础骨架
+5. **按执行流程顺序**读取对应子技能（先initialization，再按需读取BIM/GIS等）
+6. 生成代码时必须使用`new WdpApi()`初始化，**根据业务需求在`Renderer.Start()`之前通过`App.Plugin.Install()`安装对应插件**，然后`App.Renderer.Start()`启动渲染器
 
 警告：跳过上述任何步骤将导致生成的代码无法正常工作！
+
+## 执行阻断点（输出代码前必须检查）
+
+- [ ] 已执行意图编排，输出《系统意图与架构设计报告》
+- [ ] 已读取 initialization-unified 获取基础初始化链路
+- [ ] 已根据意图编排结果读取对应插件技能（BIM/GIS）
+- [ ] 已确认 Plugin.Install 在 Renderer.Start 之前（如需要插件）
+- [ ] 已确认核心参数（URL、Order）不为假值
 
 ## 必要参数要求
 
