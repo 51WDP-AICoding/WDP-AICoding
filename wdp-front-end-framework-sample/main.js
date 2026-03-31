@@ -71,20 +71,31 @@ async function fetchSpatialInfo() {
         console.log('[WDP] 调用 App.Scene.GetGlobal()...');
         const globalRes = await App.Scene.GetGlobal();
         console.log('[WDP] GetGlobal success:', globalRes.success);
+        console.log('[WDP] GetGlobal result:', globalRes.result);
         if (globalRes.success && globalRes.result) {
-            const r = globalRes.result;
-            const info = {};
-            for (const k of Object.keys(r)) {
-                // 跳过 CameraStart（相机信息由单独的面板展示）
-                if (k === 'CameraStart') continue;
-                try {
-                    info[k] = JSON.parse(safeStringify(r[k], 2));
-                } catch (_) {
-                    info[k] = '[提取失败]';
+            // 坐标系信息在 geoReference 对象中
+            const geoRef = globalRes.result.geoReference;
+            if (geoRef) {
+                // 尝试直接读取属性（可能是代理对象）
+                const info = await geoRef.Get();
+                if (info && info.result) {
+                    setInfo('info-coord-system', safeStringify(info.result, 2));
+                    showStatus('坐标系信息获取成功');
+                } else {
+                    // 备用方案：尝试直接访问属性
+                    const coordInfo = {
+                        coordSystem: geoRef.coordSystem,
+                        origin: geoRef.origin,
+                        rotation: geoRef.rotation,
+                        scale: geoRef.scale
+                    };
+                    setInfo('info-coord-system', safeStringify(coordInfo, 2));
+                    showStatus('坐标系信息获取成功');
                 }
+            } else {
+                setInfo('info-coord-system', '坐标系信息为空 (geoReference未找到)');
+                showStatus('坐标系信息为空', true);
             }
-            setInfo('info-coord-system', safeStringify(info, 2));
-            showStatus('坐标系信息获取成功');
         } else {
             setInfo('info-coord-system', '获取失败: success=' + globalRes.success + ', message=' + (globalRes.message || ''));
             showStatus('坐标系信息获取失败', true);
@@ -205,7 +216,7 @@ async function onSceneReady() {
 
         // 保存初始视角
         try {
-            await App.CameraControl.SaveCurrentView('default');
+            await saveDefaultView();
             console.log('[WDP] 初始视角已保存');
         } catch (e) {
             console.warn('[WDP] 保存初始视角失败:', e);
@@ -243,6 +254,63 @@ async function onSceneReady() {
 }
 
 // ==============================================
+// === 视角管理 ===
+// ==============================================
+let defaultCameraObj = null;
+
+// 保存默认视角（使用 Camera 对象）
+async function saveDefaultView() {
+    try {
+        // 获取当前相机位置
+        const cameraRes = await App.CameraControl.GetCameraPose();
+        if (!cameraRes.success || !cameraRes.result) {
+            console.warn('[WDP] 获取相机位置失败，无法保存默认视角');
+            return;
+        }
+        
+        const { location, rotation } = cameraRes.result;
+        
+        // 创建 Camera 对象作为机位预设
+        defaultCameraObj = new App.Camera({
+            location: location,
+            rotation: rotation,
+            entityName: 'default-view'
+        });
+        
+        const res = await App.Scene.Add(defaultCameraObj);
+        if (res.success) {
+            console.log('[WDP] 默认视角已保存（Camera对象）');
+        } else {
+            console.warn('[WDP] 保存默认视角失败:', res.message);
+        }
+    } catch (e) {
+        console.warn('[WDP] 保存默认视角异常:', e);
+    }
+}
+
+// 回到默认视角
+async function resetToDefaultView() {
+    try {
+        showStatus('正在回到默认视角...');
+        
+        if (!defaultCameraObj) {
+            showStatus('默认视角未保存', true);
+            return;
+        }
+        
+        // 使用 CameraControl.Apply 应用机位
+        const res = await App.CameraControl.Apply(defaultCameraObj, 1); // 1秒过渡时间
+        if (res.success) {
+            showStatus('已回到默认视角');
+        } else {
+            showStatus('回到默认视角失败: ' + (res.message || '未知错误'), true);
+        }
+    } catch (e) {
+        showStatus('回到默认视角出错: ' + e.message, true);
+    }
+}
+
+// ==============================================
 // === 按钮事件绑定 ===
 // ==============================================
 document.getElementById('btn-fetch-info').addEventListener('click', async () => {
@@ -250,12 +318,7 @@ document.getElementById('btn-fetch-info').addEventListener('click', async () => 
 });
 
 document.getElementById('btn-reset-view').addEventListener('click', async () => {
-    try {
-        showStatus('正在回到默认视角...');
-        const res = await App.CameraControl.LoadSavedView('default');
-        if (res.success) showStatus('已回到默认视角');
-        else showStatus('回到默认视角失败: ' + (res.message || '未知错误'), true);
-    } catch (e) { showStatus('回到默认视角出错: ' + e.message, true); }
+    await resetToDefaultView();
 });
 
 // ==============================================

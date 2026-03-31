@@ -189,6 +189,37 @@ Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
 7. **一致性校验** - `ValidateConsistency` 结果，是否存在冲突及处理方式
 8. **回滚清理** - 关闭路径、对象释放、失败恢复
 
+## 全局编码约束（强制执行）
+
+### ❌ 严禁编造API方法名
+**AI严禁凭经验猜测或编造WDP API方法名。** WDP API命名不遵循通用规范，必须通过官方文档确认。
+
+**常见错误示例**（AI编造的不存在API）：
+```javascript
+// 编造的API - 不存在！
+await App.CameraControl.FollowTarget(targetObj);
+await App.CameraControl.SaveCurrentView('default');
+await App.CameraControl.LoadSavedView('default');
+await App.Camera.LookAt(entity);
+```
+
+**正确做法**：
+- 查阅 `../official_api_code_example/official-*.md` 确认真实API
+- 如文档中无所需功能，应向用户说明并寻求替代方案
+- 不得基于通识经验推测API存在
+
+### ❌ 禁止凭经验猜测参数
+WDP API参数命名不统一，**必须通过官方文档确认参数格式**。
+
+**常见参数差异**：
+- 目标实体可能是 `eid`、`entity`、`targetEid`、`target`、`entityId`
+- 动画时长可能是 `duration`、`flyTime`、`time`、`animationTime`
+- 位置可能是 `location`、`position`、`coord`、`coordinates`
+
+**正确做法**：
+- 查阅官方文档确认准确的参数名和结构
+- 参数名必须以文档为准，不可猜测
+
 ## 编码前自检清单
 
 - [ ] 事件回调/查询返回的 object 是否通过 `.Get()` 获取属性？（详见 `wdp-api-generic-base-attributes`"关键认知"）
@@ -197,6 +228,7 @@ Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
 - [ ] 异步操作是否有 try-catch 防护？
 - [ ] 模块全屏容器是否声明了 z-index？（详见 `wdp-css-layer-management`）
 - [ ] 每个可切换状态是否都有开启 + 关闭两条路径？
+- [ ] **是否查阅了 official 文档确认API方法名和参数？（严禁编造）**
 
 ## 输出格式
 
