@@ -119,6 +119,7 @@ await App.Renderer.RegisterSceneEvent([{
 | `BimApi is not defined` | 插件未安装或未导入 | `npm install @wdp-api/bim-api@^2.2.0` 并确认 import |
 | `Renderer.Start` 报路由错误 | `url`与`order`不匹配 | 确保两者来自同一渲染环境 |
 | 场景不显示/黑屏 | 多种原因 | 检查：容器DOM存在且尺寸正确、url与order匹配、网络正常、控制台无报错 |
+| **初始化失败: Error: 渲染器启动失败: 用户没有可用的在线席位** | 单页面多导航场景下重复创建WDP实例 | **使用单页面结构实现导航页面切换时，确保整个应用只创建一个WDP实例**。不同页面/视图应共享同一个实例，通过显隐容器或切换场景实现，而不是销毁重建 |
 
 ---
 
