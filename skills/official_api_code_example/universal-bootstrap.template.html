@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <!--
 🚨 重要提示：此文件是WDP应用的标准骨架，必须作为所有WDP应用的起点
+版本基线：WDP API 2.3.0, BIM API 2.2.0, GIS API 2.1.0
+
+使用说明：
 - 不要从头编写代码，应该基于此模板修改
 - 本模板采用 npm + ES Module 范式，不使用 CDN script-tag
 - 保持初始化流程不变：new WdpApi() → Plugin.Install(按需) → Renderer.Start() → RegisterEvents
 - 所有业务逻辑应添加到 main.js 的指定区域，不要修改核心初始化流程
 - 使用前必须先执行 npm install 安装依赖
+- 如需BIM/GIS功能，请取消注释 main.js 中的对应导入并安装相应插件
 -->
 <html lang="zh-CN">
 <head>

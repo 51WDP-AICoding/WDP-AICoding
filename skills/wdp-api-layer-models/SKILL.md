@@ -1,17 +1,90 @@
 ---
 name: wdp-api-layer-models
-description: 处理 WDP 图层/模型 API 的实现与排障。用于图层显隐/高亮/描边、单体（node）控制，以及静态模型、骨骼模型、工程摆放模型与实例对象的更新控制；涉及图层和模型操作时使用本技能。
+description: 处理 AES 底板图层/单体控制及场景基础模型（Static/Skeletal/ProjectModel）的实现与排障。用于 AES5/AES6 底板图层显隐/高亮/描边、底板单体控制，以及静态模型、骨骼模型、工程摆放模型与实例对象的更新控制。
+---
+
+# 📋 本文档职责范围
+
+**本文档定位**：API Sub Skill - 能力描述与使用场景
+
+**本文档职责**：
+- ✅ 描述 AES 底板（Tiles/EarthTiles）图层控制能力
+- ✅ 描述 AES 底板单体（node）控制能力
+- ✅ 描述场景基础模型（Static/Skeletal/ProjectModel）的操作
+- ✅ 说明 AES5/AES6 版本差异和调用路径
+- ✅ 明确与 BIM 模型的边界区分
+
+**本文档不职责**：
+- ❌ 不提供具体 API 的完整签名和返回结构（由 official-*.md 提供）
+- ❌ 不提供 BIM 模型相关操作（由 wdp-api-bim-unified 提供）
+- ❌ 不提供可复制的代码示例（由 official-*.md 提供）
+
+**代码生成前置要求**：
+> 🚨 **必须阅读**：`../official_api_code_example/official-layer-models.md`
+
+---
+
+# ⚠️ 重要边界说明：本 Skill vs BIM Skill
+
+## 概念区分
+
+| 概念 | 本 Skill (wdp-api-layer-models) | BIM Skill (wdp-api-bim-unified) |
+|------|--------------------------------|--------------------------------|
+| **操作对象** | AES 底板单体（node） | BIM 模型构件（component/node） |
+| **数据来源** | 场景自带底板（Tiles/EarthTiles） | 外部加载的 BIM 模型（Hierarchy） |
+| **获取方式** | `App.Scene.GetTiles()` | `App.DCP.GetModelList()` / `new App.Hierarchy()` |
+| **调用路径** | `App.Scene.Node.SetNodesXxx()` 或 `tilesObj.SetNodesXxx()` | `entity.SetNodeXxx()` |
+| **方法命名** | 复数形式：`SetNodesHighlight` | 单数形式：`SetNodeHighLight` |
+| **插件依赖** | 无需插件 | 必须安装 BIM 插件 |
+
+## 快速判断使用哪个 Skill
+
+**使用本 Skill 的场景**：
+- 操作 AES 底板图层（Terrain, Building, Road, Water 等）
+- 操作 AES 底板上的单体（通过 nodeId 控制）
+- 创建/操作静态模型（Static）、骨骼模型（Skeletal）
+- 操作工程摆放模型（ProjectModel/Instance）
+
+**使用 BIM Skill 的场景**：
+- 加载外部 BIM 模型（.rvt, .ifc 等格式）
+- 操作 BIM 模型的构件树
+- 执行剖切、拆楼等 BIM 特有功能
+- 需要构件属性查询（GetNodeInfo）
+
 ---
 
 # WDP 图层/模型子技能
 
-覆盖范围：图层/单体控制器、静态模型、骨骼模型、工程摆放模型、工程摆放实例。
+覆盖范围：AES 底板图层/单体控制、静态模型、骨骼模型、工程摆放模型、工程摆放实例。
 
 ## 前置条件
 
 1. `App` 已初始化且渲染可用。
 2. 场景已完成基础加载，目标实体可检索。
 3. 节点级操作前先确认 `nodeIds` 有效。
+
+## 视觉反馈选型指南（重要）
+
+| 高亮类型 | 适用 Skill | 方法 | 适用场景 |
+|---------|-----------|------|---------|
+| **Tiles 节点高亮** | `wdp-api-layer-models` | `SetNodesHighlight` | AES 底板（Tiles/EarthTiles）单体节点高亮 |
+| **Tiles 图层高亮** | `wdp-api-layer-models` | `SetLayersHighlight` | AES 底板图层高亮（Building/Road/Water等） |
+| **Tiles 节点描边** | `wdp-api-layer-models` | `SetNodesOutline` | AES 底板单体描边（NodeSelection） |
+| **BIM 构件高亮** | `wdp-api-bim-unified` | `SetNodeHighLight` / `SetNodesHighlight` | BIM 模型内部构件高亮 |
+| **BIM 房间高亮** | `wdp-api-bim-unified` | `SetRoomHighLight` | BIM 房间/空间高亮 |
+| **模型材质高亮** | `wdp-api-material-settings` | `SetEntitySlotsHighlight` | 模型 mesh slot 级别高亮 |
+| **实体高亮** | `wdp-api-entity-general-behavior` | `SetEntityHighlight` | 普通实体整体高亮 |
+| **实体描边** | `wdp-api-entity-general-behavior` | `SetEntityOutline` | 实体边缘发光轮廓 |
+
+**⚠️ 关键区分**：
+- **Tiles 节点高亮** (`SetNodesHighlight`)：操作的是 AES 底板（Tiles/EarthTiles）上的单体节点（nodeId），通过 `App.Scene.Node` 工厂或 `tilesObj` 调用
+- **Tiles 图层高亮** (`SetLayersHighlight`)：操作的是整个图层（Building/Road/Water等），通过 `App.Scene.Tiles/EarthTiles` 调用
+- BIM 相关高亮需要使用 `wdp-api-bim-unified`，需要安装 BIM 插件
+- 材质级别高亮需要使用 `wdp-api-material-settings`
+
+**⚠️ 版本限制**：AES6 UE5.1 暂不支持图层描边功能，请改用图层高亮。
+
+---
 
 ## 关键认知：AES5 与 AES6 的 API 差异
 

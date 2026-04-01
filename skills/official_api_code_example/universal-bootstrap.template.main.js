@@ -1,9 +1,11 @@
 // ==============================================
 // === 插件导入区：根据业务需求取消注释 ===
 // ==============================================
+// 版本基线：WDP API 2.3.0, BIM API 2.2.0, GIS API 2.1.0
+// 插件版本必须与 WDP API 版本兼容，详见各 Skill 文档
 import WdpApi from 'wdpapi';
-// import BimApi from '@wdp-api/bim-api';  // 使用 BIM 功能时取消注释，并执行 npm install @wdp-api/bim-api@^2.1.1（⚠️ 不是 ^2.2.1！）
-// import GisApi from '@wdp-api/gis-api';  // 使用 GIS 功能时取消注释，并执行 npm install @wdp-api/gis-api@^2.1.0（⚠️ 不是 ^2.2.1！）
+// import BimApi from '@wdp-api/bim-api';  // 使用 BIM 功能时取消注释，并执行 npm install @wdp-api/bim-api@^2.2.0
+// import GisApi from '@wdp-api/gis-api';  // 使用 GIS 功能时取消注释，并执行 npm install @wdp-api/gis-api@^2.1.0
 
 // ==============================================
 // === 用户配置区：非开发人员请只修改这里的内容 ===

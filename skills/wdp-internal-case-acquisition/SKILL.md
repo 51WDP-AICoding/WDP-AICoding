@@ -58,8 +58,6 @@ powershell -ExecutionPolicy Bypass -File .\skills\wdp-internal-case-acquisition\
 - 解压目录：`project_{projectId}_version_{versionId}/`
 - 原 zip 默认保留，作为归档与重试依据。
 
-默认目录：
-- `D:\WorkFiles_Codex\WDP_AIcoding\skills\example\trueProjects`
 
 ## 解压与校验要求
 

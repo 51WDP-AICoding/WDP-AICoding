@@ -3,9 +3,28 @@ name: wdp-api-function-components
 description: 处理 WDP 功能组件 API 的实现与排障。用于天气、水面、天空盒、粒子特效、后处理等功能组件的创建、配置与控制；涉及场景特效和环境组件时使用本技能。
 ---
 
+# 📋 本文档职责范围
+
+**本文档定位**：API Sub Skill - 能力描述与使用场景
+
+**本文档职责**：
+- ✅ 描述功能组件的分类和能力范围
+- ✅ 说明功能组件操作的标准流程
+- ✅ 提供质量门槛和最佳实践
+- ✅ 列出常见问题和解决方案
+
+**本文档不职责**：
+- ❌ 不提供具体 API 的完整签名和返回结构（由 official-*.md 提供）
+- ❌ 不提供可复制的代码示例（由 official-*.md 提供）
+
+**代码生成前置要求**：
+> 🚨 **必须阅读**：`../official_api_code_example/official-function-components.md`
+
+---
+
 # WDP 功能组件子技能
 
-覆盖范围：天气、水面、天空盒、粒子特效、后处理。
+覆盖范围：天气、水面、天空盒、粒子特效、后处理、屏幕拾取、PickerPolyline、DOM坐标绑定、AssetLoader、DaaS等。
 
 ## 前置条件
 
@@ -15,22 +34,24 @@ description: 处理 WDP 功能组件 API 的实现与排障。用于天气、水
 
 ## 标准流程
 
-1. 创建功能组件。
-- 天气：`App.Weather.Create(opt)`。
-- 水面：`App.Water.Create(opt)`。
-- 天空盒：`App.SkyBox.Create(opt)`。
-- 粒子特效：`App.ParticleEffect.Create(opt)`。
-- 后处理：`App.PostProcess.Create(opt)`。
+1. **创建功能组件**
+   - 天气：`App.Weather.Create(opt)`
+   - 水面：`App.Water.Create(opt)`
+   - 天空盒：`App.SkyBox.Create(opt)`
+   - 粒子特效：`App.ParticleEffect.Create(opt)`
+   - 后处理：`App.PostProcess.Create(opt)`
 
-2. 配置组件参数。
-- 使用 `Update/Set` 系列方法更新参数。
+2. **配置组件参数**
+   - 使用 `Update/Set` 系列方法更新参数
 
-3. 控制组件状态。
-- 启停：`Start/Stop/Pause/Resume`。
-- 显隐：`Show/Hide`。
+3. **控制组件状态**
+   - 启停：`Start/Stop/Pause/Resume`
+   - 显隐：`Show/Hide`
 
-4. 销毁组件。
-- 使用 `Destroy` 方法销毁组件。
+4. **销毁组件**
+   - 使用 `Destroy` 方法销毁组件
+
+> 📖 **完整 API 签名和代码示例**：参考 `../official_api_code_example/official-function-components.md`
 
 ## 质量门槛
 

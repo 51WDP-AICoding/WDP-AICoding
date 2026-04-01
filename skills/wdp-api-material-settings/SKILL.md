@@ -3,6 +3,25 @@ name: wdp-api-material-settings
 description: 处理 WDP 材质设置 API 的实现与排障。用于材质实例创建、材质拾取、模型材质替换和材质高亮控制；涉及模型材质变更时使用本技能。
 ---
 
+# 📋 本文档职责范围
+
+**本文档定位**：API Sub Skill - 能力描述与使用场景
+
+**本文档职责**：
+- ✅ 描述材质设置的操作流程（创建→获取槽位→替换/高亮）
+- ✅ 说明获取材质槽位的多种方式（工具/事件/查询）
+- ✅ 提供质量门槛和最佳实践
+- ✅ 列出常见问题和解决方案
+
+**本文档不职责**：
+- ❌ 不提供具体 API 的完整签名和返回结构（由 official-*.md 提供）
+- ❌ 不提供可复制的代码示例（由 official-*.md 提供）
+
+**代码生成前置要求**：
+> 🚨 **必须阅读**：`../official_api_code_example/official-material-settings.md`
+
+---
+
 # WDP 材质设置子技能
 
 覆盖范围：模型材质替换、模型材质高亮。
@@ -13,133 +32,55 @@ description: 处理 WDP 材质设置 API 的实现与排障。用于材质实例
 2. 目标模型对象可检索（`GetByEids` 或现有对象引用）。
 3. 材质替换前可获取 `meshName/materialIndex/materialEid`。
 
+## 高亮方法选型指南（重要）
+
+| 高亮类型 | 适用 Skill | 方法 | 适用场景 |
+|---------|-----------|------|---------|
+| **模型材质高亮** | `wdp-api-material-settings` | `SetEntitySlotsHighlight` | 模型 mesh slot 级别高亮，精确控制材质 |
+| **BIM 构件高亮** | `wdp-api-bim-unified` | `SetNodeHighLight` / `SetNodesHighlight` | BIM 模型内部构件高亮 |
+| **BIM 房间高亮** | `wdp-api-bim-unified` | `SetRoomHighLight` | BIM 房间/空间高亮 |
+| **实体高亮** | `wdp-api-entity-general-behavior` | `SetEntityHighlight` | 普通实体（覆盖物/模型）高亮 |
+| **实体描边** | `wdp-api-entity-general-behavior` | `SetEntityOutline` | 实体边缘发光轮廓 |
+| **Tiles 节点高亮** | `wdp-api-layer-models` | `SetNodesHighlight` | AES 底板 Tiles 节点高亮 |
+| **Tiles 图层高亮** | `wdp-api-layer-models` | `SetLayersHighlight` | AES 底板图层高亮 |
+
+**⚠️ 注意**：不同高亮方法属于不同的 API 命名空间和 Skill 域，不可混用。材质高亮 (`SetEntitySlotsHighlight`) 专门用于模型材质级别，与 BIM 构件高亮 (`SetNodeHighLight`) 是不同的体系。
+
+---
+
 ## 标准流程
 
 ### 1. 创建材质实例
-```javascript
-const material = new App.Material({
-  seedId: 'xxx' // 从编辑器官方材质列表获取的相应材质SeedId
-});
-const res = await App.Scene.Add(material);
-if (res.success) {
-  const materialObj = res.result.object;
-  const materialEid = materialObj.materialEid; // 获取材质实例的 materialEid
-}
-```
+- **方法**：`new App.Material({seedId})` → `App.Scene.Add(material)`
+- **获取 materialEid**：从返回结果中提取 `result.object.materialEid`
+
+> 📖 **完整代码示例**：参考 `../official_api_code_example/official-material-settings.md`
 
 ### 2. 获取目标材质槽位
 
-#### 方式A：工具模式（PickerMaterial）
-```javascript
-// 开启材质拾取工具
-await App.Tools.PickerMaterial.Start({
-  bContinuous: true, // true=连续获取, false=单次获取
-  func: (res) => { console.log('拾取结果:', res); }
-});
+| 方式 | 方法 | 适用场景 |
+|------|------|---------|
+| 工具模式 | `App.Tools.PickerMaterial.Start/GetMaterials/End` | 交互式拾取 |
+| 事件模式 | `OnWdpMaterialHit` 事件监听 | 点击触发 |
+| 数据查询 | `App.DataModel.Material.GetList` | 批量查询 |
 
-// 获取拾取到的材质信息
-const pickRes = await App.Tools.PickerMaterial.GetMaterials();
-if (pickRes.success) {
-  console.log('目标材质:', pickRes.result);
-  // result: [{ eid, meshName, materialIndex, ... }]
-}
-
-// 关闭材质拾取工具
-await App.Tools.PickerMaterial.End();
-```
-
-#### 方式B：事件模式（OnWdpMaterialHit）
-```javascript
-// 注册材质点击事件
-await App.Renderer.RegisterSceneEvent([{
-  name: 'OnWdpMaterialHit',
-  func: (res) => {
-    // res.result 包含精确被点击面的信息
-    const { eid, meshName, materialIndex } = res.result;
-    console.log('点击材质:', { eid, meshName, materialIndex });
-  }
-}]);
-```
-
-#### 方式C：数据查询（GetList）
-```javascript
-// 通过模型对象获取材质列表
-const listRes = await App.DataModel.Material.GetList([modelObj]);
-if (listRes.success) {
-  console.log('材质列表:', listRes.result);
-}
-```
+> 📖 **完整 API 签名**：参考 `../official_api_code_example/official-material-settings.md`
 
 ### 3. 执行替换或高亮
 
-#### 材质替换 - 方式1：SetModelMaterial
-```javascript
-// 同类材质替换（批量替换相同材质）
-await App.DataModel.Material.SetModelMaterial({
-  TargetMaterials: [
-    {
-      eid: 'xxx',          // 模型eid
-      meshName: 'xxx',     // 网格名称
-      materialIndex: 0     // 材质索引
-    }
-  ],
-  MaterialEid: materialEid // 新材质的 materialEid
-});
-```
+| 操作 | 方法 | 说明 |
+|------|------|------|
+| 同类替换 | `SetModelMaterial({TargetMaterials, MaterialEid})` | 批量替换相同材质 |
+| 批量赋予 | `Apply(jsondata)` | 不同材质到不同模型 |
+| 材质高亮 | `SetEntitySlotsHighlight([{entity, meshName, MaterialIndex, bHighlight}])` | MaterialIndex: -1=所有材质 |
 
-#### 材质替换 - 方式2：Apply（批量赋予）
-```javascript
-// 批量赋予不同材质到不同模型
-const jsondata = [
-  {
-    obj: modelObj1,
-    newMaterialsInfo: [
-      {
-        MeshName: 'meshName1',
-        MaterialIndex: 0,
-        MIEid: materialEid1
-      },
-      {
-        MeshName: 'meshName2',
-        MaterialIndex: 1,
-        MIEid: materialEid2
-      }
-    ]
-  },
-  {
-    obj: modelObj2,
-    newMaterialsInfo: [
-      {
-        MeshName: 'meshName3',
-        MaterialIndex: 0,
-        MIEid: materialEid3
-      }
-    ]
-  }
-];
-
-await App.DataModel.Material.Apply(jsondata);
-```
-
-#### 材质高亮
-```javascript
-// 设置模型 mesh slot 高亮
-await App.DataModel.Material.SetEntitySlotsHighlight([
-  {
-    entity: modelObj,
-    meshName: 'Root_Mesh',
-    MaterialIndex: 2,    // -1 表示所有材质
-    bHighlight: true       // true=高亮, false=取消高亮
-  }
-]);
-```
+> 📖 **完整 API 签名**：参考 `../official_api_code_example/official-material-settings.md`
 
 ### 4. 校验结果
-```javascript
-// 对象级回读材质信息
-const { result } = await modelObj.GetMaterial();
-console.log('当前材质:', result);
-```
+- **方法**：`modelObj.GetMaterial()`
+- **说明**：对象级回读材质信息
+
+> 📖 **完整代码示例**：参考 `../official_api_code_example/official-material-settings.md`
 
 ## 质量门槛
 

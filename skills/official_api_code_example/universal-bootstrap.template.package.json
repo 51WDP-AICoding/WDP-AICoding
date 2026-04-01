@@ -7,24 +7,6 @@
     "build": "vite build"
   },
   "dependencies": {
-    "wdpapi": "^2.2.1",
-    "_comment_bim": "⚠️ npm install @wdp-api/bim-api@^2.1.1（不存在 2.2.x 版本，照搬 ^2.2.1 会安装失败）",
-    "_comment_gis": "⚠️ npm install @wdp-api/gis-api@^2.1.0（不存在 2.2.x 版本，照搬 ^2.2.1 会安装失败）"
+    "wdpapi": "^2.3.0"
   }
 }
-<task_progress>
-- [x] 阅读全部相关 skill 文件
-- [x] 重新审视 npm 安装方式的特殊约束
-- [x] 输出完整修改建议
-- [x] P0: 重写 universal-bootstrap.template.html
-- [x] P0: 创建 universal-bootstrap.template.main.js
-- [ ] P0: 创建 universal-bootstrap.template.package.json
-- [ ] P1: 修改 wdp-api-initialization-unified/SKILL.md
-- [ ] P1: 修改 wdp-entry-agent/SKILL.md
-- [ ] P2: 修改 wdp-api-function-components/SKILL.md
-- [ ] P2: 修改 BIM_PLUGIN_INSTALLATION.md
-- [ ] P2: 修改 GIS_PLUGIN_INSTALLATION.md
-- [ ] P3: 修改 wdp-api-bim-unified/SKILL.md
-- [ ] P3: 修改 gis-api-core-operations/SKILL.md
-</task_progress>
-</write_to_file>

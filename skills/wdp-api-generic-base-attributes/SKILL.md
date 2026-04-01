@@ -3,6 +3,25 @@ name: wdp-api-generic-base-attributes
 description: 处理 WDP 通用基础属性 API 的实现与排障。用于规范实体属性读写、批量属性更新和属性变更监听；涉及实体属性操作时使用本技能。
 ---
 
+# 📋 本文档职责范围
+
+**本文档定位**：API Sub Skill - 能力描述与使用场景
+
+**本文档职责**：
+- ✅ 描述 WDP 实体代理对象的特性（关键认知）
+- ✅ 说明属性读写的标准流程
+- ✅ 提供防御性编程模板
+- ✅ 列出常见问题和解决方案
+
+**本文档不职责**：
+- ❌ 不提供具体 API 的完整签名和返回结构（由 official-*.md 提供）
+- ❌ 不提供可复制的代码示例（由 official-*.md 提供）
+
+**代码生成前置要求**：
+> 🚨 **必须阅读**：`../official_api_code_example/official-generic-base-attributes.md`
+
+---
+
 # WDP 通用基础属性子技能
 
 覆盖范围：实体属性读写、批量属性更新、属性变更监听。
@@ -17,30 +36,17 @@ description: 处理 WDP 通用基础属性 API 的实现与排障。用于规范
 
 `GetByEids` / `GetByCustomId` / `GetByEntityName` / `GetAll` 返回的对象，以及事件回调中的 `result.object`，都是 **WDP 实体代理对象**（Proxy/Object wrapper）。不能直接访问 `.eid`、`.entityName` 等属性。
 
-```javascript
-// ❌ 错误：将代理对象当作普通对象
-const eid = result.object.eid          // undefined
-const name = entityObj.entityName      // undefined
+| 操作 | 错误做法 | 正确做法 |
+|------|---------|---------|
+| 读取属性 | `obj.eid`（返回 undefined） | `await obj.Get()` 后读取 `result.eid` |
+| 获取实体信息 | 直接访问属性 | 调用 `.Get()` 方法获取 |
 
-// ✅ 正确：通过 Get() 获取属性
-const info = await result.object.Get()
-const eid = info.result.eid
-const name = info.result.entityName
-```
+**防御性编程建议**：
+- 获取对象后始终通过 `.Get()` 读取属性
+- 使用 try-catch 处理可能的异常
+- 检查返回值的有效性
 
-**防御性编程模板：**
-```javascript
-async function getEntityInfo(proxyObj) {
-  if (!proxyObj) return null
-  try {
-    const info = await proxyObj.Get()
-    return info?.result ?? null
-  } catch (e) {
-    console.warn('获取实体信息失败:', e)
-    return null
-  }
-}
-```
+> 📖 **完整代码示例**：参考 `../official_api_code_example/official-generic-base-attributes.md`
 
 ## 标准流程
 

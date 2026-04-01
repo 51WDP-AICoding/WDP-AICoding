@@ -1,11 +1,30 @@
 ---
 name: wdp-api-coverings-unified
-description: 处理 WDP 覆盖物 API 的实现与排障。用于 POI、标记、热区、线条、多边形、文本标签、区域轮廓、热力图、路径、粒子特效、灯光、3D文字等覆盖物的创建、配置与控制；涉及场景标注和交互覆盖物时使用本技能。
+description: 处理 WDP 覆盖物 API 的实现与排障。用于 POI、Window、Range、热力图、路径、粒子特效、灯光、3D文字等覆盖物的创建、配置与控制；涉及场景标注和交互覆盖物时使用本技能。
+---
+
+# 📋 本文档职责范围
+
+**本文档定位**：API Sub Skill - 能力描述与使用场景
+
+**本文档职责**：
+- ✅ 描述覆盖物的分类和能力范围
+- ✅ 说明不同覆盖物的使用场景
+- ✅ 提供覆盖物操作的通用流程
+- ✅ 列出常见问题和解决方案
+
+**本文档不职责**：
+- ❌ 不提供具体 API 的完整签名和返回结构（由 official-*.md 提供）
+- ❌ 不提供可复制的代码示例（由 official-*.md 提供）
+
+**代码生成前置要求**：
+> 🚨 **必须阅读**：`../official_api_code_example/official-entity-coverings.md`
+
 ---
 
 # WDP 覆盖物子技能
 
-覆盖范围：POI、标记、热区、线条、多边形、文本标签、Window、区域轮廓(Range)、热力图(HeatMap/ColumnarHeatMap/SpaceHeatMap/RoadHeatMap/MeshHeatMap)、路径(Path)、迁徒图(Parabola)、粒子特效(Particle/Effects)、灯光(Light)、3D文字(Text3D)、可视域(Viewshed)、栅格图(Raster)、高亮区域(HighlightArea)、实时视频(RealTimeVideo)、自定义POI(CustomPoi)、实体组(Group)、智能建模系列(Vegetation/ModelerEmbank/ModelerWater/ModelerRiver/ModelerFence/ModelerFloor)、静态实例模型(StaticInstance)等。
+覆盖范围：POI、Window、Range（区域轮廓）、热力图系列（HeatMap/ColumnarHeatMap/SpaceHeatMap/RoadHeatMap/MeshHeatMap）、Path（路径）、Parabola（迁徙图）、Particle/Effects（粒子特效）、Light（灯光）、Text3D（3D文字）、Viewshed（可视域）、Raster（栅格图）、HighlightArea（高亮区域）、RealTimeVideo（实时视频）、CustomPoi（自定义POI）、Group（实体组）、智能建模系列、StaticInstance（静态实例模型）等。
 
 ## 前置条件
 
@@ -36,6 +55,8 @@ await App.Component.VideoUI.Add([obj]);
 - 特效系列：Effects, Light, Particle
 - 智能建模：Vegetation, ModelerEmbank, ModelerWater, ModelerRiver, ModelerFence, ModelerFloor
 - Web行为：VideoUI, WindowUI, PoiUI
+
+> 📖 **完整覆盖物创建 API 签名**：参考 `../official_api_code_example/official-entity-coverings.md`
 
 ### 2. 配置覆盖物参数
 - 使用 `Update/Set` 系列方法更新参数
@@ -124,69 +145,32 @@ await App.Component.VideoUI.Add([obj]);
 ## 常用覆盖物快速参考
 
 ### POI（兴趣点标记）
-```javascript
-const poi = new App.Poi({
-  location: [121.500, 31.238, 10],
-  poiStyle: {
-    markerNormalUrl: 'http://example.com/marker.png',
-    markerActivateUrl: 'http://example.com/marker_active.png',
-    markerSize: [60, 90]
-  },
-  entityName: 'myPoi',
-  customId: 'poi-001',
-  bVisible: true
-});
-const res = await App.Scene.Add(poi, {
-  calculateCoordZ: { coordZRef: 'surface', coordZOffset: 10 }
-});
-// 方法：Update, SetVisible, Get, Delete, onClick
-```
+- **创建**：`new App.Poi({location, poiStyle, entityName, customId})`
+- **添加**：`App.Scene.Add(poi, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+
+> 📖 **完整 POI API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: POI
 
 ### Window（内嵌窗口）
-```javascript
-const window = new App.Window({
-  location: [121.500, 31.238, 10],
-  windowStyle: {
-    url: 'http://example.com/page.html',
-    size: [500, 350]
-  }
-});
-const res = await App.Scene.Add(window, {
-  calculateCoordZ: { coordZRef: 'surface', coordZOffset: 50 }
-});
-```
+- **创建**：`new App.Window({location, windowStyle: {url, size}})`
+- **添加**：`App.Scene.Add(window, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
+
+> 📖 **完整 Window API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: Window
 
 ### Range（区域轮廓）
-```javascript
-const range = new App.Range({
-  polygon2D: {
-    coordinates: [[[121.45, 31.23], [121.46, 31.23], [121.46, 31.24], [121.45, 31.24]]]
-  },
-  rangeStyle: {
-    type: 'loop_line',
-    height: 200,
-    color: 'ff3772ff'
-  }
-});
-const res = await App.Scene.Add(range, {
-  calculateCoordZ: { coordZRef: 'surface', coordZOffset: 10 }
-});
-```
+- **创建**：`new App.Range({polygon2D/circlePolygon2D, rangeStyle})`
+- **添加**：`App.Scene.Add(range, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `GetRangeInfo`, `SetVisible`, `Delete`
+
+> 📖 **完整 Range API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 区域轮廓/圆形区域轮廓
 
 ### HeatMap（热力图）
-```javascript
-const heatmap = new App.HeatMap({
-  heatMapStyle: {
-    type: 'fit',
-    brushDiameter: 2000,
-    mappingValueRange: [1, 100]
-  },
-  points: { features: [{point: [121.5, 31.2, 0], value: 80}] }
-});
-const res = await App.Scene.Add(heatmap, {
-  calculateCoordZ: { coordZRef: 'surface', coordZOffset: 10 }
-});
-```
+- **创建**：`new App.HeatMap({heatMapStyle, points})`
+- **添加**：`App.Scene.Add(heatmap, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `GetHeatValue`, `Filter`, `UnFilter`, `SetVisible`, `Delete`
+
+> 📖 **完整热力图 API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 区域热力图/柱状热力图/点云热力图/路径热力图/3D网格热力图
 
 ## 质量门槛
 
