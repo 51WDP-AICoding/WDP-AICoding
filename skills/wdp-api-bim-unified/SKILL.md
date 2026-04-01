@@ -3,7 +3,24 @@ name: wdp-api-bim-unified
 description: 处理 BIM API 的模型/构件/空间核心能力、插件安装与验证的实现与排障。用于 BIM 接入、插件安装、模型行为调用、构件联动与空间操作实现。
 ---
 
-# WDP BIM功能统一技能
+
+## ⚠️ 本文档职责范围
+
+**本文档仅提供**：
+- 能力范围说明（模型操作、构件操作、空间操作等）
+- 使用场景判断（何时使用本 Skill）
+- 最佳实践和常见错误
+- 激活与聚焦的关系说明（独立无依赖）
+
+**本文档不提供**（必须查阅 official 文档）：
+- ❌ 具体代码示例
+- ❌ 详细参数结构
+- ❌ 返回数据结构
+
+**代码生成前必须查阅**：
+- `../official_api_code_example/official-bim-full.md` - **完整 API 文档（真值来源，包含核心操作）**
+
+**禁止基于本文档描述自行推理代码**，必须以 official 文档中的代码示例为准。
 
 ## 🚨 强制性要求
 
@@ -106,9 +123,9 @@ await entity.StartBuildingLayer();
 await entity.EndBuildingLayer();
 ```
 
-### 2.6 模型其他操作
+### 2.7 模型其他操作
 ```javascript
-// 激活模型
+// 激活模型，注意任何构件级的交互操作，必须先激活对应模型
 await entity.Active(true);
 
 // 模型移动
@@ -135,7 +152,33 @@ await entity.Update({ "tempLoad": false });
 
 ---
 
+## 视觉反馈选型指南（重要）
+
+| 高亮类型 | 适用 Skill | 方法 | 适用场景 |
+|---------|-----------|------|---------|
+| **BIM 构件高亮** | `wdp-api-bim-unified` | `SetNodeHighLight` / `SetNodesHighlight` | BIM 模型内部构件高亮（nodeId 级别） |
+| **BIM 房间高亮** | `wdp-api-bim-unified` | `SetRoomHighLight` | BIM 房间/空间高亮（roomId 级别） |
+| **模型材质高亮** | `wdp-api-material-settings` | `SetEntitySlotsHighlight` | 模型 mesh slot 级别高亮，精确控制材质 |
+| **实体高亮** | `wdp-api-entity-general-behavior` | `SetEntityHighlight` | 普通实体（覆盖物/模型）整体高亮 |
+| **实体描边** | `wdp-api-entity-general-behavior` | `SetEntityOutline` | 实体边缘发光轮廓 |
+| **Tiles 节点高亮** | `wdp-api-layer-models` | `SetNodesHighlight` | AES 底板 Tiles 节点高亮 |
+| **Tiles 图层高亮** | `wdp-api-layer-models` | `SetLayersHighlight` | AES 底板图层高亮 |
+
+**⚠️ 关键区分**：
+- BIM 构件高亮 (`SetNodeHighLight`)：操作的是 BIM 模型**内部节点**（nodeId），需要 BIM 插件
+- 模型材质高亮 (`SetEntitySlotsHighlight`)：操作的是**模型材质槽位**（meshName/materialIndex），不需要 BIM 插件
+- 实体高亮 (`SetEntityHighlight`)：操作的是**整个实体**（eid），适用于覆盖物和一般模型
+
+**选型建议**：
+- 需要高亮 BIM 模型内部特定构件 → 使用 `wdp-api-bim-unified` 的 `SetNodeHighLight`
+- 需要高亮 BIM 房间/空间 → 使用 `wdp-api-bim-unified` 的 `SetRoomHighLight`
+- 需要精确控制模型材质 → 使用 `wdp-api-material-settings` 的 `SetEntitySlotsHighlight`
+- 需要高亮普通实体或覆盖物 → 使用 `wdp-api-entity-general-behavior` 的 `SetEntityHighlight`
+
+---
+
 ## 3. 构件操作
+// 再次提醒，任何构件操作，需要先激活模型，且可以建议用户激活模型可以单独做一个交互点，不要常态化激活，性能上会有明显消耗。
 
 ### 3.1 获取构件树
 ```javascript
@@ -214,6 +257,51 @@ await entity.SetOtherNodesVisibility(["597"], false);
 
 // 全部显示
 await entity.SetNodeShowAll();
+```
+
+#### ⚠️ SetOtherNodesVisibility 使用注意事项
+
+**方法签名：**
+```javascript
+await entity.SetOtherNodesVisibility(nodeIds, visibility)
+```
+
+**参数说明：**
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| `nodeIds` | `string[]` | 要**排除**的节点ID数组（这些节点不受影响） |
+| `visibility` | `boolean` | **其他节点**（排除后的所有节点）的显隐状态 |
+
+**工作原理：**
+- `visibility: false` → 隐藏其他节点，只显示排除的节点（孤立效果）
+- `visibility: true` → 显示其他节点（恢复效果）
+
+**常见错误：**
+❌ 固定传入 `false`，导致无法恢复显示：
+```javascript
+// 错误：恢复时无法显示其他节点
+await entity.SetOtherNodesVisibility(['72'], false); // 始终隐藏其他
+```
+
+**正确做法：**
+✅ 根据状态动态切换 `visibility` 参数：
+```javascript
+const isIsolated = true; // 当前是否处于孤立状态
+const visibility = !isIsolated; // 关键：状态取反
+await entity.SetOtherNodesVisibility(['72'], visibility);
+// 孤立时：!true = false → 隐藏其他
+// 恢复时：!false = true → 显示其他
+```
+
+**完整示例（双向切换）：**
+```javascript
+let isIsolated = false;
+
+async function toggleIsolate() {
+    isIsolated = !isIsolated;
+    // 关键：visibility 参数与孤立状态相反
+    await entity.SetOtherNodesVisibility(['72'], !isIsolated);
+}
 ```
 
 ### 3.6 构件聚焦与移动
@@ -295,14 +383,14 @@ await App.DCP.GetNodeDefaultHighLightStyle();
 | 问题 | 解决方案 |
 |------|---------|
 | 构件显隐不生效 | 确认参数顺序：`SetNodeVisibility(nodeId, visible)`，`true`=显示，`false`=隐藏 |
-| 剖切不生效 | `coordZRef` 可用 `"ground"`/`"surface"`/`"altitude"`；`transform.location` 使用相对坐标 |
+| 剖切不生效 | `coordZRef` 可用 `"ground"`/ `"surface"`/ `"altitude"`；`transform.location` 使用相对坐标 |
 | 拆楼状态错乱 | 必须先关闭再开启：`EndBuildingLayer()` → `StartBuildingLayer()` |
 | 插件安装失败 | 确认 `typeof BimApi !== 'undefined'`；传入的是构造函数而非实例；
+| 孤立/反选后无法恢复显示 | `SetOtherNodesVisibility` 的第二个参数需根据状态动态切换，`!isIsolated` 而非固定 `false` |
 
 ---
 
 ## 7. 参考资料
 
-- `../official_api_code_example/official-bim-full.md` - **BIM API 完整文档（真值来源）**
-- `../official_api_code_example/official-bim-core-operations.md`
+- `../official_api_code_example/official-bim-full.md` - **BIM API 完整文档（真值来源，包含核心操作）**
 - `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md` - 在线文档访问说明
