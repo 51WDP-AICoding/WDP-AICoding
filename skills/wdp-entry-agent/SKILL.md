@@ -17,47 +17,68 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 **代码生成前必须查阅对应 official-*.md 文档获取准确代码示例，禁止基于 Skill 描述自行推理。**
 
-## 🚨 强制性要求
+---
 
-1. **必须先执行意图编排**：读取 `../wdp-intent-orchestrator/SKILL.md`，输出《系统意图与架构设计报告》
-2. **必须读取 initialization-unified**：获取基础初始化链路（`npm install wdpapi` → `new WdpApi()` → `Renderer.Start()`）
-3. **必须检查 Context Memory**：存在 `.context-memory/` 则 `ReadState` 恢复，不存在则初始化新 Memory
-4. **必须使用骨架文件**：端到端需求先读取 `../official_api_code_example/universal-bootstrap.template.*` 三件套作为基础骨架
-5. **必须按序加载子技能**：先 initialization，再按需读取插件，最后核心功能
-6. **Plugin.Install 必须在 Renderer.Start 之前**（如需插件）
-7. **核心参数（URL、Order）不得为假值**，缺失时必须向用户追问，禁止填入 `'YOUR_URL'` 等假值
+## 🚨 执行流程（严格顺序）
 
-## 执行流程（严格顺序）
+| 步骤 | 必须读取 | 关键获取 | 阻断检查 |
+|:---:|:---|:---|:---|
+| **Step 0** | 判断任务类型 | - | 长流程任务必须初始化 wdp-context-memory |
+| **Step 1** | `../wdp-intent-orchestrator/SKILL.md` | 《系统意图与架构设计报告》 | 未输出报告禁止继续 |
+| **Step 2** ⚠️ | `../wdp-api-initialization-unified/SKILL.md` | `npm install wdpapi@^2.3.0`<br>`import WdpApi from 'wdpapi'` | **包名必须是 `wdpapi`**<br>不是 `@wdp-api/xxx` |
+| **Step 3** | 按需读取 BIM/GIS skill | `Plugin.Install(xxxApi)` | 必须在 Renderer.Start 之前 |
+| **Step 4** | 按需读取功能 skill | 业务 API 代码 | 必须等待 Scene Ready |
 
-### Step 1: 意图解析（必须）
-读取 `../wdp-intent-orchestrator/SKILL.md`
-- 解析用户需求的业务实体和隐藏模块
-- 输出《系统意图与架构设计报告》
-- 确定需要涉及的技能域（BIM/GIS/相机/实体行为等）
-- 校验核心参数（URL、Order、容器）
+## 补充提醒：
+> 🔴 **Step 0 判断标准（长流程任务）**
+> 
+> 符合以下任一条件，必须在 Step 0 初始化 wdp-context-memory：
+> - 预计步骤超过 5 步
+> - 需要跨多个 wdp-api-* skill 调用
+> - 需要保持选中状态、相机位置等上下文
+> - 任务可能分多次对话完成
+> 
+> 初始化方式：读取 `../wdp-context-memory/SKILL.md`，执行 `ReadState()` 和 `UpdateState()`
 
-### Step 2: 基础初始化（必须）
-读取 `../wdp-api-initialization-unified/SKILL.md`
-- 获取 npm install wdpapi（必须先执行）
-- 获取 import → new WdpApi() → Renderer.Start() 链路
+> 🔴 **Step 2 高频错误警示**
+> 
+> 执行此步骤时，**必须**确认：
+> - 包名是 `wdpapi`（不是 `@wdp-api/cloud-api`）
+> - 安装命令是 `npm install wdpapi@^2.3.0`
+> - 导入方式是 `import WdpApi from 'wdpapi'`
+> 
+> 如果 npm 安装失败，**禁止**改用 CDN/script 标签，必须检查包名是否正确。
 
-### Step 3: 插件安装（按需）
-根据意图编排结果：
-- 如需BIM → 读取 `../wdp-api-bim-unified/SKILL.md`，获取 @wdp-api/bim-api 安装
-- 如需GIS → 读取 `../gis-api-core-operations/SKILL.md`，获取 @wdp-api/gis-api 安装
+---
 
-### Step 4: 核心功能（按需）
-根据意图编排结果，读取对应技能：
-- 相机、镜头相关行为 → `../wdp-api-camera-unified/SKILL.md`
-- 实体行为相关行为 → `../wdp-api-entity-general-behavior/SKILL.md`
-- 覆盖物相关行为 → `../wdp-api-coverings-unified/SKILL.md`
-- AES 底板图层/单体控制、静态/骨骼/工程摆放模型 → `../wdp-api-layer-models/SKILL.md`
-- 材质设置相关行为 → `../wdp-api-material-settings/SKILL.md`
-- 点聚合（大体量标签分层表达） → `../wdp-api-cluster/SKILL.md`
-- 功能组件相关行为 → `../wdp-api-function-components/SKILL.md`
-- 空间理解相关行为 → `../wdp-api-spatial-understanding/SKILL.md`
-- BIM 模型/构件/空间相关行为 → `../wdp-api-bim-unified/SKILL.md`
-- GIS 图层接入及应用相关行为 → `../gis-api-core-operations/SKILL.md`
+## 🚨 七条阻断性要求
+
+| # | 要求 | 阻断场景 |
+|:---:|:---|:---|
+| 1 | **长流程任务必须初始化 wdp-context-memory** | 多步骤任务未使用状态管理 |
+| 2 | 必须先执行意图编排 | 未读取 orchestrator 就写代码 |
+| 3 | **必须读取 initialization** ⚠️ | npm 安装失败时未检查包名 |
+| 4 | 必须检查 Context Memory | 重复创建 WDP 实例 |
+| 5 | 必须使用骨架文件 | 直接从头写代码 |
+| 6 | Plugin.Install 必须在 Renderer.Start 之前 | 顺序错误 |
+| 7 | 核心参数（URL、Order）不得为假值 | 填入 `YOUR_URL` |
+| 8 | **必须使用 npm install wdpapi** ⚠️ | 改用 CDN/script 标签 |
+
+> ⚠️ **高亮**：第 1、3、8 条是最常见错误，执行时必须大声确认。
+
+---
+
+## 统一基线
+
+| 类型 | 包名 | 版本 | 安装命令 |
+|:---:|:---|:---:|:---|
+| **核心 SDK** ⚠️ | `wdpapi` | `2.3.0` | `npm install wdpapi@^2.3.0` |
+| BIM 插件 | `@wdp-api/bim-api` | `2.2.0` | `npm install @wdp-api/bim-api@^2.2.0` |
+| GIS 插件 | `@wdp-api/gis-api` | `2.1.0` | `npm install @wdp-api/gis-api@^2.1.0` |
+
+> ⚠️ **注意**：核心 SDK 包名没有 `@wdp-api/` 前缀！
+
+---
 
 ## 路由规则（问题分类与子技能映射）
 
@@ -67,10 +88,10 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 |---|---------|-----------|
 | 1 | 启动/接入失败、渲染不可用、页面容器、脚本接入、交互层级问题 | `../wdp-api-initialization-unified/SKILL.md` |
 | 2 | 事件不触发、重复触发、回调异常 | `../wdp-api-general-event-registration/SKILL.md` |
-| 3 | 镜头飞行、聚焦、视角异常、相机漫游问题 | `../wdp-api-camera-unified/SKILL.md` |
+| 3 | 镜头飞行、聚焦、视角异常、相机漫游、相机跟随/跟拍问题 | `../wdp-api-camera-unified/SKILL.md` |
 | 4 | 属性获取与代理对象认知（.Get()方法、循环引用处理） | `../wdp-api-generic-base-attributes/SKILL.md` |
-| 5 | 实体检索、显隐、删除、落地等通用行为问题 | `../wdp-api-entity-general-behavior/SKILL.md` |
-| 6 | 覆盖物创建/更新/显隐/删除（实时视频、Window、POI、Web组件、HeatMap/Path/Bound、Scene.Create(s)、ClearByTypes） | `../wdp-api-coverings-unified/SKILL.md` |
+| 5 | 实体检索、显隐、删除、落地、沿路径运动等通用行为问题（`Bound` / `Scene.Move` / `ClearByTypes`） | `../wdp-api-entity-general-behavior/SKILL.md` |
+| 6 | 覆盖物创建/更新/显隐/删除（实时视频、Window、POI、Web组件、HeatMap/Path/Particle/Effects、Scene.Create(s)） | `../wdp-api-coverings-unified/SKILL.md` |
 | 7 | AES 底板图层/单体控制、静态/骨骼/工程摆放模型问题 | `../wdp-api-layer-models/SKILL.md` |
 | 8 | 模型材质替换、材质高亮、材质拾取问题 | `../wdp-api-material-settings/SKILL.md` |
 | 9 | 点聚合数据部署、聚合样式、周边搜索问题（私有化/lite） | `../wdp-api-cluster/SKILL.md` |
@@ -82,6 +103,14 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 > 非路由目标（底层设施，按需引用）：`wdp-context-memory`（状态管理）、`wdp-css-layer-management`（UI 层叠规范）、`wdp-internal-case-acquisition`（案例采集）
 
+> 路由边界补充：
+> - `Path` 作为可视化路径实体的**创建与样式控制**，优先走 `wdp-api-coverings-unified`
+> - `Bound` / `Scene.Move` 作为“实体沿路径运动”的**行为编排**，优先走 `wdp-api-entity-general-behavior`
+> - `CameraControl.Follow` 作为“镜头跟随实体”的**相机行为**，优先走 `wdp-api-camera-unified`
+> - “车辆巡检 / 跟车 / 跟拍”这类整链路需求，通常需要同时命中 coverings + entity-behavior + camera 三个子域
+
+---
+
 ## 必要参数要求
 
 任何WDP应用都必须包含以下核心参数：
@@ -92,12 +121,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 **参数缺失时的处理**：严禁填入假值，必须结构化追问用户；获取后在代码最顶部设"用户配置区"并加中文注释。
 
-## 统一基线
-
-- API 基线：`WDP API 2.3.0`
-- 插件版本基线：BIM `@wdp-api/bim-api@^2.2.0`、GIS `@wdp-api/gis-api@^2.1.0`
-- 先满足时序和依赖，再做参数调优
-- 参数先用默认值，再按用户意图做最小改动
+---
 
 ## 状态管理基线（跨域基础设施）
 
@@ -111,6 +135,8 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 上下文清理：任务切换时使用 `/clear`；使用 subagents 隔离不同任务。参考 `../wdp-context-memory/INTEGRATION_SPEC.md`，Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
 
+---
+
 ## 小白友好原则
 
 1. **禁止假值**：核心参数缺失时必须追问，禁止填 `'YOUR_URL'` 等假值
@@ -118,11 +144,15 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 3. **显性反馈**：关键执行节点（初始化成功/失败、数据加载、API 报错）必须包含 UI 提示（如 `alert()`），不依赖 Console
 4. **非核心参数可 Mock**：不影响运行的视觉参数可用默认值，但须提示用户"已使用默认展示效果"
 
+---
+
 ## 前端层叠规范（按需引用）
 
 数字孪生项目普遍采用"3D 场景 + 多模块 UI 覆盖层"架构，生成多模块 UI 或排查"点击无效/弹窗被遮挡"问题时，按需引用 `../wdp-css-layer-management/SKILL.md`。
 
 核心要点：所有模块全屏容器必须声明 z-index 并使用 `pointer-events: none/auto` 穿透模式。
+
+---
 
 ## 接入与排障基线检查（按需）
 
@@ -130,6 +160,8 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 1. 校验渲染口令：`env.url` 与 `env.order` 是否匹配环境
 2. 校验 SDK 依赖链：必须先有 `CloudApi`，再有 `WdpApi`；BIM/GIS 必须通过 `Plugin.Install`
+
+---
 
 ## ❌ 全局编码约束（强制执行）
 
@@ -139,21 +171,29 @@ WDP API 命名不遵循通用规范，必须通过 `../official_api_code_example
 ### 严禁凭经验猜测参数
 WDP API 参数命名不统一（如目标实体可能是 `eid`/`entity`/`targetEid`/`target`/`entityId`，时长可能是 `duration`/`flyTime`/`time`），必须通过官方文档确认。
 
+---
+
 ## 编码前自检清单
 
-- [ ] 事件回调/查询返回的 object 是否通过 `.Get()` 获取属性？
-- [ ] 是否混淆了 nodeId 和 eid？
-- [ ] 视觉反馈方式（描边/高亮/房间高亮）是否选型正确？
-- [ ] 异步操作是否有 try-catch 防护？
-- [ ] 模块全屏容器是否声明了 z-index？
-- [ ] 每个可切换状态是否都有开启 + 关闭两条路径？
-- [ ] **是否查阅了 official 文档确认 API 方法名和参数？**
+### 🔴 关键项（出错率最高，必须确认）
+- [ ] **包名确认**：使用的是 `wdpapi` 不是 `@wdp-api/xxx`
+- [ ] **安装方式**：`npm install wdpapi@^2.3.0`，没有使用 CDN
+- [ ] **导入方式**：`import WdpApi from 'wdpapi'`，没有使用 `window.WdpApi`
+
+### 其他项
+- [ ] 事件回调返回的 object 通过 `.Get()` 获取属性
+- [ ] 未满足 Ready 信号时未执行业务 API
+- [ ] 查阅了 official 文档确认 API 方法名和参数
+
+---
 
 ## 案例吸收与生命周期规则
 
 1. 批量对象操作：同类对象统一采用"批量创建 / 批量更新 / 批量清理"三段式
 2. 事件门禁：未满足 Ready 信号时禁止执行业务 API，避免竞态
 3. 清理：所有实体覆盖物必须有相对应的清退机制（如 `.Clear()` / `.StopRoam()` 等）
+
+---
 
 ## 调度闭环规范
 
@@ -167,6 +207,8 @@ WDP API 参数命名不统一（如目标实体可能是 `eid`/`entity`/`targetE
 6. **验证信号** — API 返回值、事件回调、可视化结果
 7. **一致性校验** — `ValidateConsistency` 结果，是否存在冲突及处理方式
 8. **回滚清理** — 关闭路径、对象释放、失败恢复
+
+---
 
 ## 参考资料读取顺序（相对路径）
 
@@ -192,17 +234,23 @@ WDP API 参数命名不统一（如目标实体可能是 `eid`/`entity`/`targetE
 - `official-bim-full.md` — BIM 完整文档
 - `official-gis-full.md` — GIS 完整文档
 
+---
+
 ## 文档后台访问约束
 
 - 文档平台地址以 `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md` 为准
 - 不保存后台 token 到仓库
 - 每次需要读取后台文档时，先向用户请求临时 token
 
+---
+
 ## 职责边界
 
 **本 skill 负责**：需求分类与子 skill 路由、接入前置基线校验、输出最小闭环执行方案
 
 **本 skill 不负责**：具体 API 业务实现（交由对应 sub skill）、页面视觉样式与业务 UI 设计
+
+---
 
 ## 输出格式
 

@@ -1,21 +1,22 @@
 ---
 name: wdp-api-function-components
-description: 处理 WDP 功能组件 API 的实现与排障。用于天气、水面、天空盒、粒子特效、后处理等功能组件的创建、配置与控制；涉及场景特效和环境组件时使用本技能。
+description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控制、工具类能力、控件与设置、屏幕拾取、DOM 坐标绑定、AssetLoader、DaaS 等功能实现；涉及天气、坐标工具、屏幕工具和系统设置时使用本技能。
 ---
 
 # 📋 本文档职责范围
 
-**本文档定位**：API Sub Skill - 能力描述与使用场景
+**本文档定位**：API Sub Skill - 能力边界与使用场景说明
 
 **本文档职责**：
-- ✅ 描述功能组件的分类和能力范围
-- ✅ 说明功能组件操作的标准流程
-- ✅ 提供质量门槛和最佳实践
-- ✅ 列出常见问题和解决方案
+- ✅ 描述功能组件域的能力边界和问题分类
+- ✅ 说明该域与 coverings / cluster / spatial-understanding 等相邻技能的边界
+- ✅ 提供强制性约束、常见误用和验证要点
+- ✅ 指引你去正确的 official 文档查真实 API
 
-**本文档不职责**：
+**本文档不负责**：
 - ❌ 不提供具体 API 的完整签名和返回结构（由 official-*.md 提供）
 - ❌ 不提供可复制的代码示例（由 official-*.md 提供）
+- ❌ 不允许基于“通用组件心智”抽象出并不存在的 Create / Destroy API
 
 **代码生成前置要求**：
 > 🚨 **必须阅读**：`../official_api_code_example/official-function-components.md`
@@ -24,65 +25,171 @@ description: 处理 WDP 功能组件 API 的实现与排障。用于天气、水
 
 # WDP 功能组件子技能
 
-覆盖范围：天气、水面、天空盒、粒子特效、后处理、屏幕拾取、PickerPolyline、DOM坐标绑定、AssetLoader、DaaS等。
+## 适用范围
 
-## 前置条件
+本技能处理的是 **环境 / 控件 / 工具 / 设置** 一类的功能组件域，典型包括：
 
-1. `App` 已初始化且渲染可用。
-2. 场景已完成基础加载（`SceneReady(100%)`）。
-3. 功能组件参数已完成基础校验。
+- 环境控制：天气、光照时间、场景风格
+- 控件与系统信息：API 信息、插件信息、渲染状态、快照
+- 坐标与拾取工具：坐标转换、屏幕取点、取线、测量、剖切、CAD 地理参考
+- 屏幕与辅助组件：MiniMap、Compass、ChinaMap、DOM 坐标绑定
+- 资源与数据：AssetLoader、DaaS 云盘文件列表
+
+> 📖 真实方法名、参数结构、取值范围一律以 `../official_api_code_example/official-function-components.md` 为准。
+
+---
+
+## 🚨 强制性要求
+
+1. 🚨 **必须在 `App` 已初始化且渲染可用后再进入本技能域**
+2. 🚨 **依赖场景状态的功能必须在 `SceneReady(100%)` 后执行**
+3. 🚨 **必须使用 official 文档中的真实方法名，禁止按通用经验抽象方法**
+4. 🚨 **涉及枚举值、坐标类型、屏幕坐标、颜色格式时必须查 official 文档确认**
+5. 🚨 **涉及屏幕绑定、取点、测量、剖切等交互工具时，必须同时考虑退出/关闭路径**
+
+---
+
+## ❌ 严禁事项
+
+### 禁止虚构“通用组件 API”
+
+以下写法**不能作为本技能的默认心智模型**：
+
+- `App.Weather.Create(opt)`
+- `App.Water.Create(opt)`
+- `App.SkyBox.Create(opt)`
+- `App.ParticleEffect.Create(opt)`
+- `App.PostProcess.Create(opt)`
+
+这些名字在当前 official 文档中**并未作为本技能域的通用真值接口被确认**。  
+如果需求是“天气切换”“场景风格化”“测量工具”“屏幕坐标绑定”等，必须去 official 文档查真实 API。
+
+### 禁止把“功能组件域”误当成“覆盖物创建域”
+
+以下需求**不要默认留在本技能处理**：
+
+- 创建 `Poi / Window / Path / Range / HeatMap / Particle / Effects`
+- 创建实时视频、3D 文本、可视域等场景实体
+
+这些更应优先路由到：
+- `../wdp-api-coverings-unified/SKILL.md`
+
+### 禁止把聚合展示误归到本技能
+
+如果需求核心是：
+- DaaS 点位聚合
+- 聚合样式配置
+- 周边搜索
+
+优先路由到：
+- `../wdp-api-cluster/SKILL.md`
+
+### 禁止忽略关闭/清理路径
+
+以下功能不能只写“开启”，不写“关闭”：
+
+- MiniMap / Compass
+- PickerPoint / PickerPolyline / Measure / Section
+- ScreenPosBound
+- ChinaMap 高亮 / 迁徙图
+
+---
+
+## 与相邻技能的边界
+
+### 本技能负责
+
+- 环境切换：`GetSceneWeather / SetSceneWeather / GetSkylightTime / SetSkylightTime`
+- 系统与渲染信息：`GetInfomation / Plugin.Get / GetStats / GetSnapshot`
+- 坐标与拾取：GIS / Cartesian / Screen 坐标互转，取点、取线、拾取
+- 工具类能力：测量、剖切、ChinaMap、MiniMap、Compass
+- DOM 坐标绑定：ScreenPosBound
+- 资源查询：AssetLoader、DaaS 文件列表
+
+### 不由本技能主负责
+
+- 场景实体创建与显隐：`wdp-api-coverings-unified`
+- 实体通用检索 / 删除 / Bound 行为：`wdp-api-entity-general-behavior`
+- 空间理解和坐标推导策略：`wdp-api-spatial-understanding`
+- 聚合专题：`wdp-api-cluster`
+
+---
 
 ## 标准流程
 
-1. **创建功能组件**
-   - 天气：`App.Weather.Create(opt)`
-   - 水面：`App.Water.Create(opt)`
-   - 天空盒：`App.SkyBox.Create(opt)`
-   - 粒子特效：`App.ParticleEffect.Create(opt)`
-   - 后处理：`App.PostProcess.Create(opt)`
+1. **先判断问题是否真的属于功能组件域**
+- 天气、工具、设置、屏幕绑定、拾取、快照等留在本域
+- 覆盖物创建、路径运动、实体控制则转到相邻 skill
 
-2. **配置组件参数**
-   - 使用 `Update/Set` 系列方法更新参数
+2. **读取 official 文档确认真实 API**
+- 尤其确认方法名、参数顺序、枚举值、返回字段
 
-3. **控制组件状态**
-   - 启停：`Start/Stop/Pause/Resume`
-   - 显隐：`Show/Hide`
+3. **确认前置条件**
+- 是否要求 `SceneReady(100%)`
+- 是否需要已有实体对象、已有屏幕坐标、已有资源 ID
 
-4. **销毁组件**
-   - 使用 `Destroy` 方法销毁组件
+4. **补齐关键参数**
+- 天气名称、时间值、屏幕坐标、DOM 绑定点位、资源 ID、颜色格式、坐标参考系
 
-> 📖 **完整 API 签名和代码示例**：参考 `../official_api_code_example/official-function-components.md`
+5. **补齐关闭/回滚路径**
+- 明确 End / Remove / Stop / 解绑步骤
 
-## 质量门槛
+6. **验证结果**
+- 看 API 返回值
+- 看屏幕可视化效果
+- 看是否可重复开启/关闭而不残留状态
 
-1. 创建前检查环境支持度。
-2. 参数更新前做类型和范围校验。
-3. 组件销毁前先停止运行。
-
-## 特殊编排流警告 (天气动态嗅探相关)
-
-如果涉及到**"天气组件的动态嗅探、自适应降级、兜底保护"**操作：
-请直接使用本技能中的 `App.Weather.Create()` 方法，并配合参数校验和 try-catch 进行降级控制。
+---
 
 ## 高频问题
 
-1. 组件创建成功但无效果。
-- 检查参数配置和场景状态。
+### 1. 天气切换写了能运行但天气名不对
+- 原因：凭经验填了枚举值，未查 official 参数表
+- 处理：到 `official-function-components.md` 核对 `SetSceneWeather` 参数 1 的真实可选值
 
-2. 组件更新无效。
-- 检查组件实例是否有效，参数是否正确。
+### 2. 坐标转换结果不对
+- 原因：混用了 GIS / Cartesian / Screen 坐标，或高度参考系理解错误
+- 处理：先确认输入坐标类型，再确认是否需要 `surface / ground / altitude`
 
-3. 组件性能问题。
-- 检查组件数量和参数复杂度。
+### 3. 工具开启后无法退出
+- 原因：只实现了 Start，没有实现 End / Remove
+- 处理：编码时必须成对检查启停 API
+
+### 4. 把实体创建误写进功能组件域
+- 原因：把天气/工具类 API 和场景覆盖物 API 混在一起
+- 处理：凡是 `new App.Poi / Window / Path / Particle / Effects` 这类实体创建，优先转 coverings
+
+### 5. 只看 Console，不做显性验证
+- 原因：没有观察 UI 或可视结果
+- 处理：至少验证一个用户可见信号，例如天气变化、工具 UI、绑定后的 DOM 跟随、快照结果
+
+---
+
+## 验证要点
+
+1. 天气 / 光照 / 风格切换后，场景有可见变化
+2. 屏幕拾取或取点工具返回的数据结构符合 official 文档
+3. MiniMap / Compass / Measure / Section 等工具可以正常关闭
+4. ScreenPosBound 在更新和移除后，DOM 跟随状态正确变化
+5. AssetLoader / DaaS 返回值中关键字段可被后续业务消费
+
+---
 
 ## 参考资料（相对路径）
 
 - `../official_api_code_example/official-function-components.md`
+- `../wdp-api-coverings-unified/SKILL.md`
+- `../wdp-api-cluster/SKILL.md`
+- `../wdp-api-spatial-understanding/SKILL.md`
+
+---
 
 ## 输出要求
 
 始终输出：
-1. 组件类型与配置摘要
-2. 调用链路与影响范围
-3. 验证步骤与结果
-4. 回滚建议（如有）
+1. 功能组件问题分类
+2. 已查阅的 official 参考文件
+3. 前置条件与关键参数摘要
+4. 调用链路与影响范围
+5. 验证步骤与通过标准
+6. 关闭/回滚路径

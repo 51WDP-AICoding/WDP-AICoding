@@ -67,6 +67,7 @@ WDP API参数命名不统一，**必须通过官方文档确认参数格式**，
 
 ### 1. 基础相机控制
 - 相机聚焦：Focus、FlyTo
+- 相机跟随：Follow、Stop
 - 相机移动：Move（按方向/距离）
 - 相机旋转：Rotate（按方向/角度）
 - 获取相机信息：GetCameraPose、GetCameraInfo
@@ -94,9 +95,20 @@ WDP API参数命名不统一，**必须通过官方文档确认参数格式**，
 | 问题 | 原因 | 解决方案 |
 |------|------|---------|
 | 相机聚焦（Focus）不生效 | eid 无效或实体未加载 | 确认 eid 存在且有效；确认实体已加载完成并可见 |
+| 相机跟随（Follow）不生效 | 跟随目标对象无效，或把跟随问题误当成路径/覆盖物问题处理 | 确认目标实体对象有效；先区分“实体是否会动”和“镜头是否跟随”是两层问题 |
 | 漫游路径（Roam.StartPath）不移动 | 路径未加载或 pathId 无效 | 确保先调用 LoadPath 加载路径；确认 pathId 存在且有效 |
 | 自由漫游（Roam.StartFreeRoam）键盘不响应 | 页面无焦点或事件监听错误 | 确保页面有焦点；确认键盘事件监听器正确设置 |
 | 相机动画（CameraControl.CreateAnimation）不流畅 | 关键帧设置不当 | 确保关键帧时间值递增且在 0-duration 范围内；关键帧至少 3-4 个 |
+
+## 🔀 与路径运动的边界
+
+- `Bound` / `Scene.Move` 负责“实体怎么沿路径运动”
+- `CameraControl.Follow` 负责“镜头怎么跟随目标实体”
+- 不要把“车辆不动”和“镜头不跟”混成一个问题排查
+- 典型整链路通常是：
+  1. `wdp-api-coverings-unified` 创建 `Path` / `Particle`
+  2. `wdp-api-entity-general-behavior` 通过 `Bound` 或 `Scene.Move` 让实体运动
+  3. `wdp-api-camera-unified` 通过 `Follow` 做跟拍
 
 ## 🎯 高阶事件与交互技巧
 

@@ -1818,6 +1818,8 @@ if (success) {
 }
 ```
 
+注：在线文档补充说明，当 `bLoop` 为 `false` 时，实体移动到终点停止后，如需再次从头移动，请先将 `state` 更新为 `stop`，再切回 `play`。
+
 - 更新实体移动
 
 ```javascript
@@ -1885,6 +1887,10 @@ console.log(res);
 // 示例
 const obj = new App.Bound({ ...});
 obj.Update(json); //同Add中的参数
+// 在线参数表显式确认：
+// 可更新：moving、path、boundStyle.bLoop、boundStyle.state、
+// rotator.pitch / rotator.yaw / rotator.roll、offset.left / offset.forward / offset.up
+// 不可更新：boundStyle.time、boundStyle.bReverse
 obj.SetTime(50);
 obj.SetReverse(false); //是否反向移动(true/false)；false为正向移动，true为反向移动
 obj.SetLoop(true); //是否循环(true/false)；true为循环移动，false为到达终点后终止

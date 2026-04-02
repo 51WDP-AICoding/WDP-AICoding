@@ -41,6 +41,77 @@
 - 若后台草稿与线上已发布文档不一致，开发默认以线上发布口径为准，除非用户明确指定按后台草稿执行。
 - 每次对本目录的实质性变更（新增/修正/合并/删除）均记录在 `CHANGELOG.md`。
 
+## 常用检索别名（给意图识别与人工检索用）
+
+### 路径与运动
+
+- “画路径 / 画路线 / 创建轨迹 / 路线标记”
+  - 先查：`official-entity-coverings.md`
+  - 关注：`Path`
+
+- “沿路径移动 / 路径回放 / 车辆行驶 / 巡检车移动 / 沿路线走”
+  - 先查：`official-entity-general-behavior.md`
+  - 关注：`App.Bound`、`App.Scene.Move`
+
+- “跟车 / 跟拍 / 镜头跟随 / 相机跟随实体”
+  - 先查：`official-scene-camera.md`
+  - 关注：`App.CameraControl.Follow`
+
+### 选中、拾取与 Id 获取
+
+- “点模型拿 eid / 点对象拿实体 / 点击场景获取实体”
+  - 先查：`official-function-components.md`
+  - 关注：`App.Tools.Picker.PickByScreenPos`
+
+- “点底板单体拿 nodeId / 点击 AES 单体 / 框选底板单体”
+  - 先查：`official-function-components.md`
+  - 关注：`App.Tools.Picker.PickAesTilesNodeByScreenPos`、`App.Tools.Picker.PickAesTilesNodesByRectangle`
+
+- “通过 eid 查对象 / 通过 customId 查对象 / 拿到对象实例”
+  - 先查：`official-entity-general-behavior.md`
+  - 关注：`App.Scene.GetByEids`、`App.Scene.GetByCustomId`
+
+- “查 BIM 构件 nodeId / 搜索构件 / 获取构件树 / 获取构件属性”
+  - 先查：`official-bim-full.md`
+  - 关注：`GetNodeTree`、`GetNodeTreeBySearch`、`GetNodeListBySearch`、`GetNodeInfo`
+
+- “查 GIS 要素 featureId / 点击要素 / 要素属性查询”
+  - 先查：`official-gis-full.md`
+  - 关注：要素点击事件、要素属性查询、`featureId`
+
+### 高亮与显隐
+
+- “高亮构件 / BIM 构件高亮 / 房间高亮”
+  - 先查：`official-bim-full.md`
+  - 关注：`SetNodeHighLight`、`SetNodesHighlight`、`SetRoomHighLight`
+
+- “高亮底板单体 / node 高亮 / node 轮廓”
+  - 先查：`official-layer-models.md`
+  - 关注：`SetNodesHighlight`、`SetNodesOutline`
+
+- “高亮 GIS 要素 / 要素高亮 / 取消要素高亮”
+  - 先查：`official-gis-full.md`
+  - 关注：`SetGeoLayerFeatureHighlight`
+
+- “实体显隐 / 删除对象 / 清空一类对象”
+  - 先查：`official-entity-general-behavior.md`
+  - 关注：`SetVisible`、`Delete`、`ClearByTypes`
+
+### 环境、工具与清理
+
+- “天气切换 / 晴天雨天 / 雪天雾天 / 场景天气”
+  - 先查：`official-function-components.md`
+  - 关注：`App.Environment.SetSceneWeather`
+
+- “屏幕拾取 / 取点 / DOM 跟随 / 屏幕坐标绑定”
+  - 先查：`official-function-components.md`
+  - 关注：Picker、Screen、DOM 坐标绑定
+
+- “离开页面清空 / 卸载清理 / 退出时解绑 / 清理屏幕绑定”
+  - 先查：`official-general-event-registration.md`
+  - 再查：`official-entity-general-behavior.md`、`official-function-components.md`、`official-scene-camera.md`
+  - 关注：事件解绑、`Delete` / `ClearByTypes`、`RemoveScreenPosBound`、`StopRoam`
+
 ## 按官网分类的整理进度（WDP API 2.3.0）
 
 1. 通用事件监听：已整理

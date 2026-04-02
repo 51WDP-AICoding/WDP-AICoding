@@ -31,6 +31,8 @@ await App.Environment.GetSceneWeather();
 // 参数1：切换到的天气；参数2：切换效果的持续时间；参数3：应用实时天气（目前不支持实时天气）
 // 参数3设置成true即实时时间，需要有外网才能访问
 await App.Environment.SetSceneWeather('Sunny', 3, false);
+// 参数1可选值：Sunny、Cloudy、PartlyCloudy、Overcast、LightRain、ModerateRain、HeavyRain、
+// LightSnow、ModerateSnow、HeavySnow、Foggy、Sand、Haze、auto、自定义（需 UE 预先定义天气）
 ```
 
 - 场景风格化

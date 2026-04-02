@@ -893,7 +893,7 @@ console.log(res);
 ```javascript
 //entity可通过Eid获取实体或通过新模型加载获取实体
 //参数nodeId根据获取构件数获取
-const res = await entity.SetNodeHighLight("597", true, true, { 
+const res = await entity.SetNodeHighLight("597", true, true, { // 此处NodeId支持写单个构件ID，也可以写多个构件ID数组，如 ["597", "598", "599"]
     color: "76fffc", 
     opacity: 1, 
     bCanBeOccluded: true,
@@ -912,7 +912,7 @@ const res = await entity.SetNodeHighLight("597", true, true, {
 
 | 参数名 | 类型 | 描述 | 取值范围 | 是否必填 |
 | --- | --- | --- | --- | --- |
-| nodeId | string | 构件节点ID | 是 |
+| nodeId | 	string 或 array<string> | 构件节点ID，支持单个构件或多个构件 | 是 |
 | status | boolean | 是否高亮 | true（高亮）/ false（不高亮） | 是 |
 | unique | boolean | 是否排它（仅在status=true时生效 | true / false | 是 |
 | color | string | 高亮颜色（HEX值） | 颜色字符串，如："76fffc" | 是 |
@@ -1076,7 +1076,7 @@ await entity.SetNodesHighlight([
 
 | 参数名 | 类型 | 描述 | 取值范围 | 是否必填 |
 | --- | --- | --- | --- | --- |
-| nodeId | string \| Array<string> | 构件节点ID，可为单个字符串或多个构件id组成的数组 | 如："597" 或 ["597", "598"] | 是 |
+| nodeId | string 或 Array<string> | 构件节点ID，可为单个字符串或多个构件id组成的数组 | 如："597" 或 ["597", "598"] | 是 |
 | color | string | 高亮颜色（HEX值） | 颜色字符串，如："76fffc" | 是 |
 | hightlight | boolean | 是否高亮 | true / false | 是 |
 | opacity | number | 高亮透明度 | 0.0 ~ 1.0 | 否 |
