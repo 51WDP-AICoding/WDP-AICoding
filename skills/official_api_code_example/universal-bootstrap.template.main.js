@@ -104,19 +104,3 @@ document.getElementById('btn-action-2').addEventListener('click', async () => {
 
 // 启动主干
 bootstrap();
-<task_progress>
-- [x] 阅读全部相关 skill 文件
-- [x] 重新审视 npm 安装方式的特殊约束
-- [x] 输出完整修改建议
-- [x] P0: 重写 universal-bootstrap.template.html
-- [ ] P0: 创建 universal-bootstrap.template.main.js
-- [ ] P0: 创建 universal-bootstrap.template.package.json
-- [ ] P1: 修改 wdp-api-initialization-unified/SKILL.md
-- [ ] P1: 修改 wdp-entry-agent/SKILL.md
-- [ ] P2: 修改 wdp-api-function-components/SKILL.md
-- [ ] P2: 修改 BIM_PLUGIN_INSTALLATION.md
-- [ ] P2: 修改 GIS_PLUGIN_INSTALLATION.md
-- [ ] P3: 修改 wdp-api-bim-unified/SKILL.md
-- [ ] P3: 修改 gis-api-core-operations/SKILL.md
-</task_progress>
-</write_to_file>
