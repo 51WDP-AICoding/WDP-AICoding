@@ -584,6 +584,16 @@ const snapshot = await App.Renderer.GetSnapshot([1920, 1080], 0.8);
 ```javascript
 await App.Renderer.SetRendererMode('fixed', [1920, 1080]);
 ```
+- 渲染模式参数说明：
+
+已将表格整理为 Markdown 格式：
+
+**参数说明：**
+
+| 参数 | 值 | 类型 | 备注 |
+|------|-----|------|------|
+| type | full, fixed | string | 渲染模式: full: 自动适应容器尺寸; fixed: 固定分辨率 |
+| resolution | [100~7680, 100~4320] | Integer | 渲染分辨率; fixed时有效<br>注: chrome浏览器最高支持4K: 4096 * 2160; 使用51Browser可以达到8K支持 7680 * 4320 |
 
 - 设置帧率
 
