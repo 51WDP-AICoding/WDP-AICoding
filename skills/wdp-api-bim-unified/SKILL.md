@@ -289,36 +289,20 @@ await entity.SetOtherNodesVisibility(nodeIds, visibility)
 | `visibility` | `boolean` | **其他节点**（排除后的所有节点）的显隐状态 |
 
 **工作原理：**
-- `visibility: false` → 隐藏其他节点，只显示排除的节点（孤立效果）
-- `visibility: true` → 显示其他节点（恢复效果）
+- `visibility: false` → 显示其他节点（恢复效果）
+- `visibility: true` → 隐藏其他节点，只显示输入id的节点（孤立效果）
 
 **推荐心智模型：**
 - 不要把第二个参数理解成“是否开启孤立”
 - 要把第二个参数理解成“其他节点是否可见”
 - 因此：
-  - “开启孤立” = `其他节点可见 = false`
-  - “关闭孤立” = `其他节点可见 = true`
+  - “开启孤立” = `其他节点不可见 = true`
+  - “关闭孤立” = `其他节点可见 = false`
 
-**常见错误：**
-❌ 固定传入 `false`，导致无法恢复显示：
-```javascript
-// 错误：恢复时无法显示其他节点
-await entity.SetOtherNodesVisibility(['72'], false); // 始终隐藏其他
-```
-
-**正确做法：**
-✅ 根据状态动态切换 `visibility` 参数：
-```javascript
-const isIsolated = true; // 当前是否处于孤立状态
-const visibility = !isIsolated; // 关键：状态取反
-await entity.SetOtherNodesVisibility(['72'], visibility);
-// 孤立时：!true = false → 隐藏其他
-// 恢复时：!false = true → 显示其他
-```
 
 **完整示例（双向切换）：**
 ```javascript
-let isIsolated = false;
+let isIsolated = true;
 
 async function toggleIsolate() {
     isIsolated = !isIsolated;
@@ -331,10 +315,10 @@ async function toggleIsolate() {
 
 - `SetNodeShowAll()` 是**全量恢复类操作**，会把节点显隐状态整体拉回“全部显示”。
 - 因此它更适合作为“全局复位/兜底恢复”动作，而不是日常孤立 toggle 链路中的常规步骤。
-- 如果在 `SetOtherNodesVisibility(["72"], false)` 之后紧接着调用 `SetNodeShowAll()`，孤立效果会被直接覆盖。
+- 如果在 `SetOtherNodesVisibility(["72"], true)` 之后紧接着调用 `SetNodeShowAll()`，孤立效果会被直接覆盖。
 - 编排建议：
-  - 日常孤立开启：优先只调用 `SetOtherNodesVisibility(nodeIds, false)`
-  - 日常孤立恢复：优先只调用 `SetOtherNodesVisibility(nodeIds, true)`
+  - 日常孤立开启：优先只调用 `SetOtherNodesVisibility(nodeIds, true)`
+  - 日常孤立恢复：优先只调用 `SetOtherNodesVisibility(nodeIds, false)`
   - 全量复位时：再视情况调用 `SetNodeShowAll()`
 
 ### 3.6 构件聚焦与移动
