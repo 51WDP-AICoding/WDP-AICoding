@@ -41,52 +41,19 @@ const App = new WdpApi({
 ```
 
 - 参数说明: 
-  参数 
-  值 
-  类型 
-  备注 
-  id 
-   
-  string 
-  渲染3D场景窗口的Dom节点 
-  url 
-   
-  string 
-  云渲染服务地址 
-  order 
-   
-  string 
-  渲染口令 
-  resolution 
-  [100~7680, 100~4320] 
-  [Integer] 
-  设置云渲染输出分辨率 
-  注: chrome浏览器最高支持4K: 4096 * 2160; 使用51Browser可以达到8K支持 7680 * 4320 
-  debugMode 
-  none, normal, high,all 
-  string 
-  none: 不打印日志; 
-  normal: 普通日志(传输数据结果); 
-  high: 高级日志,包括鼠标点击等底层传输日志; 
-  all:全部日志 
-  keyboard 
-  normal 
-  boolean 
-  normal: true/false 键盘事件 
-  func 
-  boolean 
-  func: true/false 浏览器F1~F12功能键 
-  prefix 
-   
-  设置2次代理，默认为空，设置不代理 
-  initLog 
-  false/true 
-  boolean 
-  true = 显示品牌logo日志， false=不显示品牌logo日志 
-  bCached 
-  false/true 
-  boolean 
-  true = 场景加载完。默认缓存场景中所有entity， false = 场景加载完。不缓存场景中所有entity
+
+| 参数 | 值 | 类型 | 备注 |
+|------|-----|------|------|
+| id | - | string | 渲染3D场景窗口的Dom节点 |
+| url | - | string | 云渲染服务地址 |
+| order | - | string | 渲染口令 |
+| resolution | [100~7680, 100~4320] | [Integer] | 设置云渲染输出分辨率<br>注: chrome浏览器最高支持4K: 4096 * 2160; 使用51Browser可以达到8K支持 7680 * 4320 |
+| debugMode | none, normal, high,all | string | none: 不打印日志;<br>normal: 普通日志(传输数据结果);<br>high: 高级日志,包括鼠标点击等底层传输日志;<br>all:全部日志 |
+| keyboard | normal | boolean | normal: true/false 键盘事件 |
+|  | func | boolean | func: true/false 浏览器F1~F12功能键 |
+| prefix | - | - | 设置2次代理，默认为空，设置不代理 |
+| initLog | false/true | boolean | true = 显示品牌logo日志， false=不显示品牌logo日志 |
+| bCached | false/true | boolean | true = 场景加载完。默认缓存场景中所有entity， false = 场景加载完。不缓存场景中所有entity |
 
 - 参数重置
 
