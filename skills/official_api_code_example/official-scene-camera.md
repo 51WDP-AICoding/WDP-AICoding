@@ -83,10 +83,11 @@ const res = await App.CameraControl.ToggleCameraSelfRotate(true);
 console.log(res); 
 ```
 
-- 参数 
-  备注 
-  true/false 
-  当镜头模式为飞行模式时，设置成true，镜头以自身旋转；设置成false，镜头以场景的屏幕中心旋转
+- 参数：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| bSelfRotate | boolean | 是 | true/false | 当镜头模式为飞行模式时，设置成true，镜头以自身旋转；设置成false，镜头以场景的屏幕中心旋转 |
 
 - 获取镜头位置
 
@@ -140,12 +141,12 @@ console.log(res);
 // 出参: { success: boolean, message: string }
 ```
 
-- 参数 
-  备注 
-  Default 
-  相机的初始状态；若相机初始状态效果若不理想，可以对相机初始状态进行调整；初始镜头的值在log中的WdpCameraStartEntity可以找到 
-  Last 
-  相机最后一次位置，即SetCameraPose设置的最后一次位置
+- 参数：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| state | string | 是 | Default/Last | Default: 相机的初始状态；若相机初始状态效果若不理想，可以对相机初始状态进行调整；初始镜头的值在log中的WdpCameraStartEntity可以找到<br>Last: 相机最后一次位置，即SetCameraPose设置的最后一次位置 |
+| flyTime | number | 否 | - | 过渡时长(单位:秒) |
 
 - 获取镜头Limit值
 
@@ -316,25 +317,12 @@ const res = await App.CameraControl.Move({
 console.log(res)
 ```
 
-- 参数： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  direction 
-  string 
-   
-  forward 前; 
-  backward 后; 
-  left 左; 
-  right 右; 
-  up 上; 
-  down 下 
-   
-  velocity 
-  number 
-   
-  速度(单位: 米/秒)
+- 参数：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| direction | string | 是 | forward/backward/left/right/up/down | forward: 前; backward: 后; left: 左; right: 右; up: 上; down: 下 |
+| velocity | number | 是 | - | 速度(单位: 米/秒) |
 
 - 相机距离移动
 
@@ -366,19 +354,12 @@ const res = await App.CameraControl.Rotate({
 console.log(res);
 ```
 
-- 参数说明： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  direction 
-  string 
-   
-  up; down; left; right 
-  velocity 
-  number 
-   
-  速度(单位: 米/秒)
+- 参数说明：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| direction | string | 是 | up/down/left/right | 旋转方向 |
+| velocity | number | 是 | - | 速度(单位: 米/秒) |
 
 - 相机角度旋转
 
