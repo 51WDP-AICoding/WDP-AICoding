@@ -291,48 +291,19 @@ await App.CameraControl.UpdateCamera(jsondata);
 ```
 
 - 参数： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  Location 
-  array 
-   
-  locationLimit 
-  array 
-   
-  设置相机位置区域(至少三个坐标点,三角区域) [选填] 
-  rotation 
-  object 
-   
-  -pitch 
-  number 
-  -30 
-  [-90,0] 
-  -yaw 
-  number 
-  0 
-  [-180,180] 
-  pitchLimit 
-  array 
-  [-90,0] 
-  [-90,0] 
-  yawLimit 
-  array 
-  [-180,180] 
-  [-180,180] 
-  viewDistanceLimit 
-  array 
-  [0,10000] 
-  [0,+∞) 
-  fieldOfView 
-  number 
-  90 
-  [0,120] 
-  controlMode 
-  string 
-  RTS, TPS, FPS 
-  RTS (飞行模式); TPS (第三人称模式); FPS (第一人称模式)
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| location | array | 是 | - | - |
+| locationLimit | array | 是 | - | 设置相机位置区域(至少三个坐标点,三角区域) [选填] |
+| rotation | object | - | - | - |
+| -pitch | number | -30 | [-90,0] | - |
+| -yaw | number | 0 | [-180,180] | - |
+| pitchLimit | array | [-90,0] | [-90,0] | - |
+| yawLimit | array | [-180,180] | [-180,180] | - |
+| viewDistanceLimit | array | [0,10000] | [0,+∞) | - |
+| fieldOfView | number | 90 | [0,120] | - |
+| controlMode | string | RTS, TPS, FPS | RTS (飞行模式); TPS (第三人称模式); FPS (第一人称模式) | - |
 
 - 相机速度移动
 
