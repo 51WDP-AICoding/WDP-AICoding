@@ -1,5 +1,40 @@
 # WDP AI Coding 项目更新日志
 
+## 2026-04-03 更新记录
+
+### Official API 代码示例文档参数表格全面优化
+
+对 `skills/official_api_code_example/` 目录下的官方 API 摘录文档进行了全面的参数表格格式优化和补充，统一了所有参数说明的展示形式。
+
+#### 新增参数描述表格
+
+| 文件 | 补充内容 |
+|------|----------|
+| `official-entity-coverings.md` | 新增 **实时视频** (20+ 参数)、**Window** (15+ 参数)、**POI** (25+ 参数)、**Particle** (10+ 参数)、**Effects** (10+ 参数) 的完整参数描述表格 |
+| `official-function-components.md` | 新增 **SetRendererMode** 渲染模式参数表格 |
+| `official-layer-models.md` | 新增 **Static** 静态模型 (9个参数)、**Skeletal** 骨骼模型 (13个参数) 的参数描述表格 |
+
+#### 参数表格格式修复
+
+| 文件 | 修复内容 |
+|------|----------|
+| `official-initialize-scene.md` | 修复 **WdpApi 初始化** 参数表格格式，将文本格式转换为标准 Markdown 表格 |
+| `official-scene-camera.md` | 全面修复所有纵向排列的参数注释，统一为标准 Markdown 表格格式：<br>- ToggleCameraSelfRotate<br>- ResetCameraPose<br>- Move / Rotate<br>- CameraStepMove / CameraStepRotate / CameraStepZoom<br>- FlyTo<br>- CameraRoam / PlayRoam / PauseRoam<br>- GetCameraRoamingInfo |
+
+#### 提交记录
+
+| Commit | 说明 |
+|--------|------|
+| `8037966` | docs: 补充 official-entity-coverings.md 参数描述表格 |
+| `fb63b56` | docs: 补充 official-function-components.md 渲染模式参数表格 |
+| `ffcef23` | docs: 修复 official-initialize-scene.md 参数表格格式 |
+| `7819431` | docs: 补充 official-layer-models.md 参数描述表格 |
+| `372d4aa` | docs: 修复 official-scene-camera.md UpdateCamera 参数表格格式 |
+| `24625ac` | docs: 修复 official-scene-camera.md 多个参数表格格式 |
+| `bdce447` | docs: 修复 official-scene-camera.md 所有纵向参数表格格式 |
+
+---
+
 ## 2026-03-26 更新记录
 
 ### 渲染器 (Renderer) 与底层回调能力升级
