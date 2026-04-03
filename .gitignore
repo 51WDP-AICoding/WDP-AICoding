@@ -42,4 +42,8 @@ wdp-requirement-architect/
 .idea/
 *.swp
 *.swo
-reference_skill/  
+reference_skill/
+
+# Sensitive internal files (contains backend access info)
+skills/wdp-internal-case-acquisition/
+skills/official_api_code_example/ONLINE_COVERAGE_AUDIT.md
