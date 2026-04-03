@@ -41,6 +41,35 @@ const res = await App.Scene.Add(realTimeVideo, {
   }
 });
 ```
+- 参数描述
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| location | array | 是 | - | 坐标位置 |
+| realTimeVideoStyle | url | string | 是 | - | 实时视频流内容 |
+|  | resolution | array | 是 | 整数 | window大小(宽,高 单位像素) |
+|  | offset | array | 否 | 整数 | x>0,y>0 向右,上偏移(x,y 单位像素) |
+|  | state | string | 否 | play, pause | play:播放; pause:暂停 |
+|  | overlapOrder | number | 否 | [1~10] | 重叠层级;数值越大越浮在最上层 |
+|  | bokeh | number | 否 | [0~1] | 边缘虚化(单位比例) |
+|  | connerShift | array | 否 | [[0,0], [0,0], [0,0], [0,0]] | 角点偏移(单位像素); 点位固定顺序 [左上,右上,左下,右下]; 每个角点的原始位置为[0,0]; X>0 向右,Y>0 向上 |
+|  | bgUrl | string | 否 | - | 背景地址 |
+|  | bgPadding | array | 否 | [0, 0, 0, 0] | 内边距（上 右 下 左） |
+|  | bgOverlap | string | 否 | hide | z轴显示关系 'backward' \| 'forward' \| 'hide' |
+|  | labelContent | array | 否 | - | ['xxxx', '000000ff', '24'] size:(字号*分辨率高/分辨率宽)得出值再取整; |
+|  | labelOffset | array | 否 | - | label偏移量 |
+|  | labelSize | array | 否 | - | label宽高 |
+|  | labelContentJustification | string | 否 | Left | label水平对齐方式 'Left' \| 'Center' \| 'Right' |
+|  | labelContentAutoWrap | boolean | 否 | false | label内容是否自动换行 |
+|  | btnNormalUrl | string | 否 | - | close按钮图 |
+|  | btnActivateUrl | string | 否 | - | close按钮mouseEnter图 |
+|  | btnOffset | array | 否 | - | close按钮位置偏移量 |
+|  | btnSize | array | 否 | - | close按钮宽高大小 |
+| bVisible | boolean | 否 | - | 是否可见(true/false) |
+| entityName | string | 否 | - | 实体名称 |
+| customId | string | 否 | - | 实体ID，便于后续操作索引 |
+| customData | object | 否 | - | - |
+| data | string | 否 | - | 实体数据，可自行拓展 |
 
 - 成员函数
 
@@ -149,6 +178,29 @@ const res = await App.Scene.Add(window, {
   }
 });
 ```
+- 参数描述
+
+重新整理后的 Markdown 表格：
+
+**参数描述：**
+
+| 参数 |  | 类型 | 必填 | 取值范围 | 备注 |
+|------|---|------|------|----------|------|
+| location |  | array | 是 | - | 坐标位置 |
+| windowStyle | url | string | 是 | - | window内容,支持2种地址形式:<br>形式1: Daas云盘地址，如"daas://977c1f70f13948788831b50ce845996f"【使用详述见附录1】<br>形式2: 在线地址,如"http://wdpapi.51aes.com/doc-static/images/static/echarts.html"<br>形式3: 本地地址,如"file:///D:/xxx/echarts.html" |
+|  | size | array | 是 | 正整数 | window大小(宽,高 单位像素),当为空数组时，代表原始window尺寸 |
+|  | offset | array | 否 | 整数 | window左上角相对于coord坐标中心的偏移(x,y 单位:像素), 注:x为任意数，包含负数, y为为任意数，包含负数 |
+| bVisible |  | boolean | 否 | - | 是否可见(true/false) |
+| visible2D | camera | hideDistance | number | 否 | 正整数 | 定义实体隐藏的距离(单位:米),相机超过此距离时,实体会被隐藏 |
+|  |  | hideType | string | 否 | none, default | 实体超出显示距离(none:不显示; default:圆圈显示) |
+|  |  | scaleMode | string | 否 | 2D, 3D | 是否受相机的透视影响(2D:不影响; 3D:影响) |
+|  | interaction | hoverTop | boolean | 否 | true, false | 当发生滑过时,需要显示在最上层 |
+|  | entity | overlapOrder | number | 否 | [1~10] | 重叠层级; 数值越大越浮在最上层;范围[1~10] |
+| entityName |  | string | 否 | - | 实体名称 |
+| customId |  | string | 否 | - | 实体ID,便于后续操作索引 |
+| customData | data | string | 否 | - | 实体数据,可自行拓展 |
+
+
 
 - 成员函数
 
@@ -304,6 +356,40 @@ const res = await App.Scene.Add(poi, {
 const res = await App.Scene.Add(poi);
 */
 ```
+- 参数描述
+
+| 参数 |  |  | 类型 | 必填 | 取值范围 | 备注 |
+|------|---|---|------|------|----------|------|
+| location |  |  | array | 是 | - | 坐标位置 |
+| poiStyle | markerVisible |  | boolean | 否 | true, false | marker是否显示 |
+|  | markerNormalUrl |  | string | 是 | - | 正常状态图片url地址,支持2种形式:<br>在线地址如"http://wdpapi.51aes.com/doc-static/images/static/markerNormal.png"<br>本地地址如"file:///D:/xxx/markerNormal.png"; D: 在线席位所在盘符 |
+|  | markerActivateUrl |  | string | 是 | - | 激活状态,由鼠标划过或点击触发 |
+|  | markerSize |  | string | 是 | - | marker大小(宽高 单位像素) |
+|  | labelVisible |  | boolean | 否 | true, false | 是否显示label |
+|  | labelBgImageUrl |  | string | 否 | - | 图片url地址 |
+|  | labelBgSize |  | array | 否 | 正整数 | label图片大小(宽 高 单位像素) |
+|  | labelBgOffset |  | array | 否 | 任意整数 | 整个label左上角相对于marker的中心点(坐标中心点)的偏移(x,y 单位像素);<br>注: x为正向右, y为正向上 |
+|  | labelContent |  | array | 否 | ["文本内容", "ff0000ff", "50"] | 富文本,格式: ["text", "color","size"]; color: HEXA格式;<br>size:(字号*分辨率高/分辨率宽)得出值再取整; |
+|  | scrollSpeed |  | int | 否 | - | 文本滚动速度(0:不滚动) |
+|  | textBoxWidth |  | int | 否 | - | 文本框宽度(默认100) |
+|  | labelContentOffset |  | array | 否 | [5,5] | label内容相对于label左上角偏移(x,y 单位像素); 注: x为正向右, y为正向下 |
+|  | labelTop |  | boolean | 否 | true, false | label是否置于marker顶层 |
+|  | labelContentJustification |  | string | 否 | 默认Left | 水平对齐方式 Left \| Center \| Right |
+|  | labelContentAutoWrap |  | boolean | 否 | true, false | 是否自动换行 |
+|  | scrollPolicy |  | string | 否 | 默认default | 滚动规则<br>default: 文本长度超过文本框时滚动<br>always: 总是滚动 |
+| bVisible |  |  | boolean | 否 | - | 是否可见(true/false) |
+| visible2D | camera | hideDistance | number | 否 | 正整数 | 定义实体隐藏的距离(单位:米),相机超过此距离时,实体会被隐藏 |
+|  |  | hideType | string | 否 | none, default,url | 实体超出显示距离(none:不显示; default:圆圈显示,url:自定义图片) |
+|  |  | url | string | 否 | - | hideType设置成url，当超过设定的hideDistance，缩略图为url |
+|  |  | size | array | 否 | [10,10] | url的大小 |
+|  |  | scaleMode | string | 否 | 2D, 3D | 是否受相机的透视影响(2D:不影响; 3D:影响) |
+|  | interaction | clickTop | boolean | 否 | true, false | 当发生点击(优先级高于滑过)时,需要显示在最上层 |
+|  |  | hoverTop | boolean | 否 | true, false | 当发生滑过时,需要显示在最上层 |
+|  | entity | overlapOrder | number | 否 | [1~10] | 重叠层级;数值越大越浮在最上层;范围[1~10] |
+| entityName |  |  | string | 否 | - | 实体名称 |
+| customId |  |  | string | 否 | - | 实体ID,便于后续操作索引 |
+| customData | data |  | string | 否 | - | 实体数据,可自行拓展 |
+
 
 - 成员函数
 
@@ -457,6 +543,22 @@ const res = await App.Scene.Add(particle, {
   }
 });
 ```
+- 参数描述
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| location | array | 是 | - | 坐标位置 |
+| rotator | object | 否 | - | - |
+| -pitch | number | 否 | [-180,180] | 俯仰角,0为水平 |
+| -yaw | number | 否 | [-180,180] | 偏航角 |
+| -roll | number | 否 | [-180,180] | 翻滚角,0为垂直地面 |
+| scale3d | array | 否 | 正整数 | 大小 |
+| particleType | string | 否 | flame, 3dmark_build_loop, 3dmark_build, 3dmark_camera_loop, 3dmark_camera, 3dmark_sign, 3dmark_warning, title_only, vehicle_car, vehicle_car_black, vehicle_car_white, vehicle_taxi, shield, fire, arrow, alarm, circle, pyramid, marker_cube, marker_pyramid, marker_site, marker_cone, tool_wrench, weather_tornado, circle_glass, circle_compass, circle_outside, circle_inside, circle_scan, circle_diffuse, circle_area, circle_area2, circle_flash | - |
+| bVisible | boolean | 否 | - | 是否可见 |
+| entityName | string | 否 | - | 实体名称 |
+| customId | string | 否 | - | 实体ID，便于后续操作索引 |
+| customData | object | 否 | - | - |
+| data | string | 否 | - | 实体数据，可自行拓展 |
 
 - 成员函数
 
@@ -507,6 +609,23 @@ const res = await App.Scene.Add(entityObj, {
   }
 });
 ```
+- 参数描述
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| location | array | 是 | - | 坐标位置 |
+| rotator | object | 否 | - | - |
+| -pitch | number | 否 | [-180,180] | 俯仰角,0为水平 |
+| -yaw | number | 否 | [-180,180] | 偏航角 |
+| -roll | number | 否 | [-180,180] | 翻滚角,0为垂直地面 |
+| scale3d | array | 否 | 正整数 | 大小 |
+| speed | number | 否 | - | 粒子运动速度(米/秒) |
+| seedId | string | 是 | - | 模型编号(从DaaS中获取) |
+| bVisible | boolean | 否 | - | 是否可见(true/false) |
+| entityName | string | 否 | - | 实体名称 |
+| customId | string | 否 | - | 实体ID，便于后续操作索引 |
+| customData | object | 否 | - | - |
+| data | string | 否 | - | 实体数据，可自行拓展 |
 
 - 成员函数
 
