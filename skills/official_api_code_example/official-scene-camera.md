@@ -428,37 +428,13 @@ console.log(res);
 */
 ```
 
-- 参数： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  备注 
-  moveDirection 
-  string 
-   
-  E_Forward, 
-  E_Backward, 
-  E_Left, 
-  E_Right, 
-  E_Up, 
-  E_Down 
-  E_Forward: 前 
-  E_Backward: 后 
-  E_Left: 左 
-  E_Right: 右 
-  E_Up: 上 
-  E_Down: 下 
-  step 
-  number 
-   
-  [-1~1] 
-  速度的倍率 
-  bContinuous 
-  boolean 
-   
-  true, false 
-  是否连续
+- 参数：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| moveDirection | string | 是 | E_Forward/E_Backward/E_Left/E_Right/E_Up/E_Down | E_Forward: 前; E_Backward: 后; E_Left: 左; E_Right: 右; E_Up: 上; E_Down: 下 |
+| step | number | 是 | [-1~1] | 速度的倍率 |
+| bContinuous | boolean | 是 | true/false | 是否连续 |
 
 - 相机step旋转
 
@@ -472,27 +448,13 @@ const res = await App.CameraControl.CameraStepRotate({
 console.log(res);
 ```
 
-- 参数： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  备注 
-  rotateDirection 
-  string 
-   
-  E_Pitch, E_Yaw 
-  E_Pitch: 俯仰角, E_Yaw: 偏航角 
-  step 
-  number 
-   
-  [-1~1] 
-  速度的倍率 
-  bContinuous 
-  boolean 
-   
-  true, false 
-  是否连续
+- 参数：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| rotateDirection | string | 是 | E_Pitch/E_Yaw | E_Pitch: 俯仰角; E_Yaw: 偏航角 |
+| step | number | 是 | [-1~1] | 速度的倍率 |
+| bContinuous | boolean | 是 | true/false | 是否连续 |
 
 - 相机step缩放
 
@@ -505,22 +467,12 @@ const res = await App.CameraControl.CameraStepZoom({
 console.log(res);
 ```
 
-- 参数： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  备注 
-  step 
-  number 
-   
-  [-1~1] 
-  速度的倍率; (正数放大视野; 负数缩小视野) 
-  bContinuous 
-  boolean 
-   
-  true, false 
-  是否连续
+- 参数：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| step | number | 是 | [-1~1] | 速度的倍率; (正数放大视野; 负数缩小视野) |
+| bContinuous | boolean | 是 | true/false | 是否连续 |
 
 - 停止移动、旋转、缩放
 
@@ -546,28 +498,14 @@ const jsondata = {
 await App.CameraControl.FlyTo(jsondata)
 ```
 
-- 参数描述： 
-  参数 
-  是否必填 
-  默认值 
-  备注 
-  targetPostion 
-  是 
-  无 
-  位置 
-  rotation 
-  否 
-  "pitch": -30, 
-  "yaw": 0, 
-   
-  distance 
-  否 
-  10 
-  距离 
-  flyTime 
-  否 
-  1 
-  镜头飞行时间
+- 参数描述：
+
+| 参数 | 是否必填 | 默认值 | 备注 |
+|------|----------|--------|------|
+| targetPosition | 是 | 无 | 位置 |
+| rotation | 否 | pitch: -30, yaw: 0 | 旋转角度 |
+| distance | 否 | 10 | 距离 |
+| flyTime | 否 | 1 | 镜头飞行时间 |
 
 - 相机聚焦nodeId单体
 
@@ -787,61 +725,23 @@ const args = {
 await App.CameraControl.PlayRoam(entityObj, args);
 ```
 
-- CameraRoam参数： 
-  参数 
-  类型 
-  必填 
-  默认值 
-  备注 
-  bAutoRotation 
-  boolean 
-  否 
-  false 
-  镜头是否自动对准下一个目标点 
-  bResetAfterFinished 
-  boolean 
-  否 
-  ture 
-  镜头结束时是否重置 
-  frames[].location 
-  Array 
-  否 
-  无 
-  漫游的动画帧 
-  frames[].rotation 
-  {pitch: number, yaw: number} 
-  否 
-  无 
-  镜头角度 
-  pitch: 俯仰角(-90~0) 
-  yaw: 偏航角(-180~180; 0:东; 90:南; -90:北) 
-  frames[].time 
-  number 
-  否 
-  无 
-  相机到下一帧的时间(单位:秒) 
-  最后一帧不需要写时间，因为时间是帧与帧之间的 
-  PlayRoam参数： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  备注 
-  progressRatio 
-  number 
-  否 
-  [0,1] 
-  镜头位置切换到整体漫游比例,范围[0,1] 
-  speedRatio 
-  number 
-  否 
-   
-  相机漫游移动倍率 
-  bReverse 
-  boolean 
-  否 
-   
-  是否反向
+- CameraRoam参数：
+
+| 参数 | 类型 | 必填 | 默认值 | 备注 |
+|------|------|------|--------|------|
+| bAutoRotation | boolean | 否 | false | 镜头是否自动对准下一个目标点 |
+| bResetAfterFinished | boolean | 否 | true | 镜头结束时是否重置 |
+| frames[].location | Array | 否 | 无 | 漫游的动画帧 |
+| frames[].rotation | {pitch: number, yaw: number} | 否 | 无 | 镜头角度; pitch: 俯仰角(-90~0); yaw: 偏航角(-180~180; 0:东; 90:南; -90:北) |
+| frames[].time | number | 否 | 无 | 相机到下一帧的时间(单位:秒); 最后一帧不需要写时间，因为时间是帧与帧之间的 |
+
+- PlayRoam参数：
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| progressRatio | number | 否 | [0,1] | 镜头位置切换到整体漫游比例 |
+| speedRatio | number | 否 | - | 相机漫游移动倍率 |
+| bReverse | boolean | 否 | - | 是否反向 |
 
 - 暂停漫游
 
@@ -853,21 +753,12 @@ const res = await App.CameraControl.PauseRoam({
 console.log(res);
 ```
 
-- 参数 
-  类型 
-  必填 
-  默认值 
-  备注 
-  opt.bEnableRotatingOnPause 
-  boolean 
-  否 
-  false 
-  是否运行暂停时旋转镜头>=1.15.1 
-  opt.bEnableZoomingOnPause 
-  boolean 
-  否 
-  false 
-  是否允许暂停时缩放镜头>=1.15.1
+- 参数：
+
+| 参数 | 类型 | 必填 | 默认值 | 备注 |
+|------|------|------|--------|------|
+| bEnableRotatingOnPause | boolean | 否 | false | 是否允许暂停时旋转镜头 (>=1.15.1) |
+| bEnableZoomingOnPause | boolean | 否 | false | 是否允许暂停时缩放镜头 (>=1.15.1) |
 
 - 继续漫游
 
@@ -947,16 +838,11 @@ console.log(res);
 */
 ```
 
-- 参数 
-  类型 
-  必填 
-  默认值 
-  备注 
-  obj 
-  cord 
-  是 
-  无 
-  CameraRoam对象
+- 参数：
+
+| 参数 | 类型 | 必填 | 默认值 | 备注 |
+|------|------|------|--------|------|
+| obj | object | 是 | 无 | CameraRoam对象 |
 
 - 获取相机漫游信息
 
