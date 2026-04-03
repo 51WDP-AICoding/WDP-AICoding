@@ -311,6 +311,19 @@ const Static = new App.Static({
 const res = await App.Scene.Add(Static);
 console.log(res);
 ```
+- 参数描述
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| location | array | 是 | - | 坐标位置 |
+| rotator | object | 否 | - | - |
+| pitch | number | 否 | [-180,180] | 俯仰角，0为水平 |
+| yaw | number | 否 | [-180,180] | 偏航角 |
+| roll | number | 否 | [-180,180] | 翻滚角，0为垂直地面 |
+| scale3d | array | 否 | 正整数 | 大小 |
+| bVisible | boolean | 否 | - | 是否可见 (true/false) |
+| seedId | string | 是 | - | 模型编号（从DaaS中获取） |
+| bReceivesDecals | boolean | 否 | true/false | 模型是否受工程定制场景的贴花影响 |
 
 - 成员函数
 
@@ -357,6 +370,25 @@ const skeletal = new App.Skeletal({
 const res = await App.Scene.Add(skeletal);
 console.log(res);
 ```
+- 参数描述
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| location | array | 是 | - | 坐标位置 |
+| rotator | object | 否 | - | - |
+| pitch | number | 否 | [-180,180] | 俯仰角，0为水平 |
+| yaw | number | 否 | [-180,180] | 偏航角 |
+| roll | number | 否 | [-180,180] | 翻滚角，0为垂直水平 |
+| scale3d | array | 否 | 正整数 | 大小 |
+| bVisible | boolean | 否 | - | 是否可见 (true/false) |
+| seedId | string | 是 | - | 模型编号（从DaaS中获取） |
+| animSequenceIndex | string | 否 | - | 需要播放的动画的index（存在多个动画片段时） |
+| bPause | boolean | 否 | - | 是否播放<br>false: 表示播放，true: 表示停止 |
+| bLoop | boolean | 否 | - | 是否循环 |
+| playRate | number | 否 | - | 播放进度（速率）支持任意浮点数 |
+| min | number | 否 | - | - |
+| max | number | 否 | - | - |
+| bReceivesDecals | boolean | 否 | - | 模型是否受工程定制场景的贴花影响 |
 
 - 成员函数
 
