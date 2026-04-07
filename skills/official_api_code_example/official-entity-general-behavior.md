@@ -754,7 +754,72 @@ App.Scene.SetEntityHighlight({
 ```
 
 - styleName 颜色列表
-
+| 序号 | styleName | hexa |
+|:---:|:---|:---|
+| 0 | Default | FFBF0077 |
+| 1 | Black | 00000077 |
+| 2 | DarkBlue | 00008B77 |
+| 3 | MediumBlue | 0000CD77 |
+| 4 | Blue | 0000FF77 |
+| 5 | DarkGreen | 00640077 |
+| 6 | Green | 00800077 |
+| 7 | SpringGreen | 00FF7F77 |
+| 8 | MidnightBlue | 19197077 |
+| 9 | ForestGreen | 2E8B5777 |
+| 10 | SeaGreen | 2E8B5777 |
+| 11 | LimeGreen | 32CD3277 |
+| 12 | RoyalBlue | 4169E177 |
+| 13 | SteelBlue | 4682B477 |
+| 14 | Maroon | 80000077 |
+| 15 | Purple | 80008077 |
+| 16 | Olive | 80800077 |
+| 17 | Gray | 80808077 |
+| 18 | SkyBlue | 87CEEB77 |
+| 19 | BlueViolet | 8A2BE277 |
+| 20 | DarkRed | 8B000077 |
+| 21 | LightGreen | 90EE9077 |
+| 22 | MediumPurple | 9370DB77 |
+| 23 | DarkViolet | 9400D377 |
+| 24 | PaleGreen | 98FB9877 |
+| 25 | YellowGreen | 9ACD3277 |
+| 26 | Sienna | A0522D77 |
+| 27 | Brown | A52A2A77 |
+| 28 | DarkGray | A9A9A977 |
+| 29 | LightBlue | ADD8E677 |
+| 30 | GreenYellow | ADFF2F77 |
+| 31 | PowderBlue | B0E0E677 |
+| 32 | Silver | C0C0C077 |
+| 33 | IndianRed | CD5C5C77 |
+| 34 | Chocolate | D2691E77 |
+| 35 | LightGray | D3D3D377 |
+| 36 | Thistle | D8BFD877 |
+| 37 | Orchid | DA70D677 |
+| 38 | GoldenRod | DAA52077 |
+| 39 | Plum | DDA0DD77 |
+| 40 | LightCyan | E0FFFF77 |
+| 41 | DarkSalmon | E9967A77 |
+| 42 | Violet | EE82EE77 |
+| 43 | LightCoral | F0808077 |
+| 44 | Wheat | F5DEB377 |
+| 45 | Salmon | FA807277 |
+| 46 | Linen | FAF0E677 |
+| 47 | DeepPink | FF149377 |
+| 48 | OrangeRed | FF450077 |
+| 49 | Tomato | FF634777 |
+| 50 | HotPink | FF69B477 |
+| 51 | Coral | FF7F5077 |
+| 52 | DarkOrange | FF8C0077 |
+| 53 | LightSalmon | FFA07A77 |
+| 54 | Orange | FFA50077 |
+| 55 | LightPink | FFB6C177 |
+| 56 | Pink | FFC0CB77 |
+| 57 | Gold | FFD70077 |
+| 58 | FloralWhite | FFFAF077 |
+| 59 | Snow | FFFAFA77 |
+| 60 | Yellow | FFFF0077 |
+| 61 | LightYellow | FFFFE077 |
+| 62 | Ivory | FFFFF077 |
+| 63 | White | FFFFFF77 |
 ## Topic: 选中实体操作行为 (id: 1364)
 
 - 添加选中实体
@@ -1055,7 +1120,7 @@ console.log(res)
 
 ```javascript
 const normal = { // ========== 通用样式
-  "type": "Path",
+  "type": "Path",//示例：批量添加路径(path)类型实体
   "entityName": "myName",  //可选
   "pathStyle": {
     "width": 100,
@@ -1540,7 +1605,8 @@ const res = await App.Scene.Add(objs, {
 console.log(res);
 ```
 
-- [批量]设置实例缩放: 相同倍数
+- [批量]设置实例缩放: 相同倍数  
+多个对象缩放相同倍数
 
 ```javascript
 const obj = [ // 单体3D实体对象(场景特效 Particle, 3D文字 Text3D, 粒子特效 Effects, 灯光 Light, 模型)
@@ -1555,7 +1621,8 @@ const res = await App.Scene.SetScale3D(obj, {
 console.log(res);
 ```
 
-- [批量]设置实例缩放: 不同倍数
+- [批量]设置实例缩放: 不同倍数  
+多个对象缩放不同倍数
 
 ```javascript
 const res = await App.Scene.SetScale3Ds([
@@ -1571,7 +1638,8 @@ const res = await App.Scene.SetScale3Ds([
 console.log(res);
 ```
 
-- [批量]设置实例旋转: 同角度
+- [批量]设置实例旋转: 同角度  
+多个对象旋转到同一角度
 
 ```javascript
 const obj = [ // 单体3D实体对象(场景特效 Particle, 3D文字 Text3D, 可视域 Viewshed, 粒子特效 Effects, 灯光 Light, 模型)
@@ -1586,7 +1654,8 @@ const res = await App.Scene.SetRotator(obj, {
 console.log(res);
 ```
 
-- [批量]设置实例旋转: 不同角度
+- [批量]设置实例旋转: 不同角度  
+多个对象旋转到不同角度
 
 ```javascript
 const res = await App.Scene.SetRotators([
@@ -1602,8 +1671,8 @@ const res = await App.Scene.SetRotators([
 console.log(res);
 ```
 
-- [批量]设置实例位置: 同位置
-
+- [批量]设置实例位置: 同位置  
+多个对象移动到同一个位置
 ```javascript
 const obj = [ // 单体3D实体对象(场景特效 Particle, 3D文字 Text3D, 可视域 Viewshed, 粒子特效 Effects, 灯光 Light, 模型)
   particleObj, text3dObj  
@@ -1617,8 +1686,8 @@ const res = await App.Scene.SetLocation(obj, {
 console.log(res);
 ```
 
-- [批量]设置实例位置: 不同位置
-
+- [批量]设置实例位置: 不同位置  
+多个对象移动到不同位置
 ```javascript
 const res = await App.Scene.SetLocations([
     {
@@ -1731,8 +1800,8 @@ console.log(res);
 
 ## Topic: 实体移动 (id: 1369)
 
-- 实体移动 Bound
-
+- 实体移动 Bound  
+实体移动是创建一个实体与路径的bound，实体是与路径绑定的
 ```javascript
 const path = new App.Path({
   "polyline": {
@@ -1816,9 +1885,8 @@ if (success) {
   }
   await App.CameraControl.Focus(jsondata);
 }
+//bLoop为false时，实体移动到终点停止后，如果要再次从头移动，请先更新state为stop后，再play。
 ```
-
-注：在线文档补充说明，当 `bLoop` 为 `false` 时，实体移动到终点停止后，如需再次从头移动，请先将 `state` 更新为 `stop`，再切回 `play`。
 
 - 更新实体移动
 
@@ -1880,6 +1948,23 @@ const jsondata = {
 const res = await cache.get('moveObj').Update(jsondata);
 console.log(res);
 ```
+- Bound中可以更新的属性
+已将表格整理为 Markdown 格式：
+
+| 属性 | 子属性 | 是否可以更新 |
+|:---|:---|:---:|
+| moving | - | 是 |
+| path | - | 是 |
+| boundStyle | time | 否 |
+|  | bLoop | 是 |
+|  | bReverse | 否 |
+|  | state | 是 |
+| rotator | pitch | 是 |
+|  | yaw | 是 |
+|  | roll | 是 |
+| offset | left | 是 |
+|  | forward | 是 |
+|  | up | 是 |
 
 - 成员函数
 
@@ -1887,10 +1972,7 @@ console.log(res);
 // 示例
 const obj = new App.Bound({ ...});
 obj.Update(json); //同Add中的参数
-// 在线参数表显式确认：
-// 可更新：moving、path、boundStyle.bLoop、boundStyle.state、
-// rotator.pitch / rotator.yaw / rotator.roll、offset.left / offset.forward / offset.up
-// 不可更新：boundStyle.time、boundStyle.bReverse
+//bound中可以更新的属性：moving、path、boundStyle的bLoop、state属性、rotator的pitch、yaw、roll属性、offset的left、forward、up属性
 obj.SetTime(50);
 obj.SetReverse(false); //是否反向移动(true/false)；false为正向移动，true为反向移动
 obj.SetLoop(true); //是否循环(true/false)；true为循环移动，false为到达终点后终止
@@ -1912,7 +1994,10 @@ obj.Delete();
 
 ## Topic: 数据驱动实体移动 (id: 1370)
 
-- 数据驱动实体移动
+- 数据驱动实体移动  
+数据驱动实体移动的移动过程实体不是与路径绑定的，可以实现多个实体同时通过一个目标点；  
+为对象指定目标点和运动时间。对象会从当前位置按照规定的时间平移到目标点；  
+当数组中包含多个不同对象的运动信息时，它们会近乎在同一时间开始第一次运动，对于其中的每一个对象，到达各自的目标点后，它会自动向下一个目标点运动。  
 
 ```javascript
 const poi = new App.Poi({
@@ -1973,6 +2058,14 @@ await App.Tools.MoveLinear.Move(entityObj,{
   }
 });
 ```
+- 参数描述
+
+| 参数 | 类型 | 必填 | 备注 |
+|------|------|------|------|
+| objects | array | 是 | 移动的对象 |
+| location | array | 是 | 路径坐标 |
+| time | number | 是 | 实体移动到该位置所需时间 |
+
 
 ## Topic: 实体点击事件 (id: 1371)
 
