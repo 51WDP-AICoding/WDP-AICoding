@@ -1,0 +1,27 @@
+{
+  "hash": "9f723f19",
+  "configHash": "22c6e0dc",
+  "lockfileHash": "e3b0c442",
+  "browserHash": "951c30f6",
+  "optimized": {
+    "@wdp-api/bim-api": {
+      "src": "../../wdp-front-end-framework-sample/node_modules/@wdp-api/bim-api/dist/index.es.js",
+      "file": "@wdp-api_bim-api.js",
+      "fileHash": "0feff479",
+      "needsInterop": false
+    },
+    "@wdp-api/gis-api": {
+      "src": "../../wdp-front-end-framework-sample/node_modules/@wdp-api/gis-api/lib/index.js",
+      "file": "@wdp-api_gis-api.js",
+      "fileHash": "71d738bc",
+      "needsInterop": false
+    },
+    "wdpapi": {
+      "src": "../../wdp-front-end-framework-sample/node_modules/wdpapi/dist/index.js",
+      "file": "wdpapi.js",
+      "fileHash": "ade44925",
+      "needsInterop": false
+    }
+  },
+  "chunks": {}
+}

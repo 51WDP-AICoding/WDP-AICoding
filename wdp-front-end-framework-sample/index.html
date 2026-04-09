@@ -20,9 +20,19 @@ body { overflow: hidden; background-color: #000; color: #fff; font-family: -appl
 .btn-action.tertiary { background: #8e44ad; }
 .btn-action.tertiary:hover:not(:disabled) { background: #7d3c98; }
 #status-bar { margin-top: 12px; font-size: 12px; color: #f39c12; }
+#start-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+#start-overlay h2 { color: #3498db; margin-bottom: 20px; font-size: 24px; }
+#start-overlay p { color: #aaa; margin-bottom: 30px; font-size: 14px; }
+#btn-start-render { background: #3498db; color: white; border: none; padding: 15px 40px; border-radius: 8px; cursor: pointer; font-size: 18px; transition: all 0.3s; }
+#btn-start-render:hover { background: #2980b9; transform: scale(1.05); }
 </style>
 </head>
 <body>
+<div id="start-overlay" id="start-overlay">
+<h2>🎬 WDP 数字孪生场景</h2>
+<p>点击按钮启动渲染（需用户交互以允许视频播放）</p>
+<button id="btn-start-render">点击启动渲染</button>
+</div>
 <div id="player"></div>
 <div id="ui-panel">
 <h3>WDP 场景信息</h3>
