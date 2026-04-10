@@ -22,28 +22,14 @@ await App.Scene.Add(obj, {
 ```
 
 - 参数描述 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  备注 
-  object 
-  Array | Object 
-   
-  对象数组或对象 
-  calculateCoordZ 
-  coordZRef 
-  string 
-  可选 
-  surface, ground, altitude 
-  surface:表面; ground:地面; altitude:海拔 
-  coordZOffset 
-  number 
-  可选 
-   
-  高度(单位:米) 
-  calculateCoordZ 最高优先级; 缺省时采用obj里的坐标coordz 
-  返回：
+
+| 参数 |  | 类型 | 必填 | 取值范围 | 备注 |
+|:---|:---|:---|:---:|:---|:---|
+| object |  | Array \| Object | 是 | - | 对象数组或对象 |
+| calculateCoordZ | coordZRef | string | 可选 | surface, ground, altitude | surface:表面; ground:地面; altitude:海拔 |
+|  | coordZOffset | number | 可选 | - | 高度(单位米) |
+
+- 返回:
 
 ```javascript
 {
@@ -174,6 +160,18 @@ await App.Scene.Creates([{
 
 ```javascript
 await App.Scene.GetAll();
+//GetAll()返回值结构
+// {
+//   Camera: [实体1],
+//   WdpGlobalSettings: [实体1],
+//   CameraStart: [实体1],
+//   DcpSave: [实体1],
+//   Environment: [实体1],
+//   GeoReference: [实体1],
+//   Skeletal: [实体1],
+//   Static: [实体1, 实体2, 实体3, 实体4, 实体5]
+// }
+
 ```
 
 - GetByEids (通过eid获取对象)
@@ -198,6 +196,14 @@ await App.Scene.GetByCustomId(['cuId01', 'cuId02', ...]);
 
 ```javascript
 await App.Scene.GetByTypes(['Poi', 'Static', ...]); //更多类型查看: 实体类型表
+// GetByTypes()返回值是数组，不是 { objects: [...] }
+[
+  { is: {}, atomObj: {}, ... },  // 实体1
+  { is: {}, atomObj: {}, ... },  // 实体2
+  ...
+]
+// length: 10
+
 ```
 
 - Delete (批量删除entity)
@@ -423,18 +429,11 @@ const object = new App.Poi({
 ```
 
 - 参数描述： 
-  参数 
-  类型 
-  必填 
-  备注 
-  location 
-  array 
-   
-  格式: [lng, lat, coordz]; coordz: 海拔高度 
-  poiStyle 
-  JSON 
-   
-  JSON 数据
+
+| 参数 | 类型 | 必填 | 备注 |
+|------|------|------|------|
+| location | array | 是 | 格式: [lng, lat, coordz]; coordz: 海拔高度 |
+| poiStyle | JSON | 是 | JSON 数据 |
 
 - Geometry GIS坐标: polyline 多点实体
 
@@ -452,18 +451,12 @@ const object = new App.Path({
 ```
 
 - 参数描述 
-  参数 
-  类型 
-  必填 
-  备注 
-  polyline-coordinates 
-  array 
-   
-  坐标位置,格式[[lng, lat, coordz],[[lng, lat, coordz],....] 
-  pathStyle 
-  JSON 
-   
-  JSON 数据
+
+
+| 参数 | 类型 | 必填 | 备注 |
+|------|------|------|------|
+| polyline-coordinates | array | 是 | 坐标，格式中第一个数组为外环，后续为内环:<br>[<br>[[lng,lat],[lng,lat],...],<br>[[lng,lat],[lng,lat],...],<br>....<br>] |
+| rangeStyle | JSON | 是 | JSON 数据 |
 
 - Geometry GIS坐标: polygon2D 多点实体
 
@@ -488,23 +481,12 @@ const object= new App.Range({
 })
 ```
 
-- 参数描述参数 
-  类型 
-  必填 
-  备注 
-  polyline-coordinates 
-  array 
-   
-  坐标，格式中第一个数组为外环，后续为内环： 
-  [ 
-       [[lng,lat],[lng,lat],....], 
-       [[lng,lat],[lng,lat],....], 
-       .... 
-  ] 
-  rangeStyle 
-  JSON 
-   
-  JSON 数据
+- 参数描述
+ 
+| 参数 | 类型 | 必填 | 备注 |
+|------|------|------|------|
+| polyline-coordinates | array | 是 | 坐标，格式中第一个数组为外环，后续为内环:<br>[<br>[[lng,lat],[lng,lat],...],<br>[[lng,lat],[lng,lat],...],<br>...<br>] |
+| rangeStyle | JSON | 是 | JSON 数据 |
 
 - Geometry GIS坐标: points 多点实体
 
@@ -522,25 +504,14 @@ const object = new App.HeatMap({
 ```
 
 - 参数描述： 
-  参数 
-  类型 
-  必填 
-  备注 
-  points.features 
-  point 
-  array 
-   
-  [lng,lat,coordz] 
-   
-  value 
-  number 
-   
-  需要在“mappingValueRange”定义的区间内 
-  heatMapStyle 
-   
-  JSON 
-   
-  JSON 数据
+
+
+| 参数 | 类型 | 必填 | 备注 |
+|------|------|------|------|
+| points.features | point | array | 是 | [lng,lat,coordz] |
+|  | value | number | 是 | 需要在"mappingValueRange"定义的区间内 |
+| heatMapStyle | JSON | 是 | JSON 数据 |
+
 
 ## 条目：基础与自定义属性（id: 1352）
 
@@ -566,38 +537,15 @@ const obj = new App.Text3D({
 ```
 
 - 参数描述： 
-  参数 
-  类型 
-  必填 
-  取值范围 
-  备注 
-  bLocked 
-  boolean 
-  可选 
-  true, false 
-  添加的实体是否锁定, 不可点击、框选等操作 
-  bVisible 
-  boolean 
-  可选 
-  true, false 
-  添加的实体是否可见 
-  entityName 
-  string 
-  可选 
-   
-  配置后可使用EntityName系列功能 
-  customId 
-  string 
-  可选 
-   
-  配置后可使用CustomId系列功能 
-  customData 
-  object 
-  可选 
-   
-  按业务需求配置 
-  属性设置 
-  以字母b开始的key; Get/Set属性省略字母b, 且首字母大写
+
+| 参数 | 类型 | 必填 | 取值范围 | 备注 |
+|------|------|------|----------|------|
+| bLocked | boolean | 可选 | true, false | 添加的实体是否锁定,不可点击、框选等操作 |
+| bVisible | boolean | 可选 | true, false | 添加的实体是否可见 |
+| entityName | string | 可选 | - | 配置后可使用EntityName系列功能 |
+| customId | string | 可选 | - | 配置后可使用CustomId系列功能 |
+| customData | object | 可选 | - | 按业务需求配置 |
+
 
 ```javascript
 // 获取 getter:
@@ -902,16 +850,11 @@ const jsondata = {
 ```
 
 - 参数描述： 
-  参数 
-  取值范围 
-  描述 
-  rotation 
-  pitch 
-  [-90~0] 
-   
-  yaw 
-  [-180~180] 
-  0:东; 90:南; -90:北
+
+| 参数 |  | 取值范围 | 描述 |
+|:---|:---|:---|:---|
+| rotation | pitch | [-90~0] | - |
+|  | yaw | [-180~180] | 0:东; 90:南; -90:北 |
 
 ## 条目：rotator 相关（id: 1356）
 
@@ -928,22 +871,13 @@ const jsondata = {
 ```
 
 - 参数描述： 
-  正东为x轴 
-  参数 
-  取值范围 
-  描述 
-  rotator 
-  pitch 
-  [-180~180] 
-  俯仰角 
-   
-  yaw 
-  [-180~180] 
-  偏航角 
-   
-  roll 
-  [-180~180] 
-  翻滚角
+**正东为x轴**
+
+| 参数 |  | 取值范围 | 描述 |
+|:---|:---|:---|:---|
+| rotator | pitch | [-180~180] | 俯仰角 |
+|  | yaw | [-180~180] | 偏航角 |
+|  | roll | [-180~180] | 翻滚角 |
 
 ## 条目：实体类型表（id: 1357）
 
@@ -957,136 +891,39 @@ awiat App.Scene.ClearByTypes(types);
 ```
 
 - 参数说明： 
-  类型 
-  备注 
-  GetByTypes是否支持 
-  ClearByObjects是否支持 
-  Tiles 
-  底板图层 
-  是 
-  是 
-  Static 
-  静态模型 
-  是 
-  是 
-  Skeletal 
-  骨骼模型 
-  是 
-  是 
-  Hierarchy 
-  结构模型 
-  是 
-  是 
-  ISEHierarchy 
-  ISE结构模型 
-  是 
-  是 
-  ModelerWater 
-  水面水体 
-  是 
-  是 
-  ModelerRiver 
-  河道水岸 
-  是 
-  是 
-  ModelerEmbank 
-  挡水岸堤 
-  是 
-  是 
-  Vegetation 
-  区域植被 
-  是 
-  是 
-  CameraStart 
-  镜头初始状态 
-  是 
-  是 
-  CameraRoam 
-  镜头漫游 
-  是 
-  是 
-  Bound 
-  覆盖物沿路径移动 
-  是 
-  是 
-  Environment 
-  环境 
-  是 
-  是 
-  RealTimeVideo 
-  实时视频 
-  是 
-  是 
-  Window 
-  窗口 
-  是 
-  是 
-  Poi 
-  POI 
-  是 
-  是 
-  Particle 
-  特效 
-  是 
-  是 
-  Effects 
-  粒子特效 
-  是 
-  是 
-  Text3D 
-  3D文字 
-  是 
-  是 
-  Light 
-  灯光 
-  是 
-  是 
-  Viewshed 
-  可视域 
-  是 
-  是 
-  Path 
-  路径 
-  是 
-  是 
-  Parabola 
-  迁徙图 
-  是 
-  是 
-  Range 
-  区域轮廓 
-  是 
-  是 
-  HeatMap 
-  热力图 
-  是 
-  是 
-  ColumnarHeatMap 
-  柱状热力图 
-  是 
-  是 
-  SpaceHeatMap 
-  点云热力图 
-  是 
-  是 
-  RoadHeatMap 
-  路径热力图 
-  是 
-  是 
-  Raster 
-  栅格图 
-  是 
-  是 
-  HighlightArea 
-  高亮区域 
-  是 
-  是 
-  ProjectModel 
-  工程模型 
-  是 
-  否 
-  ProjectInstance 
-  工程Instance模型 
-  是 
-  否
+  已将表格整理为 Markdown 格式：
 
+| 类型 | 备注 | GetByTypes是否支持 | ClearByObjects是否支持 |
+|:---|:---|:---:|:---:|
+| Tiles | 底板图层 | 是 | 是 |
+| Static | 静态模型 | 是 | 是 |
+| Skeletal | 骨骼模型 | 是 | 是 |
+| Hierarchy | 结构模型 | 是 | 是 |
+| ISEHierarchy | ISE结构模型 | 是 | 是 |
+| ModelerWater | 水面水体 | 是 | 是 |
+| ModelerRiver | 河道水岸 | 是 | 是 |
+| ModelerEmbank | 挡水岸堤 | 是 | 是 |
+| Vegetation | 区域植被 | 是 | 是 |
+| CameraStart | 镜头初始状态 | 是 | 是 |
+| CameraRoam | 镜头漫游 | 是 | 是 |
+| Bound | 覆盖物沿路径移动 | 是 | 是 |
+| Environment | 环境 | 是 | 是 |
+| RealTimeVideo | 实时视频 | 是 | 是 |
+| Window | 窗口 | 是 | 是 |
+| Poi | POI | 是 | 是 |
+| Particle | 特效 | 是 | 是 |
+| Effects | 粒子特效 | 是 | 是 |
+| Text3D | 3D文字 | 是 | 是 |
+| Light | 灯光 | 是 | 是 |
+| Viewshed | 可视域 | 是 | 是 |
+| Path | 路径 | 是 | 是 |
+| Parabola | 迁徙图 | 是 | 是 |
+| Range | 区域轮廓 | 是 | 是 |
+| HeatMap | 热力图 | 是 | 是 |
+| ColumnarHeatMap | 柱状热力图 | 是 | 是 |
+| SpaceHeatMap | 点云热力图 | 是 | 是 |
+| RoadHeatMap | 路径热力图 | 是 | 是 |
+| Raster | 栅格图 | 是 | 是 |
+| HighlightArea | 高亮区域 | 是 | 是 |
+| ProjectModel | 工程模型 | 是 | 否 |
+| ProjectInstance | 工程Instance模型 | 是 | 否 |
