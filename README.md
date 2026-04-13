@@ -34,17 +34,40 @@ WDP_AIcoding/
 
 ### 同步到远程仓库
 
-本项目已配置同时推送到 GitHub 和 GitLab：
+本项目已配置推送到 GitHub 和 GitLab，**两个平台使用不同的默认分支名**：
+
+| 平台 | 远程仓库名 | 默认分支 | 推送命令 |
+|------|-----------|---------|---------|
+| GitHub | `github` | `master` | `git push github master` |
+| GitLab | `gitlab` | `main` | `git push gitlab master:main` |
+
+#### 常用推送方式
 
 ```bash
-# 一键推送到 GitHub + GitLab
-git push all master
+# 方式1：分别推送（推荐，清晰可控）
+git push github master        # 推送到 GitHub 的 master 分支
+git push gitlab master:main   # 推送到 GitLab 的 main 分支
 
-# 仅推送到 GitHub
-git push github master
+# 方式2：一键推送到两个平台
+git push github master && git push gitlab master:main
 
-# 仅推送到 GitLab
-git push gitlab master:main
+# 方式3：使用 all 同时推送（注意：GitLab 需要显式指定 main 分支）
+git push all master           # 推送到 GitHub master
+git push all master:main      # 推送到 GitLab main
+```
+
+#### 查看远程仓库配置
+
+```bash
+git remote -v
+```
+
+输出示例：
+```
+github  https://github.com/51WDP-AICoding/WDP-AICoding.git (fetch)
+github  https://github.com/51WDP-AICoding/WDP-AICoding.git (push)
+gitlab  http://git.51vr.local/neon/wdp-ai-coding-knowledge.git (fetch)
+gitlab  http://git.51vr.local/neon/wdp-ai-coding-knowledge.git (push)
 ```
 
 ### 查看技能文档
