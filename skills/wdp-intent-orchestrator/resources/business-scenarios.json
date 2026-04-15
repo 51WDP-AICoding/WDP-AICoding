@@ -52,6 +52,61 @@
         "点击联动还是自动告警联动",
         "视频窗口的关闭和清理方式"
       ],
+      "modules": [
+        {
+          "name": "场景实体模块",
+          "wdp_apis": [
+            "App.Scene.Add",
+            "App.Scene.Update",
+            "App.Scene.Delete",
+            "App.Scene.Creates"
+          ]
+        },
+        {
+          "name": "POI标注模块",
+          "wdp_apis": [
+            "new App.Poi()",
+            "poiStyle.markerNormalUrl",
+            "poiStyle.markerSelectUrl",
+            "poiStyle.text"
+          ]
+        },
+        {
+          "name": "周界围栏模块",
+          "wdp_apis": [
+            "new App.Range()",
+            "rangeStyle.fillColor",
+            "rangeStyle.outlineColor",
+            "rangeStyle.height"
+          ]
+        },
+        {
+          "name": "视频窗口模块",
+          "wdp_apis": [
+            "new App.Window()",
+            "windowStyle.url",
+            "windowStyle.size",
+            "windowStyle.offset"
+          ]
+        },
+        {
+          "name": "事件交互模块",
+          "wdp_apis": [
+            "App.Renderer.RegisterSceneEvent",
+            "OnWdpSceneIsReady",
+            "OnEntityClicked",
+            "OnMouseEnterEntity"
+          ]
+        },
+        {
+          "name": "相机控制模块",
+          "wdp_apis": [
+            "App.CameraControl.FocusByCustomId",
+            "App.CameraControl.FocusByLocation",
+            "App.CameraControl.SetCameraPose"
+          ]
+        }
+      ],
       "api_flow": [
         {
           "step": 1,
@@ -210,6 +265,62 @@
         "巡检实体的对象类别和对象 Id 来源",
         "是否需要跟车或跟拍",
         "运动结束后是否循环、暂停或清理"
+      ],
+      "modules": [
+        {
+          "name": "路径实体模块",
+          "wdp_apis": [
+            "new App.Path()",
+            "pathStyle.type",
+            "pathStyle.lineColor",
+            "pathStyle.lineWidth"
+          ]
+        },
+        {
+          "name": "粒子实体模块",
+          "wdp_apis": [
+            "new App.Particle()",
+            "particleType",
+            "particleStyle.scale",
+            "particleStyle.rotation"
+          ]
+        },
+        {
+          "name": "路径绑定模块",
+          "wdp_apis": [
+            "new App.Bound()",
+            "boundStyle.time",
+            "boundStyle.bLoop",
+            "boundStyle.speed"
+          ]
+        },
+        {
+          "name": "检查点标注模块",
+          "wdp_apis": [
+            "new App.Poi()",
+            "poiStyle.markerNormalUrl",
+            "poiStyle.text",
+            "poiStyle.textStyle"
+          ]
+        },
+        {
+          "name": "数据窗口模块",
+          "wdp_apis": [
+            "new App.Window()",
+            "windowStyle.url",
+            "windowStyle.size",
+            "windowStyle.followEntity"
+          ]
+        },
+        {
+          "name": "场景管理模块",
+          "wdp_apis": [
+            "App.Scene.Add",
+            "App.Scene.Update",
+            "App.Scene.Delete",
+            "App.Scene.Creates"
+          ]
+        }
       ],
       "api_flow": [
         {
@@ -400,6 +511,79 @@
         "调度资源的对象类别和对象 Id 来源",
         "是否需要实时状态更新",
         "离开页面时哪些对象必须清空"
+      ],
+      "modules": [
+        {
+          "name": "事件标注模块",
+          "wdp_apis": [
+            "new App.Poi()",
+            "poiStyle.markerNormalUrl",
+            "poiStyle.text",
+            "poiStyle.textStyle"
+          ]
+        },
+        {
+          "name": "资源粒子模块",
+          "wdp_apis": [
+            "new App.Particle()",
+            "particleType",
+            "particleStyle.scale",
+            "particleStyle.url"
+          ]
+        },
+        {
+          "name": "调度路径模块",
+          "wdp_apis": [
+            "new App.Path()",
+            "pathStyle.type",
+            "pathStyle.lineColor",
+            "pathStyle.lineWidth"
+          ]
+        },
+        {
+          "name": "资源移动模块",
+          "wdp_apis": [
+            "new App.Bound()",
+            "boundStyle.time",
+            "boundStyle.bLoop",
+            "boundStyle.speed"
+          ]
+        },
+        {
+          "name": "态势范围模块",
+          "wdp_apis": [
+            "new App.Range()",
+            "rangeStyle.fillColor",
+            "rangeStyle.outlineColor",
+            "rangeStyle.height"
+          ]
+        },
+        {
+          "name": "信息窗口模块",
+          "wdp_apis": [
+            "new App.Window()",
+            "windowStyle.url",
+            "windowStyle.size",
+            "windowStyle.followEntity"
+          ]
+        },
+        {
+          "name": "场景管理模块",
+          "wdp_apis": [
+            "App.Scene.Add",
+            "App.Scene.Update",
+            "App.Scene.Delete",
+            "App.Scene.Creates"
+          ]
+        },
+        {
+          "name": "相机控制模块",
+          "wdp_apis": [
+            "App.CameraControl.FocusByLocation",
+            "App.CameraControl.FocusByCustomId",
+            "App.CameraControl.SetCameraPose"
+          ]
+        }
       ],
       "api_flow": [
         {
@@ -620,6 +804,61 @@
         "是否要联动视频或信息窗",
         "告警关闭后的清理动作"
       ],
+      "modules": [
+        {
+          "name": "火情特效模块",
+          "wdp_apis": [
+            "new App.Particle()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "创建并更新火情特效，默认 particleType=flame"
+        },
+        {
+          "name": "告警POI模块",
+          "wdp_apis": [
+            "new App.Poi()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "创建火情告警点位并承载交互入口"
+        },
+        {
+          "name": "3D文字标注模块",
+          "wdp_apis": [
+            "new App.Text3D()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "展示火情等级、状态与处置信息"
+        },
+        {
+          "name": "视频监控窗口模块",
+          "wdp_apis": [
+            "new App.Window()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "告警触发时展示现场视频监控窗口"
+        },
+        {
+          "name": "镜头聚焦模块",
+          "wdp_apis": [
+            "App.CameraControl.Focus",
+            "App.CameraControl.SetCameraPose"
+          ],
+          "purpose": "对火情点位进行相机聚焦与失败降级"
+        },
+        {
+          "name": "事件联动模块",
+          "wdp_apis": [
+            "App.Renderer.RegisterSceneEvent",
+            "OnWdpSceneIsReady",
+            "OnEntityClicked"
+          ],
+          "purpose": "场景就绪门禁与告警对象点击联动"
+        }
+      ],
       "api_flow": [
         {
           "step": 1,
@@ -758,6 +997,62 @@
         "轨迹是新建还是已有",
         "是否需要相机跟随",
         "视频窗口和回放停止后的清理方式"
+      ],
+      "modules": [
+        {
+          "name": "线路态势模块",
+          "wdp_apis": [
+            "new App.Path()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "按线路维度展示接驳线路与运行状态"
+        },
+        {
+          "name": "车辆运行模块",
+          "wdp_apis": [
+            "new App.Particle()",
+            "new App.Poi()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "按车辆维度展示位置、状态与运力"
+        },
+        {
+          "name": "轨迹回放模块",
+          "wdp_apis": [
+            "new App.Bound()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "班车运行轨迹回放与进度控制"
+        },
+        {
+          "name": "视频联动模块",
+          "wdp_apis": [
+            "new App.Window()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "车辆或站点点击后弹出视频监控窗口"
+        },
+        {
+          "name": "镜头聚焦模块",
+          "wdp_apis": [
+            "App.CameraControl.Focus",
+            "App.CameraControl.SetCameraPose"
+          ],
+          "purpose": "车辆点击或异常时自动聚焦，失败降级 SetCameraPose"
+        },
+        {
+          "name": "事件联动模块",
+          "wdp_apis": [
+            "App.Renderer.RegisterSceneEvent",
+            "OnWdpSceneIsReady",
+            "OnEntityClicked"
+          ],
+          "purpose": "场景就绪门禁、点击联动与运行事件处理"
+        }
       ],
       "api_flow": [
         {
@@ -907,6 +1202,70 @@
         "是否需要多队伍并发运动",
         "是否需要时间推进或回放",
         "联动窗口和事件监听的清理方式"
+      ],
+      "modules": [
+        {
+          "name": "火点特效模块",
+          "wdp_apis": [
+            "new App.Particle()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "创建火点特效并支持点击/自动触发"
+        },
+        {
+          "name": "危险范围模块",
+          "wdp_apis": [
+            "new App.Range()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "展示火场态势范围与风险圈层"
+        },
+        {
+          "name": "队伍POI模块",
+          "wdp_apis": [
+            "new App.Poi()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "按小组与车辆装备展示扑救队伍位置"
+        },
+        {
+          "name": "行动路径模块",
+          "wdp_apis": [
+            "new App.Path()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "标记各扑救小组行动路径"
+        },
+        {
+          "name": "路径回放与移动模块",
+          "wdp_apis": [
+            "new App.Bound()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "队伍沿路径移动并支持时间推进回放"
+        },
+        {
+          "name": "镜头聚焦模块",
+          "wdp_apis": [
+            "App.CameraControl.Focus",
+            "App.CameraControl.SetCameraPose"
+          ],
+          "purpose": "点击或异常时聚焦火点/队伍，失败降级 SetCameraPose"
+        },
+        {
+          "name": "事件联动模块",
+          "wdp_apis": [
+            "App.Renderer.RegisterSceneEvent",
+            "OnWdpSceneIsReady",
+            "OnEntityClicked"
+          ],
+          "purpose": "场景就绪门禁、点击触发与自动告警触发联动"
+        }
       ],
       "api_flow": [
         {
@@ -1126,6 +1485,70 @@
         "区域数据来源是 GeoJson、SHP 还是坐标",
         "巡检对象类别和对象 Id 来源",
         "是否需要地空协同和相机联动"
+      ],
+      "modules": [
+        {
+          "name": "网格区域模块",
+          "wdp_apis": [
+            "new App.Range()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "创建网格化区域并支持GIS数据源"
+        },
+        {
+          "name": "网格边界路径模块",
+          "wdp_apis": [
+            "new App.Path()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "生成网格边界路径用于巡检"
+        },
+        {
+          "name": "巡检对象模块",
+          "wdp_apis": [
+            "new App.Particle()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "创建无人机或巡检车实体"
+        },
+        {
+          "name": "路径绑定与移动模块",
+          "wdp_apis": [
+            "new App.Bound()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "绑定巡检对象到网格路径并驱动移动"
+        },
+        {
+          "name": "数据采集窗口模块",
+          "wdp_apis": [
+            "new App.Window()",
+            "App.Scene.Add",
+            "App.Scene.Update"
+          ],
+          "purpose": "巡检点数据采集窗口展示"
+        },
+        {
+          "name": "相机跟随模块",
+          "wdp_apis": [
+            "App.CameraControl.UpdateCamera",
+            "App.CameraControl.FocusByLocation"
+          ],
+          "purpose": "相机跟随巡检对象（可选）"
+        },
+        {
+          "name": "事件联动模块",
+          "wdp_apis": [
+            "App.Renderer.RegisterSceneEvent",
+            "OnWdpSceneIsReady",
+            "OnBoundMoveEnd"
+          ],
+          "purpose": "场景就绪门禁与巡检点到达事件处理"
+        }
       ],
       "api_flow": [
         {
