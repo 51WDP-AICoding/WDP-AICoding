@@ -16,7 +16,7 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 **本文档不负责**：
 - ❌ 不提供具体 API 的完整签名和返回结构（由 official-*.md 提供）
 - ❌ 不提供可复制的代码示例（由 official-*.md 提供）
-- ❌ 不允许基于“通用组件心智”抽象出并不存在的 Create / Destroy API
+- ❌ 不允许基于"通用组件心智"抽象出并不存在的 Create / Destroy API
 
 **代码生成前置要求**：
 > 🚨 **必须阅读**：`../official_api_code_example/official-function-components.md`
@@ -51,7 +51,7 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 
 ## ❌ 严禁事项
 
-### 禁止虚构“通用组件 API”
+### 禁止虚构"通用组件 API"
 
 以下写法**不能作为本技能的默认心智模型**：
 
@@ -62,9 +62,9 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 - `App.PostProcess.Create(opt)`
 
 这些名字在当前 official 文档中**并未作为本技能域的通用真值接口被确认**。  
-如果需求是“天气切换”“场景风格化”“测量工具”“屏幕坐标绑定”等，必须去 official 文档查真实 API。
+如果需求是"天气切换""场景风格化""测量工具""屏幕坐标绑定"等，必须去 official 文档查真实 API。
 
-### 禁止把“功能组件域”误当成“覆盖物创建域”
+### 禁止把"功能组件域"误当成"覆盖物创建域"
 
 以下需求**不要默认留在本技能处理**：
 
@@ -86,7 +86,7 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 
 ### 禁止忽略关闭/清理路径
 
-以下功能不能只写“开启”，不写“关闭”：
+以下功能不能只写"开启"，不写"关闭"：
 
 - MiniMap / Compass
 - PickerPoint / PickerPolyline / Measure / Section
@@ -99,12 +99,75 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 
 ### 本技能负责
 
-- 环境切换：`GetSceneWeather / SetSceneWeather / GetSkylightTime / SetSkylightTime`
-- 系统与渲染信息：`GetInfomation / Plugin.Get / GetStats / GetSnapshot`
-- 坐标与拾取：GIS / Cartesian / Screen 坐标互转，取点、取线、拾取
-- 工具类能力：测量、剖切、ChinaMap、MiniMap、Compass
-- DOM 坐标绑定：ScreenPosBound
-- 资源查询：AssetLoader、DaaS 文件列表
+- **环境切换**：`GetSceneWeather / SetSceneWeather / GetSkylightTime / SetSkylightTime`
+- **场景风格化**：`SetSceneStyle`（comic/sketch/dark/ashy/false）
+- **系统与渲染信息**：`GetInfomation / Plugin.Get / GetStats / GetSnapshot`
+- **坐标与拾取**：GIS / Cartesian / Screen 坐标互转，取点、取线、拾取
+- **坐标几何辅助**：`StartShowCoord / EndShowCoord`
+- **工具类能力**：测量、剖切、ChinaMap、MiniMap、Compass
+- **DOM 坐标绑定**：ScreenPosBound
+- **资源查询**：AssetLoader、DaaS 文件列表
+
+### 工具类方法索引
+
+| 工具 | 开启/创建方法 | 关闭/清理方法 | 说明 |
+|------|-------------|-------------|------|
+| **剖切体** | `App.Scene.Section.Start({coordZRef, transform})` | `App.Scene.Section.End()` | 场景剖切分析，coordZRef: surface/ground/altitude |
+| **测量** | `App.Tools.Measure.Start()` | `App.Tools.Measure.End()` | 距离/面积测量 |
+| **取点** | `App.Tools.PickerPoint.Start()` | `App.Tools.PickerPoint.End()` | 屏幕取点 |
+| **取线** | `App.Tools.PickerPolyline.Start()` | `App.Tools.PickerPolyline.End()` | 屏幕取线 |
+| **MiniMap** | `App.Tools.MiniMap.Show()` | `App.Tools.MiniMap.Hide()` | 小地图 |
+| **Compass** | `App.Tools.Compass.Show()` | `App.Tools.Compass.Hide()` | 指南针 |
+| **ChinaMap** | `App.Tools.ChinaMap.Show()` | `App.Tools.ChinaMap.Hide()` | 中国地图 |
+| **CoordAide** | `App.Tools.CoordAide.Display({points, type})` | `App.Tools.CoordAide.Clear()` | 坐标辅助标注，type: surface/absolute |
+
+#### Picker 拾取工具方法索引
+
+| 方法 | 说明 |
+|------|------|
+| `PickByScreenPos([x, y])` | 屏幕坐标拾取实体及世界坐标 |
+| `PickWorldPointByScreenPos([x, y])` | 拾取世界坐标点（不关心实体） |
+| `PickAesTilesNodeByScreenPos([x, y], types, bMultiple)` | 拾取底板节点 |
+| `PickAesTilesNodesByRectangle({startPos, endPos, types})` | 框选底板节点 |
+| `PickEntityByRectangle({startPos, endPos, types})` | 框选实体 |
+| `PickMaterialByScreenPos({screenPos})` | 拾取材质信息 |
+| `GetEntitiesInViewport(types, bVisibleOnly)` | 获取视口内实体 |
+| `StartRectPick({onPick})` | 开始矩形拾取模式 |
+| `EndRectPick()` | 结束矩形拾取模式 |
+
+#### Shape 形状工具方法索引
+
+| 方法 | 说明 |
+|------|------|
+| `UpdateShapePoints(points)` | 批量更新形状点位 |
+| `RangePickShapePoints(startPos, endPos, mode)` | 框选形状点，mode: New/Add/Remove |
+
+### 数据模型方法索引
+
+| 模块 | 方法 | 说明 |
+|------|------|------|
+| **AssetLoader** | `LoadAssetById(assetId)` | 按资产 ID 加载模型资产 |
+| **AssetLoader** | `ReplaceAssetById(entityObj, newAssetId)` | 替换场景中实体的资产 |
+| **AssetLoader** | `GetMeshSizeById(assetId)` | 获取资产模型的网格尺寸 |
+| **Geometry** | `StartShowCoord(coords, type)` | 开启坐标点辅助显示，type: surface/absolute |
+| **Geometry** | `EndShowCoord()` | 关闭坐标点辅助显示 |
+| **DaaS** | `GetCloudDiskFileList(params)` | 获取云盘文件列表，支持分类/格式/排序过滤 |
+
+### 系统与设置方法索引
+
+| 模块 | 方法 | 说明 |
+|------|------|------|
+| **Customize** | `RunCustomizeApi(jsondata)` | 运行自定义 API 命令 |
+| **Debug** | `SetLogMode(mode)` | 设置日志模式：none/normal/high |
+| **Setting** | `SetEditShapeActionSetting(options)` | 设置编辑形状动作参数 |
+| **Setting** | `SetAudioVolume(volume)` | 设置音量 [0-100] |
+| **Setting** | `SetScreenPercentage(percentage)` | 设置场景渲染精度 |
+| **Setting** | `GetScreenPercentage()` | 获取场景渲染精度 |
+| **Plugin** | `Get()` | 获取已安装插件列表 |
+| **Plugin** | `SetEnable(pluginId, bEnable)` | 启用/禁用插件 |
+| **System** | `GetInfomation()` | 获取系统信息 |
+
+> 📖 **完整工具 API 签名**：参考 `../official_api_code_example/official-function-components.md`
 
 ### 不由本技能主负责
 

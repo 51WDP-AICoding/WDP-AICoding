@@ -81,75 +81,14 @@ await App.Component.VideoUI.Add([obj]);
 
 ## 典型场景索引
 
-### 场景1：POI + Window 交互组合
-**典型用法**：POI 作为场景中的可点击标记，点击后弹出 Window 显示详情或视频。
+| 场景 | 典型用法 | 关键方法 | 参考文档 |
+|------|---------|---------|---------|
+| **POI + Window 交互** | POI 作为可点击标记，点击后弹出 Window | `poiObj.onClick(callback)`, `new App.Window({...})`, `App.Scene.Creates([...])` | official-entity-coverings.md `[demo]POI添加Window` |
+| **区域标注（Range）** | 创建多边形/圆形区域轮廓，支持 SHP/GeoJSON 导入 | `new App.Range({...})`, `obj.GetRangeInfo()`, `App.DataModel.Geometry.CreateGeometryFromShapefile/GeoJson` | official-entity-coverings.md `Topic: 区域轮廓` |
+| **热力图展示** | 区域/柱状/点云/路径/3D网格热力图 | `new App.HeatMap/ColumnarHeatMap/SpaceHeatMap/RoadHeatMap/MeshHeatMap({...})`, `obj.GetHeatValue()`, `obj.Filter/UnFilter` | official-entity-coverings.md `Topic: 热力图系列` |
+| **路径展示（Path）** | 轨迹、路线、管网等线状数据可视化 | `new App.Path({polyline, pathStyle})`, `obj.Update()`, `obj.onClick(callback)` | official-entity-coverings.md `Topic: 路径` |
 
-**索引路径**：
-1. 创建 POI → 绑定 `onClick` 事件
-2. 在点击回调中创建 Window
-3. 参考：`../official_api_code_example/official-entity-coverings.md` 中 `[demo]POI添加Window`
-
-**关键方法**：
-- `poiObj.onClick(callback)` - POI 点击事件绑定
-- `new App.Window({...})` - 创建内嵌窗口
-- `App.Scene.Creates([poiData, windowData])` - 批量创建
-
-### 场景2：区域标注（Range）
-**典型用法**：在三维场景中创建区域轮廓（多边形或圆形），用于标注围栏、区域范围、地理围栏等，支持从 SHP/GeoJSON 文件加载几何数据。
-
-**索引路径**：
-1. 创建 Range → 配置 `polygon2D` 或 `circlePolygon2D` 定义区域范围
-2. 配置 `rangeStyle` 设置围栏样式（类型、高度、颜色等）
-3. 可选：从 SHP/GeoJSON 文件加载几何数据创建区域
-4. 参考：`../official_api_code_example/official-entity-coverings.md` 中 `Topic: 区域轮廓` 和 `Topic: 圆形区域轮廓`
-
-**关键方法**：
-- `new App.Range({...})` - 创建区域轮廓对象
-- `App.Scene.Add(range, {calculateCoordZ: {...}})` - 添加到场景
-- `obj.Update(json)` - 动态更新围栏属性
-- `obj.GetRangeInfo()` - 获取区域信息
-- `App.DataModel.Geometry.CreateGeometryFromShapefile(shpPath)` - 从 SHP 文件创建几何数据
-- `App.DataModel.Geometry.CreateGeometryFromGeoJson(geojsonPath)` - 从 GeoJSON 文件创建几何数据
-
-### 场景3：热力图展示（HeatMap）
-**典型用法**：在三维场景中创建热力图，通过颜色深浅直观表达空间数据的密度或强度分布，支持区域热力图、柱状热力图、点云热力图、路径热力图、3D网格热力图等多种类型。
-
-**索引路径**：
-1. 准备热力点数据（坐标 + 热力值）
-2. 创建对应类型的热力图（HeatMap/ColumnarHeatMap/SpaceHeatMap/RoadHeatMap/MeshHeatMap）
-3. 配置 `heatMapStyle` 设置笔刷直径、热力值范围、渐变颜色等样式
-4. 添加到场景并支持过滤、查询热力值等交互操作
-5. 参考：`../official_api_code_example/official-entity-coverings.md` 中 `Topic: 区域热力图`、`Topic: 柱状热力图`、`Topic: 点云热力图`、`Topic: 路径热力图`、`Topic: 3D网格热力图`
-
-**关键方法**：
-- `new App.HeatMap({...})` - 创建区域热力图
-- `new App.ColumnarHeatMap({...})` - 创建柱状热力图
-- `new App.SpaceHeatMap({...})` - 创建点云热力图
-- `new App.RoadHeatMap({...})` - 创建路径热力图
-- `new App.MeshHeatMap({...})` - 创建3D网格热力图
-- `App.Scene.Add(heatmap, {calculateCoordZ: {...}})` - 添加到场景
-- `obj.Update(json)` - 动态更新热力图数据或样式
-- `obj.GetHeatValue([x, y, z])` - 查询指定坐标处的热力值
-- `obj.Filter()` - 过滤热力点，聚焦展示特定范围的数据
-- `obj.UnFilter()` - 取消过滤，恢复全量显示
-
-### 场景4：路径展示（Path）
-**典型用法**：在三维场景中创建和管理可视化路径线条，用于展示轨迹、路线、管网、道路等线状数据，支持多种样式类型（实线、虚线、箭头、管道等）。
-
-**索引路径**：
-1. 创建 Path → 配置 `polyline` 定义路径坐标点序列
-2. 配置 `pathStyle` 设置路径样式（类型、宽度、颜色、已移动颜色等）
-3. 添加到场景并支持点击交互
-4. 参考：`../official_api_code_example/official-entity-coverings.md` 中 `Topic: 路径`
-
-**关键方法**：
-- `new App.Path({...})` - 创建路径对象
-- `App.Scene.Add(path, {calculateCoordZ: {...}})` - 添加到场景
-- `obj.Update(json)` - 动态更新路径属性和样式
-- `obj.SetVisible(boolean)` - 设置路径显隐
-- `obj.Get()` - 获取路径属性
-- `obj.Delete()` - 删除路径
-- `obj.onClick(callback)` - 绑定路径点击事件
+> 💡 **注意**：Path 在本技能中表示**路径实体本身的创建、更新、显隐、删除和样式控制**。如果需求变成"让车辆/实体沿着路径动起来"，应切到 `../wdp-api-entity-general-behavior/SKILL.md`。
 
 ## 常用覆盖物快速参考
 
@@ -157,6 +96,7 @@ await App.Component.VideoUI.Add([obj]);
 - **创建**：`new App.Poi({location, poiStyle, entityName, customId})`
 - **添加**：`App.Scene.Add(poi, {calculateCoordZ: {...}})`
 - **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
 
 > 📖 **完整 POI API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: POI
 
@@ -174,12 +114,129 @@ await App.Component.VideoUI.Add([obj]);
 
 > 📖 **完整 Range API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 区域轮廓/圆形区域轮廓
 
-### HeatMap（热力图）
-- **创建**：`new App.HeatMap({heatMapStyle, points})`
+### HeatMap（热力图系列）
+- **类型**：`HeatMap`, `ColumnarHeatMap`, `SpaceHeatMap`, `RoadHeatMap`, `MeshHeatMap`
+- **创建**：`new App.HeatMap({heatMapStyle, points})` 等
 - **添加**：`App.Scene.Add(heatmap, {calculateCoordZ: {...}})`
 - **方法**：`Update`, `GetHeatValue`, `Filter`, `UnFilter`, `SetVisible`, `Delete`
+- **特殊方法**：`Clip` / `UnClip` - 热力图裁剪/取消裁剪
 
 > 📖 **完整热力图 API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 区域热力图/柱状热力图/点云热力图/路径热力图/3D网格热力图
+
+### Path（路径）
+- **创建**：`new App.Path({polyline, pathStyle})`
+- **添加**：`App.Scene.Add(path, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **特殊方法**：`Modify` - 动态增删路径点
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+
+> 📖 **完整 Path API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 路径
+
+### Parabola（抛物线/迁徙图）
+- **创建**：`new App.Parabola({polyline, parabolaStyle})`
+- **添加**：`App.Scene.Add(parabola, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **特殊方法**：`SetGather` / `GetGather` - 设置聚集/扩展方向
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+
+> 📖 **完整 Parabola API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 抛物线
+
+### Particle（粒子特效）
+- **创建**：`new App.Particle({location, particleType, scale3d})`
+- **添加**：`App.Scene.Add(particle, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+
+> 📖 **完整 Particle API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 粒子
+
+### Light（灯光）
+- **创建**：`new App.Light({location, lightStyle})`
+- **添加**：`App.Scene.Add(light, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
+
+> 📖 **完整 Light API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 灯光
+
+### Text3D（3D文字）
+- **创建**：`new App.Text3D({location, text3DStyle})`
+- **添加**：`App.Scene.Add(text3d, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+
+> 📖 **完整 Text3D API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 3D文字
+
+### Viewshed（可视域）
+- **创建**：`new App.Viewshed({location, viewshedStyle})`
+- **添加**：`App.Scene.Add(viewshed, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+
+> 📖 **完整 Viewshed API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 可视域
+
+### Raster（栅格图）
+- **创建**：`new App.Raster({location, rasterStyle})`
+- **添加**：`App.Scene.Add(raster, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
+
+> 📖 **完整 Raster API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 栅格图
+
+### HighlightArea（高亮区域）
+- **创建**：`new App.HighlightArea({polygon2D, highlightAreaStyle})`
+- **添加**：`App.Scene.Add(highlightArea, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+
+> 📖 **完整 HighlightArea API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 高亮区域
+
+### RealTimeVideo（实时视频）
+- **创建**：`new App.RealTimeVideo({location, realTimeVideoStyle})`
+- **添加**：`App.Scene.Add(realTimeVideo, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
+
+> 📖 **完整 RealTimeVideo API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 实时视频
+
+### CustomPoi（自定义POI）
+- **创建**：`new App.CustomPoi({location, poiStyle})`
+- **添加**：`App.Scene.Add(customPoi, {calculateCoordZ: {...}})`
+- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
+- **特殊方法**：`SetLabelContent`, `SetLabelStyle`, `SetGeneralLabelStyle`, `SetSpecificLabelStyle`
+- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+
+> 📖 **完整 CustomPoi API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 自定义POI
+
+### Group（实体组）
+- **创建**：`new App.Group({entityName, customId, bVisible})`
+- **添加**：`App.Scene.Add(group)`
+- **方法**：`Add(entities)` - 添加成员, `Remove(entities)` - 移除成员, `UnGroup()` - 解散组, `SetVisible(boolean)`, `Get()`, `Delete()`
+
+> 📖 **完整 Group API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 实体组
+
+### Web 行为组件（PoiUI / VideoUI / WindowUI）
+
+**创建方式**：通过 `App.Component.xxx` 工厂类管理（非 `App.Scene.Add`）
+
+| 组件 | 方法 | 说明 |
+|------|------|------|
+| **PoiUI** | `App.Component.PoiUI.Add([entity])` | 添加点位组件（对象方式） |
+| **PoiUI** | `App.Component.PoiUI.Create(jsonData)` | 创建单个点位组件 |
+| **PoiUI** | `App.Component.PoiUI.Creates(jsonData)` | 批量创建点位组件 |
+| **PoiUI** | `App.Component.PoiUI.Get()` | 获取所有点位组件 |
+| **VideoUI** | `App.Component.VideoUI.Add([entity])` | 添加视频组件（对象方式） |
+| **VideoUI** | `App.Component.VideoUI.Create(jsonData)` | 创建单个视频组件 |
+| **VideoUI** | `App.Component.VideoUI.Creates(jsonData)` | 批量创建视频组件 |
+| **VideoUI** | `App.Component.VideoUI.Get()` | 获取所有视频组件/DOM对象 |
+| **WindowUI** | `App.Component.WindowUI.Add([entity])` | 添加窗口组件（对象方式） |
+| **WindowUI** | `App.Component.WindowUI.Create(jsonData)` | 创建单个窗口组件 |
+| **WindowUI** | `App.Component.WindowUI.Creates(jsonData)` | 批量创建窗口组件 |
+| **WindowUI** | `App.Component.WindowUI.Get()` | 获取所有窗口组件 |
+
+**事件绑定**：
+- `obj.onClick(callback)` - 点击事件
+- `obj.onHover(callback)` - 悬停事件
+- `windowUIObj.PostMessage(data)` - WindowUI 与内嵌页面通信
+
+> 📖 **完整 Web 行为组件 API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: UI 组件事件监听与坐标跟随
+
+> 📖 **完整事件回调结构**：参考 `../official_api_code_example/official-entity-coverings.md`
 
 ## 质量门槛
 

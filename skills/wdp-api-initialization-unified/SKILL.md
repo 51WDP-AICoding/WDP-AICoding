@@ -85,6 +85,37 @@ await App.Renderer.Start();
 
 ---
 
+## 运行时控制
+
+初始化完成后，可通过以下 API 进行运行时控制和监控：
+
+### 渲染控制
+| 功能 | API | 说明 |
+|-----|-----|------|
+| 停止/重启渲染 | `App.Renderer.Stop()` / `Restart()` | 暂停或恢复渲染服务 |
+| 启动指定任务 | `App.Renderer.StartByTaskId(io, taskId)` | 通过 TaskId 启动 |
+| 设置分辨率 | `App.Renderer.SetResolution(w, h)` | 固定分辨率模式 |
+| 设置分辨率倍率 | `App.Renderer.SetResolutionMultiple(n)` | 相对容器尺寸缩放 |
+| 设置帧率上限 | `App.Renderer.SetFrameRateLimit(fps)` | 限制渲染帧率 |
+| 设置码率 | `App.Renderer.SetBitrate(mbps)` | 视频流码率控制 |
+| 获取实时状态 | `App.Renderer.GetStats()` | 码率、帧率、延迟等 |
+| 截图 | `App.Renderer.GetSnapshot([w,h], quality)` | 获取 Base64 图片 |
+| 注销事件 | `App.Renderer.UnRegisterEvent/UnRegisterErrorEvent/UnRegisterSceneEvent()` | 移除事件监听 |
+
+> 📖 **完整 API 签名和示例**：参考 `../official_api_code_example/official-initialize-scene.md` - 条目：Renderer 控制方法（id: 1344-ext）
+
+### 系统信息与配置
+| 功能 | API | 说明 |
+|-----|-----|------|
+| 获取系统信息 | `App.System.GetInfomation()` | 平台、浏览器、SDK 版本 |
+| 获取 API 版本 | `App.Setting.GetApiVersion()` | 当前 API 版本号 |
+| 参数重置 | `App.System.SetOption({url, order, resolution})` | 动态修改连接参数 |
+| 设置超时 | `App.System.SetTimeoutTime(ms)` | 接口请求超时（默认 10s）|
+
+> 📖 **完整 API 签名和示例**：参考 `../official_api_code_example/official-initialize-scene.md` - 条目：系统信息与版本（id: 1344-sys）
+
+---
+
 ## 📋 初始化流程详解
 
 ### 1. 创建实例参数

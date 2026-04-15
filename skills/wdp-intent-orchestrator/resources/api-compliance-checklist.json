@@ -2,7 +2,7 @@
   "metadata": {
     "version": "2.1.0",
     "created_at": "2026-04-15",
-    "description": "API调用规范检查清单，用于编码前自动校验API调用的完整性和合规性",
+    "description": "API调用规范检查清单，用于校验报告中的API调用链路的合规性",
     "usage": "在输出《系统意图与架构设计报告》前，对涉及的每个API执行检查清单"
   },
   "apis": {

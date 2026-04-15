@@ -173,65 +173,21 @@ obj.onClick(callback); // 支持事件绑定
 
 ## 高级功能
 
-### 节点可见性分组
-用于批量管理 node 显隐：
-```javascript
-// 添加分组
-await App.Scene.Node.AddVisibilityGroup(tilesObj, {
-  groupName: 'floor-1',
-  nodeIds: ['895874688', '882098004']
-});
+| 功能 | 方法 | 说明 |
+|------|------|------|
+| **节点可见性分组** | `AddVisibilityGroup(tilesObj, {groupName, nodeIds})` | 批量管理 node 显隐 |
+| **节点可见性分组** | `UpdateVisibilityGroup(tilesObj, {groupName, nodeIds, bVisible})` | 更新分组显隐 |
+| **节点可见性分组** | `RemoveVisibilityGroup(tilesObj, groupName)` | 移除分组 |
+| **节点可见性分组** | `GetVisibilityGroup(tilesObj, groupName)` | 获取分组信息 |
+| **节点选择器** | `NodeSelection.Add(tilesObj, nodeIds)` / `Draw()` | 添加选中并绘制描边 |
+| **节点选择器** | `NodeSelection.AddDraw(tilesObj, nodeIds)` | 合并操作：添加并立即绘制 |
+| **节点选择器** | `NodeSelection.Remove(tilesObj, nodeIds)` | 移除选中 |
+| **节点选择器** | `NodeSelection.ClearDraw()` | 清除所有选中 |
+| **节点包围盒** | `tilesObj.GetNodesBoundingBox(nodeIds)` | 空间分析和相机聚焦 |
+| **Tiles 激活控制** | `Tiles.ActivateAesTiles(tilesObj)` / `DeactivateAesTiles(tilesObj)` | 激活/停用底板 |
+| **Tiles 激活控制** | `Tiles.IsActivated(tilesObj)` | 查询激活状态 |
 
-// 更新分组显隐
-await App.Scene.Node.UpdateVisibilityGroup(tilesObj, {
-  groupName: 'floor-1',
-  nodeIds: [...], // 可选
-  bVisible: false
-});
-
-// 移除分组
-await App.Scene.Node.RemoveVisibilityGroup(tilesObj, 'floor-1');
-
-// 获取分组信息
-await App.Scene.Node.GetVisibilityGroup(tilesObj, 'floor-1');
-```
-
-### 节点选择器（NodeSelection）
-用于 BIM 构件选中和描边：
-```javascript
-// 添加选中并绘制描边
-await App.Scene.NodeSelection.Add(tilesObj, ['895874688', '882098004']);
-await App.Scene.NodeSelection.Draw();
-
-// 合并操作：添加并立即绘制
-await App.Scene.NodeSelection.AddDraw(tilesObj, ['895874688']);
-
-// 移除选中
-await App.Scene.NodeSelection.Remove(tilesObj, ['895874688']);
-
-// 清除所有选中
-await App.Scene.NodeSelection.ClearDraw();
-```
-
-### 节点包围盒
-用于空间分析和相机聚焦：
-```javascript
-const res = await tilesObj.GetNodesBoundingBox(['895874688', '882098004']);
-// res.result: { center: [lng, lat, z], size: [w, h, d] }
-```
-
-### AES Tiles 激活控制
-```javascript
-// 激活底板（进入可交互状态）
-await App.Scene.Tiles.ActivateAesTiles(tilesObj);
-
-// 停用底板
-await App.Scene.Tiles.DeactivateAesTiles(tilesObj);
-
-// 查询激活状态
-const res = await App.Scene.Tiles.IsActivated(tilesObj);
-// res.result.bActivated: boolean
-```
+> 📖 **完整代码示例**：`../official_api_code_example/official-layer-models.md`
 
 ## 质量门槛
 
