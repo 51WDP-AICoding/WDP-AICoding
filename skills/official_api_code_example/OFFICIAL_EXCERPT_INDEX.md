@@ -34,6 +34,7 @@
 - `official-material-settings.md`（材质设置：材质替换 + 材质高亮）
 - `official-cluster.md`（点聚合：数据部署 + 效果配置 + 周边搜索）
 - `official-function-components.md`（功能组件：环境 + 控件 + 工具 + 设置）
+- `official-spatial-understanding.md`（空间理解：坐标转换/取点工具/空间计算）
 - `official-bim-full.md`（BIM 完整文档：快速开始/通用事件/BIM事件/通用行为/全局设置/模型行为/构件行为/空间操作）
 - `official-gis-full.md`（GIS 全量：事件监听/部署/通用行为/矢量图层/影像图层/3DTiles 图层）
 

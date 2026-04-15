@@ -1,0 +1,496 @@
+{
+  "metadata": {
+    "version": "2.1.0",
+    "created_at": "2026-04-15",
+    "description": "API调用规范检查清单，用于编码前自动校验API调用的完整性和合规性",
+    "usage": "在输出《系统意图与架构设计报告》前，对涉及的每个API执行检查清单"
+  },
+  "apis": {
+    "App.Scene.Add": {
+      "category": "coverings",
+      "description": "添加单个实体到场景",
+      "required_params": [
+        {
+          "name": "entity",
+          "type": "object",
+          "description": "要添加的实体对象，如 new App.Poi(), new App.Range()",
+          "example": "new App.Poi({location: [121.464, 31.224, 47]})"
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "description": "添加配置选项",
+          "sub_params": ["customId", "calculateCoordZ"]
+        }
+      ],
+      "optional_params": [
+        {
+          "name": "customId",
+          "type": "string",
+          "description": "自定义ID，用于后续查询和删除",
+          "example": "camera_poi_1"
+        },
+        {
+          "name": "calculateCoordZ",
+          "type": "object",
+          "description": "高度计算配置",
+          "sub_params": ["coordZRef", "coordZOffset"],
+          "warning": "未配置可能导致实体悬空或陷入地下"
+        }
+      ],
+      "prerequisites": [
+        "App 已初始化 (new WdpApi())",
+        "SceneReady 事件已触发 (progress === 100)",
+        "实体对象的 required 参数已配置"
+      ],
+      "cleanup_action": {
+        "method": "App.Scene.Delete(customId) 或 object.Delete()",
+        "description": "根据customId删除或使用返回的对象调用Delete"
+      },
+      "return_value": {
+        "type": "object",
+        "properties": ["success", "message", "object"],
+        "object_fields": ["Eid", "customId", "location"],
+        "must_collect": true,
+        "warning": "必须收集返回的object，否则无法清理"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "忘记收集返回的 result.object",
+          "impact": "无法获取Eid，后续无法删除该实体",
+          "solution": "始终检查 result.success 并收集 result.object"
+        },
+        {
+          "mistake": "未配置 calculateCoordZ",
+          "impact": "实体高度可能不正确（悬空或陷入地下）",
+          "solution": "配置 calculateCoordZ: { coordZRef: 'surface', coordZOffset: 2 }"
+        },
+        {
+          "mistake": "customId 重复",
+          "impact": "后续查询和删除可能操作错误的实体",
+          "solution": "使用唯一的customId，建议格式：{type}_{scene}_{index}"
+        },
+        {
+          "mistake": "在 SceneReady 前调用",
+          "impact": "API调用失败或实体无法正确显示",
+          "solution": "必须在 OnWdpSceneIsReady 回调中 progress === 100 后调用"
+        }
+      ],
+      "notes": [
+        "批量创建实体请使用 App.Scene.Creates 以提高性能",
+        "calculateCoordZ.coordZRef 可选值：'surface'(地表), 'seaLevel'(海平面)",
+        "返回的 object 必须缓存到 toolObjs 中用于后续清理"
+      ]
+    },
+    "App.Scene.Creates": {
+      "category": "coverings",
+      "description": "批量创建并添加实体到场景",
+      "required_params": [
+        {
+          "name": "entities",
+          "type": "array",
+          "description": "实体配置数组，每个元素包含type, location, style等",
+          "example": "[{type: 'Poi', location: [...], poiStyle: {...}}]"
+        }
+      ],
+      "optional_params": [
+        {
+          "name": "options",
+          "type": "object",
+          "description": "批量创建配置",
+          "sub_params": ["calculateCoordZ"]
+        }
+      ],
+      "prerequisites": [
+        "App 已初始化",
+        "SceneReady 事件已触发",
+        "entities 数组非空且每个元素配置正确"
+      ],
+      "cleanup_action": {
+        "method": "遍历 result.objects，逐个调用 Delete(customId) 或 object.Delete()",
+        "description": "必须清理所有创建的实体"
+      },
+      "return_value": {
+        "type": "object",
+        "properties": ["success", "message", "objects"],
+        "objects_type": "array",
+        "object_fields": ["Eid", "customId", "location"],
+        "must_collect": true,
+        "warning": "必须收集返回的objects数组"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "忘记收集返回的 result.objects",
+          "impact": "无法获取所有实体的Eid，后续无法清理",
+          "solution": "检查 result.success 并遍历收集 result.objects"
+        },
+        {
+          "mistake": "未检查 result.success 直接取值",
+          "impact": "创建失败时访问 objects 导致错误",
+          "solution": "始终先检查 if (result.success) 再处理结果"
+        },
+        {
+          "mistake": "entities 数组为空",
+          "impact": "无实际创建但可能误认为成功",
+          "solution": "调用前检查 entities.length > 0"
+        }
+      ],
+      "notes": [
+        "批量创建性能显著优于循环调用 App.Scene.Add",
+        "适用于创建大量POI、Range等同类实体"
+      ]
+    },
+    "App.Renderer.RegisterSceneEvent": {
+      "category": "events",
+      "description": "注册场景事件监听",
+      "required_params": [
+        {
+          "name": "events",
+          "type": "array",
+          "description": "事件配置数组，每个元素包含name和func",
+          "example": "[{name: 'OnEntityClicked', func: callback}]"
+        }
+      ],
+      "prerequisites": [
+        "App 已初始化",
+        "SceneReady 事件已触发"
+      ],
+      "cleanup_action": {
+        "method": "App.Renderer.UnregisterSceneEvent",
+        "description": "在组件销毁时解绑所有事件"
+      },
+      "return_value": {
+        "type": "void",
+        "description": "无返回值"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "事件名拼写错误",
+          "impact": "事件监听不生效",
+          "solution": "使用标准事件名：OnWdpSceneIsReady, OnEntityClicked, OnBoundMoveEnd"
+        },
+        {
+          "mistake": "回调函数未处理异常",
+          "impact": "回调中抛出异常可能导致引擎崩溃",
+          "solution": "使用 try-catch 包裹回调逻辑"
+        },
+        {
+          "mistake": "忘记在清理时解绑事件",
+          "impact": "组件销毁后事件仍在触发，导致内存泄漏",
+          "solution": "在 closeAll 或组件销毁时调用 UnregisterSceneEvent"
+        },
+        {
+          "mistake": "使用 entity.onClick 而非 RegisterSceneEvent",
+          "impact": "某些场景下点击事件不触发",
+          "solution": "统一使用 RegisterSceneEvent('OnEntityClicked')"
+        }
+      ],
+      "notes": [
+        "常用事件：OnWdpSceneIsReady(场景就绪), OnEntityClicked(实体点击), OnBoundMoveEnd(路径移动结束)",
+        "OnWdpSceneIsReady 回调中检查 res.result.progress === 100",
+        "OnEntityClicked 回调中通过 res.result.object.customId 识别被点击实体"
+      ]
+    },
+    "App.CameraControl.FocusByCustomId": {
+      "category": "camera",
+      "description": "根据customId聚焦相机到目标实体",
+      "required_params": [
+        {
+          "name": "customId",
+          "type": "string",
+          "description": "目标实体的customId",
+          "example": "camera_poi_1"
+        }
+      ],
+      "optional_params": [
+        {
+          "name": "duration",
+          "type": "number",
+          "description": "动画时长（毫秒）",
+          "default": 500,
+          "recommend": "500-1000"
+        },
+        {
+          "name": "pitch",
+          "type": "number",
+          "description": "俯仰角（度）",
+          "default": -20,
+          "recommend": "-20到-60"
+        },
+        {
+          "name": "yaw",
+          "type": "number",
+          "description": "偏航角（度）",
+          "default": 0
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "description": "相机距离（米）"
+        }
+      ],
+      "prerequisites": [
+        "目标实体已存在且customId正确",
+        "SceneReady 已触发"
+      ],
+      "cleanup_action": {
+        "method": "App.CameraControl.ResetCamera 或 FocusToDefault",
+        "description": "离开页面时重置相机到默认位置"
+      },
+      "return_value": {
+        "type": "void",
+        "description": "无返回值"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "customId不存在",
+          "impact": "聚焦失败，相机无反应",
+          "solution": "确保customId正确，可先查询实体存在性"
+        },
+        {
+          "mistake": "duration过短",
+          "impact": "动画过快，用户体验差",
+          "solution": "建议duration 500-1000ms"
+        },
+        {
+          "mistake": "pitch值不合理",
+          "impact": "视角过于水平或垂直",
+          "solution": "建议pitch -20到-60度，负值表示俯视"
+        }
+      ],
+      "notes": [
+        "如FocusByCustomId失败，可降级使用 FocusByLocation 或 SetCameraPose",
+        "聚焦前建议先检查目标实体是否可见"
+      ]
+    },
+    "App.Scene.Update": {
+      "category": "coverings",
+      "description": "更新已存在实体的属性",
+      "required_params": [
+        {
+          "name": "customId",
+          "type": "string",
+          "description": "要更新实体的customId"
+        },
+        {
+          "name": "updateData",
+          "type": "object",
+          "description": "更新数据，如 {poiStyle: {...}, location: [...]}"
+        }
+      ],
+      "prerequisites": [
+        "目标实体已存在",
+        "updateData 中包含有效的更新字段"
+      ],
+      "cleanup_action": {
+        "method": "无需特别清理，Update只是修改属性",
+        "description": "如需恢复原状，需手动记录原值并再次Update"
+      },
+      "return_value": {
+        "type": "object",
+        "properties": ["success", "message"],
+        "must_collect": false
+      },
+      "common_mistakes": [
+        {
+          "mistake": "customId不存在",
+          "impact": "Update失败",
+          "solution": "确保customId正确，使用创建时返回的customId"
+        },
+        {
+          "mistake": "updateData字段错误",
+          "impact": "更新不生效",
+          "solution": "参考official文档确认可更新字段"
+        }
+      ],
+      "notes": [
+        "常用于更新POI图标、文字、位置等",
+        "更新Range的style需使用 rangeStyle 字段"
+      ]
+    },
+    "new App.Bound": {
+      "category": "entity-behavior",
+      "description": "创建路径绑定对象，控制实体沿路径移动",
+      "required_params": [
+        {
+          "name": "moving",
+          "type": "object",
+          "description": "移动的实体对象（如Particle）"
+        },
+        {
+          "name": "path",
+          "type": "object",
+          "description": "路径对象（如Path）"
+        },
+        {
+          "name": "boundStyle",
+          "type": "object",
+          "description": "绑定样式配置",
+          "sub_params": ["time", "bLoop", "speed"]
+        }
+      ],
+      "prerequisites": [
+        "path对象已创建并通过 App.Scene.Add 添加到场景",
+        "moving对象已创建并通过 App.Scene.Add 添加到场景",
+        "boundStyle.time > 0（移动时间不能为0）"
+      ],
+      "cleanup_action": {
+        "method": "boundObj.Delete()",
+        "description": "停止移动并删除绑定对象"
+      },
+      "return_value": {
+        "type": "object",
+        "properties": ["Eid", "customId"],
+        "must_collect": true,
+        "methods": ["Update()", "SetState('play'|'pause'|'stop')", "Delete()"]
+      },
+      "common_mistakes": [
+        {
+          "mistake": "Path和Particle未先Add到场景",
+          "impact": "Bound创建失败或行为异常",
+          "solution": "必须先 App.Scene.Add(Path) 和 App.Scene.Add(Particle)"
+        },
+        {
+          "mistake": "boundStyle.time为0",
+          "impact": "实体不移动",
+          "solution": "设置合理的time值（秒），如60表示60秒完成路径"
+        },
+        {
+          "mistake": "忘记调用Update初始化",
+          "impact": "绑定未激活",
+          "solution": "创建后调用 boundObj.Update()"
+        },
+        {
+          "mistake": "忘记调用SetState启动",
+          "impact": "实体不开始移动",
+          "solution": "调用 boundObj.SetState('play') 启动移动"
+        }
+      ],
+      "notes": [
+        "SetState参数：'play'(播放), 'pause'(暂停), 'stop'(停止)",
+        "可监听 OnBoundMoveEnd 事件获取移动结束通知",
+        "boundStyle.bLoop 控制是否循环移动"
+      ]
+    },
+    "new App.Window": {
+      "category": "function-components",
+      "description": "创建3D场景内的窗口（信息框、视频窗等）",
+      "required_params": [
+        {
+          "name": "location",
+          "type": "array",
+          "description": "窗口位置 [lon, lat, height]"
+        }
+      ],
+      "optional_params": [
+        {
+          "name": "windowStyle",
+          "type": "object",
+          "description": "窗口样式配置",
+          "sub_params": ["url", "size", "offset", "followEntity"]
+        },
+        {
+          "name": "customId",
+          "type": "string",
+          "description": "自定义ID"
+        }
+      ],
+      "prerequisites": [
+        "SceneReady 已触发",
+        "location坐标有效"
+      ],
+      "cleanup_action": {
+        "method": "windowObj.Delete()",
+        "description": "关闭并删除窗口"
+      },
+      "return_value": {
+        "type": "object",
+        "properties": ["Eid", "customId", "object"],
+        "must_collect": true
+      },
+      "common_mistakes": [
+        {
+          "mistake": "url路径错误",
+          "impact": "窗口内容无法加载",
+          "solution": "确保url可访问，使用相对路径或完整URL"
+        },
+        {
+          "mistake": "size格式错误",
+          "impact": "窗口大小异常",
+          "solution": "size格式为 [width, height]，如 [250, 190]"
+        }
+      ],
+      "notes": [
+        "windowStyle.followEntity 控制窗口是否跟随实体移动",
+        "常用于显示视频流、信息详情等"
+      ]
+    },
+    "App.CameraControl.SetCameraPose": {
+      "category": "camera",
+      "description": "设置相机位置和姿态（直接设置，无动画）",
+      "required_params": [
+        {
+          "name": "target",
+          "type": "array",
+          "description": "目标位置 [lon, lat, height]"
+        }
+      ],
+      "optional_params": [
+        {
+          "name": "pitch",
+          "type": "number",
+          "description": "俯仰角",
+          "default": -20
+        },
+        {
+          "name": "yaw",
+          "type": "number",
+          "description": "偏航角",
+          "default": 0
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "description": "相机距离"
+        }
+      ],
+      "prerequisites": [
+        "SceneReady 已触发"
+      ],
+      "cleanup_action": {
+        "method": "ResetCamera",
+        "description": "重置相机"
+      },
+      "return_value": {
+        "type": "void"
+      },
+      "common_mistakes": [
+        {
+          "mistake": "与FocusByCustomId混淆",
+          "impact": "无动画效果，用户感知突兀",
+          "solution": "需要动画时使用FocusByCustomId，直接定位用SetCameraPose"
+        }
+      ],
+      "notes": [
+        "SetCameraPose是直接设置相机位置和姿态，无过渡动画",
+        "可作为FocusByCustomId失败时的降级方案"
+      ]
+    }
+  },
+  "checklist_usage": {
+    "description": "如何使用本检查清单",
+    "steps": [
+      "在输出《系统意图与架构设计报告》前，识别方案中涉及的所有API",
+      "对每个API，检查required_params是否已提供",
+      "检查prerequisites是否满足（如SceneReady）",
+      "确认cleanup_action已在清理链路中规划",
+      "检查是否存在common_mistakes中的潜在问题",
+      "在报告'合规性检查'章节列出检查结果"
+    ],
+    "report_template": {
+      "section": "合规性检查",
+      "columns": ["API", "检查项", "状态", "说明"],
+      "status": ["✅ 通过", "⚠️ 提醒", "❌ 缺失"]
+    }
+  }
+}

@@ -41,25 +41,44 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 ### 2. 匹配能力与路由
 
+#### 2.1 场景与模式匹配
+
 用 `resources/business-scenarios.json` 做场景模板匹配。
 
 用 `resources/api-patterns.json` 做调用顺序匹配。
 
-用 `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md` 先确定应查哪份 `official-*.md`，再把能力映射到本仓库子 skill：
+#### 2.2 Skill 路由（复用现有资源）
 
-- `initialization` -> `wdp-api-initialization-unified`
-- `events` -> `wdp-api-general-event-registration`
-- `camera` -> `wdp-api-camera-unified`
-- `base-attributes` -> `wdp-api-generic-base-attributes`
-- `entity-behavior` -> `wdp-api-entity-general-behavior`
-- `coverings` -> `wdp-api-coverings-unified`
-- `layers-models` -> `wdp-api-layer-models`
-- `materials` -> `wdp-api-material-settings`
-- `cluster` -> `wdp-api-cluster`
-- `function-components` -> `wdp-api-function-components`
-- `bim` / `bim-core` -> `wdp-api-bim-unified`
-- `gis` -> `gis-api-core-operations`
-- `spatial-understanding` -> `wdp-api-spatial-understanding`
+**路由规则源**：读取 `../wdp-entry-agent/SKILL.md` 获取完整的问题类型 → skill 映射规则。
+
+该文件已定义：
+- 13个skill的路由规则
+- 阻断性要求（高频错误警示）
+- 编码约束（严禁猜API、严禁假值）
+
+**快速查找提示**（常用映射）：
+
+| 能力域/关键词 | 目标 Skill |
+|-------------|-----------|
+| `initialization` | `wdp-api-initialization-unified` |
+| `events` / `事件注册` | `wdp-api-general-event-registration` |
+| `camera` / `相机` / `跟随` | `wdp-api-camera-unified` |
+| `base-attributes` | `wdp-api-generic-base-attributes` |
+| `entity-behavior` / `路径移动` | `wdp-api-entity-general-behavior` |
+| `coverings` / `覆盖物` / `路径` / `POI` | `wdp-api-coverings-unified` |
+| `layers-models` | `wdp-api-layer-models` |
+| `materials` | `wdp-api-material-settings` |
+| `cluster` | `wdp-api-cluster` |
+| `function-components` / `拾取` | `wdp-api-function-components` |
+| `bim` / `bim-core` / `构件` | `wdp-api-bim-unified` |
+| `gis` / `GIS要素` | `gis-api-core-operations` |
+| `spatial-understanding` / `空间/坐标信息获取` | `wdp-api-spatial-understanding` |
+
+#### 2.3 Official 文档索引
+
+用 `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md` 确定应查哪份 `official-*.md`。
+
+具体 API 真值直接回到对应 `official-*.md` 摘录确认，不依赖本地二次汇总 catalog。
 
 ### 3. 执行输入门禁
 
@@ -125,6 +144,24 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 发现缺失关键信息时，直接向用户追问，不要引用不存在的工具名。
 
+#### API 规划检查（意图解析阶段）
+
+**注意**：本检查用于**意图解析和架构设计阶段**，验证API调用规划的合理性，**不替代**MCP服务中代码实际生产环节中的一些强制检查步骤。
+
+读取 `resources/api-compliance-checklist.json`，对架构方案中涉及的每个API进行规划级检查：
+
+1. **必填参数规划**：是否在方案中规划了所有 `required_params`
+2. **前置条件规划**：是否考虑了 `prerequisites`（如SceneReady监听）
+3. **返回值收集规划**：是否规划了收集 `return_value` 用于后续清理
+4. **常见错误预防**：是否在方案中规避了 `common_mistakes` 中的典型问题
+5. **清理动作规划**：是否在清理链路中规划了对应的 `cleanup_action`
+
+**与编码检查的区别**：
+- **本检查**：在意图解析阶段，检查API调用规划是否完整、合理
+- **MCP编码检查**：在代码生成后，检查实际代码的语法和运行时正确性
+
+如发现规划级问题，在报告"合规性检查"章节简要列出（不展开详细检查过程）。
+
 ### 4. 归一化高频歧义
 
 遇到以下自然语言时，按下面方式拆解：
@@ -139,48 +176,73 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 ## 输出要求
 
-输出 `《系统意图与架构设计报告》`，至少包含：
+输出 `《系统意图与架构设计报告》`，用于指导后续编码工作。报告应简洁明了，避免冗余信息。
 
-1. 原始诉求
-2. 子任务拆解
-3. 命中的 API 能力与调用顺序
-4. Primary / Secondary skill 路由
-5. 已确认输入
-6. 缺失输入
-7. 对象类别与对象 Id 来源
-8. 清理链路
-9. 是否需要 `wdp-context-memory`
+### 报告核心章节
 
-## 报告最小模板
+1. **原始诉求**：用户的自然语言需求
+2. **子任务拆解**：主任务和子任务列表
+3. **API调用链路**：关键API调用顺序（步骤1→2→3→4→5）
+4. **Skill路由**：Primary和Secondary skill列表
+5. **已确认输入**：已明确的参数和数据
+6. **缺失输入**：需要用户补充的信息
+7. **对象信息**：对象类别、Id、Id来源
+8. **清理链路**：创建动作与清理动作的对应关系
+9. **状态管理判断**：是否启用 `wdp-context-memory`
+
+### 报告简洁模板
 
 ```markdown
 # 系统意图与架构设计报告
 
-## 原始诉求
+## 1. 原始诉求
+{用户需求的简洁描述}
 
-## 子任务拆解
+## 2. 子任务拆解
+- {子任务1}
+- {子任务2}
+- ...
 
-## API 能力与调用顺序
-
-## Skill 路由
-- Primary:
-- Secondary:
-
-## 已确认输入
-
-## 缺失输入
-
-## 对象信息
-- 对象类别:
-- 对象 Id:
-- Id 来源:
-
-## 清理链路
-
-## 状态管理判断
-- 是否启用 `wdp-context-memory`:
-- 原因:
+## 3. API调用链路
 ```
+步骤1: {API1}({参数}) → {输出}
+步骤2: {API2}({参数}) → {输出}
+步骤3: {API3}({参数}) → {输出}
+```
+
+## 4. Skill路由
+- **Primary**: {skill1}, {skill2}
+- **Secondary**: {skill3}, {skill4}
+
+## 5. 已确认输入
+- {参数1}: {值}
+- {参数2}: {值}
+
+## 6. 缺失输入
+- {需要用户补充的信息}
+
+## 7. 对象信息
+- **对象类别**: {Poi/Range/Particle等}
+- **对象Id**: {customId或来源}
+- **Id来源**: {创建返回值/事件回调等}
+
+## 8. 清理链路
+| 创建动作 | 清理动作 |
+|---------|---------|
+| {API1} | {清理API1} |
+| {API2} | {清理API2} |
+
+## 9. 状态管理判断
+- **是否启用**: {是/否}
+- **原因**: {长流程/跨skill/需保留状态}
+```
+
+### 报告生成原则
+
+1. **简洁优先**：只包含核心信息，避免冗余描述
+2. **结构化**：使用列表、表格、代码块等结构化格式
+3. **可直接使用**：报告内容应可直接用于指导编码
+4. **合规性检查**：生成报告前，通过 `api-compliance-checklist.json` 检查API合规性，但不在报告中展开详细检查过程
 
 ## 质量底线
 
