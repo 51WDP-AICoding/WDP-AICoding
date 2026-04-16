@@ -160,49 +160,90 @@ await App.Scene.Creates([{
 
 ```javascript
 await App.Scene.GetAll();
-//GetAll()返回值结构
-// {
-//   Camera: [实体1],
-//   WdpGlobalSettings: [实体1],
-//   CameraStart: [实体1],
-//   DcpSave: [实体1],
-//   Environment: [实体1],
-//   GeoReference: [实体1],
-//   Skeletal: [实体1],
-//   Static: [实体1, 实体2, 实体3, 实体4, 实体5]
-// }
 
+
+/*
+  出参示例：
+{
+   success: true,
+   message: '',
+   result: {
+     Camera: [...],        // 相机实体数组
+     Skeletal: [...],      // 骨骼模型数组
+     Static: [...],        // 静态模型数组
+     Poi: [...],           // POI标注数组
+     Path: [...],          // 路径数组
+     Window: [...],        // 窗口数组
+     Particle: [...],      // 粒子效果数组
+     Effects: [...],       // 特效数组
+     // ... 其他实体类型
+   }
+ }
+*/
 ```
 
 - GetByEids (通过eid获取对象)
 
 ```javascript
 await App.Scene.GetByEids(['-9151314316185345952', '-9151314316965221260', ...]);
+/*
+  出参示例：
+ {
+    success: true,
+    message: '',
+    result: [entity1, entity2, ...]  // 匹配的实体对象数组
+ }
+*/
+
 ```
 
 - GetByEntityName (通过entityName获取entity)
 
 ```javascript
 await App.Scene.GetByEntityName(['name01', 'name02', ...]);
+/*
+  出参示例：
+ {
+    success: true,
+    message: '',
+    result: [entity1, entity2, ...]  // 匹配的实体对象数组
+ }
+*/
+
 ```
 
 - GetByCustomId (通过customId获取entity)
 
 ```javascript
 await App.Scene.GetByCustomId(['cuId01', 'cuId02', ...]);
+/*
+出参示例：
+{
+    success: true,
+    message: '',
+    result: [entity1, entity2, ...]  // 匹配的实体对象数组
+}
+*/
+
 ```
 
 - GetByTypes (通过类型获取entity)
 
 ```javascript
 await App.Scene.GetByTypes(['Poi', 'Static', ...]); //更多类型查看: 实体类型表
-// GetByTypes()返回值是数组，不是 { objects: [...] }
-[
-  { is: {}, atomObj: {}, ... },  // 实体1
-  { is: {}, atomObj: {}, ... },  // 实体2
-  ...
-]
-// length: 10
+/*   出参示例：
+ * {
+    success: true,
+    message: '',
+    result: {
+      Skeletal: [          // 只有请求的 Skeletal 类型
+        { entityName: '安保人员01', ... },
+        { entityName: '安保人员02', ... },
+       { entityName: '安保人员03', ... }
+      ]
+    }
+  }
+*/ length: 10
 
 ```
 
@@ -891,7 +932,7 @@ awiat App.Scene.ClearByTypes(types);
 ```
 
 - 参数说明： 
-  已将表格整理为 Markdown 格式：
+
 
 | 类型 | 备注 | GetByTypes是否支持 | ClearByObjects是否支持 |
 |:---|:---|:---:|:---:|
