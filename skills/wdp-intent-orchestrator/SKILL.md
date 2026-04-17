@@ -125,7 +125,7 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 #### 长流程门禁
 
-如果符合以下任一条件，必须继续读取 `../wdp-context-memory/SKILL.md` 并启用状态管理：
+如果符合以下任一条件，必须继续读取 `../wdp-context-memory/SKILL.md` 了解三层架构：
 
 - 预计超过 5 步
 - 跨多个 WDP 子 skill

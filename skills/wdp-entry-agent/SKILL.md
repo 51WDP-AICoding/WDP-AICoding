@@ -38,7 +38,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 > - 需要保持选中状态、相机位置等上下文
 > - 任务可能分多次对话完成
 > 
-> 初始化方式：读取 `../wdp-context-memory/SKILL.md`，执行 `ReadState()` 和 `UpdateState()`
+> 初始化方式：读取 `../wdp-context-memory/SKILL.md`
 
 > 🔴 **Step 2 高频错误警示**
 > 
@@ -125,7 +125,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 > `wdp-context-memory` 不是路由目标，而是包裹所有路由的底层设施。
 > 
-> 每次调度：执行前 `ReadState()` → 执行后 `UpdateState()` → 每3-5步 `ValidateConsistency()`
+> 每次调度：MCP 自动处理路由记录和步数计数，AI 按需调用 `ReadState("hot"/"warm"/"cold", path)` 查询上下文
 > 
 > 详情参考 `../wdp-context-memory/SKILL.md`
 
@@ -139,9 +139,9 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 2. **前置条件** — Scene Ready、对象可用、插件安装、关键参数确认完成
 3. **状态读取** — 执行前 `ReadState` 了哪些 key_path，获取到了什么值
 4. **执行链** — 主调用链顺序 + 失败分支（兜底处理）
-5. **状态回写** — 执行后 `UpdateState` 了哪些字段，变更内容是什么
+5. **状态回写** — 执行后 `WriteState` 了哪些字段，变更内容是什么
 6. **验证信号** — API 返回值、事件回调、可视化结果
-7. **一致性校验** — `ValidateConsistency` 结果，是否存在冲突及处理方式
+7. **一致性校验** — 状态一致性检查结果，是否存在冲突及处理方式
 8. **回滚清理** — 关闭路径、对象释放、失败恢复
 
 ---
@@ -154,7 +154,6 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 **状态管理**：
 - `../wdp-context-memory/SKILL.md`
-- `../wdp-context-memory/INTEGRATION_SPEC.md`
 
 ---
 
@@ -174,7 +173,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 3. 最小改动方案
 4. 验证步骤与通过标准
 5. 缺失信息与待补充 case（如有）
-6. 状态变更记录（`ReadState`/`UpdateState` 摘要）
+6. 状态变更记录（ReadState/WriteState 调用摘要）
 
 ---
 

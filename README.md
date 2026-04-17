@@ -20,8 +20,7 @@ WDP_AIcoding/
 │   ├── wdp-api-layer-models/        # 图层模型 API
 │   ├── wdp-api-material-settings/   # 材质设置 API
 │   ├── wdp-api-spatial-understanding/       # 空间理解 API
-│   ├── wdp-context-memory/          # 上下文记忆
-│   ├── wdp-css-layer-management/    # CSS 图层管理
+│   ├── wdp-context-memory/          # 上下文状态管理（Hot/Warm/Cold 三层架构）
 │   ├── wdp-entry-agent/             # 入口代理
 │   ├── wdp-intent-orchestrator/     # 意图编排器
 │   ├── wdp-internal-case-acquisition/       # 内部案例获取
@@ -114,6 +113,12 @@ npm run dev
 | `wdp-css-layer-management` | CSS 图层管理 |
 
 ## 🔄 更新日志
+
+### 2026-04-17
+- 重构 wdp-context-memory 技能文档，精简为 80 行核心内容
+- 删除冗余的 MEMORY_SCHEMA.json 和 INTEGRATION_SPEC.md
+- 更新 wdp-entry-agent 和 wdp-intent-orchestrator 中的引用
+- 明确 MCP 自动处理 vs AI 按需调用的分工
 
 ### 2026-04-03
 - 官方 API 代码示例文档参数表格全面优化

@@ -1,102 +1,87 @@
 ---
 name: wdp-context-memory
-description: WDP 结构化状态管理技能。通过三层状态架构（Hot/Warm/Cold Memory）确保各 wdp-api-* 技能调用时的逻辑一致性。
+description: WDP 上下文状态管理。Hot 层（运行时状态）、Warm 层（路由链路）、Cold 层（业务数据）。MCP 自动处理路由记录和步数计数，AI 按需调用 ReadState/WriteState。
 ---
 
-# WDP Context Memory 技能
+# WDP Context Memory
 
-## 🎯 核心职责
+## 核心定位
 
-作为 WDP 技能库的**单一事实来源（SSoT）**，维护所有技能共享的结构化状态。
+防止长对话后 skill 路由漂移，提供跨步骤的上下文连续性。
 
-**禁止**：各 `wdp-api-*` skill 私自缓存状态  
-**强制**：所有状态变更通过 `UpdateState()` 回写
-
----
-
-## 🏗️ 三层状态架构
-
-| 层级 | 路径前缀 | 用途 | 生命周期 |
-|------|----------|------|----------|
-| **Hot** | `transient.*` | 当前操作状态 | 单步操作 |
-| **Warm** | `spatial.*` | 空间环境上下文 | 跨指令有效 |
-| **Cold** | `task.*` | 任务进度追踪 | 整个任务期间 |
-| **Renderer** | `renderer.*` | 渲染器状态 | 渲染会话期间 |
-
-**完整 Schema 定义**：见 `MEMORY_SCHEMA.json`
+**MCP 自动处理**：路由记录、步数计数、域切换追踪、阈值刷新
+**AI 按需调用**：ReadState 查询上下文，WriteState 更新状态
 
 ---
 
-## 🔌 核心操作
+## 三层存储
 
-### ReadState(key_path)
+| 层级 | 内容 | AI 使用方式 |
+|------|------|------------|
+| **Hot** | currentSkill, stepCount, selection, camera | 自动注入上下文，可直接读取 |
+| **Warm** | routingChain, currentRouting | ReadState("warm", "currentRouting") |
+| **Cold** | entities, spatialData, apiParams | ReadState("cold", "entities.xxx") |
+
+---
+
+## 什么时候调用 ReadState？
+
+**必须调用**：
+- 长对话后恢复上下文（第50步提到"刚才的门"）
+- 跨步骤引用之前的数据（"刚才的车"、"之前的路径"）
+- 确认当前 skill 域（防止路由漂移）
+
+**示例**：
 ```javascript
-// ✅ 精准读取
-const camera = ReadState("transient.camera")
-const entityId = ReadState("transient.selection.entity.eid")
-
-// ❌ 禁止全文读取
-ReadState()  // 不带参数
-```
-
-### UpdateState(patch_json)
-```javascript
-// API 调用后必须回写
-UpdateState({
-  "transient.camera.location": newLocation,
-  "transient.lastApiCall": { method: "FlyTo", success: true }
-})
-```
-
-### ValidateConsistency()
-```javascript
-// 每 3-5 步执行一次校验
-ValidateConsistency([
-  { path: "task.goal", check: "not_empty", critical: true },
-  { path: "transient.selection", check: "optional" }
-])
+// 恢复上下文
+const selection = ReadState("hot", "selection");
+const entity = ReadState("cold", `entities.targetNodes.${selection.nodeId}`);
+const routing = ReadState("warm", "currentRouting");
 ```
 
 ---
 
-## 📋 常用状态速查
+## 什么时候调用 WriteState？
 
-### 选择相关
-- `transient.selection.entity` - 选中实体
-- `transient.selection.nodeId` - BIM构件ID
-- `transient.selection.featureId` - GIS要素ID
-- `transient.selection.materialIndex` - 材质索引
-- `transient.selection.selectionType` - 选择类型
+**必须调用**：
+- 用户操作后记录选中状态（点击、选择）
+- API 调用后更新业务数据（创建实体后记录 eid）
 
-### 相机相关
-- `transient.camera.location/rotation` - 相机位姿
-- `transient.cameraRoam` - 漫游状态
-- `transient.cameraFollow` - 跟随状态
-- `spatial.cameraObjects` - 机位预设
+**示例**：
+```javascript
+// 记录用户选择
+WriteState("hot", { selection: { nodeId: "node-597", type: "bimNode" } });
 
-### 实体与图层
-- `spatial.loadedEntities` - 已加载实体（20种类型）
-- `spatial.bimModels/bimState` - BIM模型/状态
-- `spatial.gisLayers/gisState` - GIS图层/状态
-
-### 工具与事件
-- `transient.measurement` - 测量状态
-- `transient.tools` - 当前工具
-- `transient.eventRegistry` - 事件注册表
-- `transient.materialPicking` - 材质拾取
+// 记录创建的实体
+WriteState("cold", { entities: { pois: [{ eid: "poi-001", location: [x,y,z] }] } });
+```
 
 ---
 
-## 🛡️ 关键规则
+## 什么时候不需要调用？
 
-1. **读取**：使用精准路径，禁止全文读取
-2. **写入**：API 调用后必须 `UpdateState()`
-3. **校验**：每 3-5 步执行 `ValidateConsistency()`
-4. **Schema**：所有写入必须通过 `MEMORY_SCHEMA.json` 校验
+| 操作 | 说明 |
+|------|------|
+| 路由链路记录 | MCP 自动写入 Warm 层 |
+| 步数计数 | MCP 自动递增 Hot.stepCount |
+| 域切换追踪 | MCP 自动更新 Hot.currentSkill |
+| 阈值刷新 | step % 20 === 0 时 MCP 自动重新加载 skill |
 
 ---
 
-## 📁 相关文件
+## 接口定义
 
-- `MEMORY_SCHEMA.json` - 完整状态定义（35+ 字段）
-- `INTEGRATION_SPEC.md` - 集成规范与字段映射
+### ReadState(layer, path)
+- **layer**: "hot" | "warm" | "cold"
+- **path**: 数据路径，如 "currentRouting" 或 "entities.targetNodes.node-597"
+- **返回**: 对应路径的数据对象
+
+### WriteState(layer, data)
+- **layer**: "hot" | "warm" | "cold"
+- **data**: 要写入的数据对象
+
+---
+
+## 一句话总结
+
+> **MCP 自动处理关键路径，AI 按需 ReadState 查询上下文、WriteState 更新状态。**
