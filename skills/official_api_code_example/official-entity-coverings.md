@@ -685,7 +685,7 @@ const res = await App.Scene.Add(entityObj, {
 
 ## Topic: 3D文字 (id: 1383)
 
-- 3D文字 Text
+- 3D文字 Text3D
 
 ```javascript
 const text3d = new App.Text3D({
@@ -697,12 +697,17 @@ const text3d = new App.Text3D({
   },
   "scale3d": [100, 30, 30],
   "text3DStyle": {
-    "text": "3D文字",
-    "color": "ff00ff", //HEX或rgba(0,0,0)
-    "type": "plain", //样式(plain; reflection; metal)
-    "outline": 0.4, //轮廓(单位:百分比), 取值范围[0~1]
-    "portrait": false, //纵向(true/false)
-    "space": 0.1 //间距(单位:米)
+    "text": "3D文字",              // 显示的文字内容
+    "color": "ff00ff",             // 颜色，HEX 或 rgba(r,g,b)
+    "type": "plain",               // 材质类型: plain | reflection | metal
+    "outline": 0.4,                // 轮廓比例，取值范围[0~1]
+    "portrait": false,             // 是否纵向排列
+    "space": 0.1,                  // 字间距（单位:米）
+    "bounce": 0,                   // 弹跳参数
+    "faceToCamera": false,         // 是否始终面向相机
+    "boundary": [[0, 0]],          // 边界点数组
+    "shape": "circle",             // 背景形状: 空(默认3D文字不换行) / square(方形) / circle(圆形) / triangle(三角形) / auto(与不规则盒子碰撞)
+    "radius": 100                  // 背景形状半径
   },
   "bVisible": true,
   "entityName": "myName",
@@ -720,21 +725,131 @@ const res = await App.Scene.Add(text3d, {
 });
 ```
 
+- 参数描述
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| location | [number, number, number] | 是 | 经纬度坐标及高度 [lng, lat, alt] |
+| rotator | { pitch, yaw, roll } | 否 | 旋转角度，范围(-180~180) |
+| scale3d | [number, number, number] | 否 | 缩放比例 [x, y, z] |
+| text3DStyle.text | string | 是 | 显示的文字内容 |
+| text3DStyle.color | string | 否 | 颜色，HEX 或 rgba(r,g,b) |
+| text3DStyle.type | string | 否 | 材质类型: plain / reflection / metal |
+| text3DStyle.outline | number | 否 | 轮廓比例，范围[0~1] |
+| text3DStyle.portrait | boolean | 否 | 是否纵向排列 |
+| text3DStyle.space | number | 否 | 字间距（单位:米） |
+| text3DStyle.bounce | number | 否 | 弹跳参数 |
+| text3DStyle.faceToCamera | boolean | 否 | 是否始终面向相机 |
+| text3DStyle.boundary | array | 否 | 边界点数组 [[x, y], ...] |
+| text3DStyle.shape | string | 否 | 边界形状，控制文字基于边界形状换行: 空(无形状，3D文字不换行) / square(方形限制边界) / circle(圆形限制边界) / triangle(三角形限制边界) / auto(基于设置中心点自动检测周边模型碰撞，生成限制边界) |
+| text3DStyle.radius | number | 否 | shape半径上限控制 |
+| bVisible | boolean | 否 | 是否可见 |
+| entityName | string | 否 | 实体名称 |
+| customId | string | 否 | 自定义ID |
+| customData | object | 否 | 自定义数据 |
+
 - 成员函数
 
 ```javascript
-// 示例
-  const obj = new App.Text3D({...});
-  obj.Update(json);
-  obj.SetRotator(json);
-  obj.SetScale3d(json);
-  obj.SetVisible(boolean);
-  obj.Get();
-  obj.Delete();
-  obj.onClick(ev => {
-    const newObj = ev.result.object;
-    console.log(ev);
-  })
+// 通用方法
+const obj = new App.Text3D({...});
+obj.Update(json);                    // 更新属性
+obj.Delete();                        // 删除实体
+obj.Get();                           // 获取实体数据
+obj.GetData();                       // 获取完整数据
+
+// 位置相关
+obj.GetLocation();                   // 获取坐标
+obj.SetLocation([lng, lat, alt]);    // 设置坐标
+obj.GetRotator();                    // 获取旋转角度
+obj.SetRotator({ pitch, yaw, roll }); // 设置旋转角度
+obj.GetScale3D();                    // 获取缩放比例
+obj.SetScale3D([x, y, z]);           // 设置缩放比例
+
+// 可见性与锁定
+obj.GetVisible();                    // 获取可见性
+obj.SetVisible(boolean);             // 设置可见性
+obj.GetLocked();                     // 获取锁定状态
+obj.SetLocked(boolean);              // 设置锁定状态
+
+// 文字样式
+obj.GetText();                       // 获取文字内容
+obj.SetText(string);                 // 设置文字内容
+obj.GetColor();                      // 获取颜色
+obj.SetColor(string);                // 设置颜色
+obj.GetType();                       // 获取材质类型
+obj.SetType(string);                 // 设置材质类型: plain / reflection / metal
+obj.GetOutline();                    // 获取轮廓比例
+obj.SetOutline(number);              // 设置轮廓比例[0~1]
+obj.GetPortrait();                   // 获取纵向排列状态
+obj.SetPortrait(boolean);            // 设置纵向排列
+obj.GetSpace();                      // 获取字间距
+obj.SetSpace(number);                // 设置字间距（米）
+obj.GetFaceToCamera();               // 获取面向相机状态
+obj.SetFaceToCamera(boolean);        // 设置面向相机
+obj.GetShape();                      // 获取背景形状
+obj.SetShape(string);                // 设置背景形状: square / circle / triangle
+obj.GetRadius();                     // 获取背景半径
+obj.SetRadius(number);               // 设置背景半径
+
+// 交互事件
+obj.onClick(callback);               // 点击事件
+obj.onDbClick(callback);             // 双击事件
+obj.onMouseEnter(callback);          // 鼠标移入事件
+obj.onMouseOut(callback);            // 鼠标移出事件
+```
+
+- 完整示例
+
+```javascript
+// 创建3D文字
+const text3d = new App.Text3D({
+  location: [121.46434372, 31.23499129, 60],
+  rotator: { pitch: 0, yaw: 30, roll: 0 },
+  scale3d: [100, 30, 30],
+  text3DStyle: {
+    text: '3D文字',
+    color: 'ff00ff',
+    type: 'plain',
+    outline: 0.4,
+    portrait: false,
+    space: 0.1,
+    bounce: 0,
+    faceToCamera: false,
+    boundary: [[0, 0]],
+    shape: 'circle',
+    radius: 100
+  },
+  bVisible: true,
+  entityName: 'myName',
+  customId: 'myId1',
+  customData: { data: 'myCustomData' }
+});
+
+const { result } = await App.Scene.Add(text3d);
+console.log('Text3D EID:', result.eid);
+
+// 修改文字
+await text3d.SetText('新文字');
+await text3d.SetColor('00ff00');
+await text3d.SetType('metal');
+await text3d.SetFaceToCamera(true);  // 始终面向相机
+
+// 交互事件
+text3d.onClick((ev) => {
+  console.log('点击了 Text3D:', ev.result.object);
+});
+
+text3d.onMouseEnter((ev) => {
+  text3d.SetColor('ffff00');  // 高亮
+});
+
+text3d.onMouseOut((ev) => {
+  text3d.SetColor('ff00ff');  // 恢复
+});
+
+// 删除
+await text3d.Delete();
 ```
 
 ## Topic: 可视域 (id: 1384)

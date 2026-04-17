@@ -27,7 +27,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 | **Step 1** | `../wdp-intent-orchestrator/SKILL.md` | 《系统意图与架构设计报告》 | 未输出报告禁止继续 |
 | **Step 2** ⚠️ | `../wdp-api-initialization-unified/SKILL.md` | `npm install wdpapi@^2.3.0`<br>`import WdpApi from 'wdpapi'` | **包名必须是 `wdpapi`**<br>不是 `@wdp-api/xxx` |
 | **Step 3** | 按需读取 BIM/GIS skill | `Plugin.Install(xxxApi)` | 必须在 Renderer.Start 之前 |
-| **Step 4** | 按需读取功能 skill | 业务 API 代码 | 必须等待 Scene Ready |
+| **Step 4** | 按需读取功能 skill：<br>- 事件注册：`wdp-api-general-event-registration`<br>- 相机控制：`wdp-api-camera-unified`<br>- 实体行为：`wdp-api-entity-general-behavior`<br>- 覆盖物：`wdp-api-coverings-unified`<br>- 图层模型：`wdp-api-layer-models`<br>- 材质设置：`wdp-api-material-settings`<br>- 点聚合：`wdp-api-cluster`<br>- 功能组件：`wdp-api-function-components`<br>- BIM：`wdp-api-bim-unified`<br>- GIS：`gis-api-core-operations`<br>- 空间理解：`wdp-api-spatial-understanding` | 业务 API 代码 | 必须等待 Scene Ready |
 
 ## 补充提醒：
 > 🔴 **Step 0 判断标准（长流程任务）**
@@ -80,34 +80,32 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 ---
 
-## 路由规则（问题分类与子技能映射）
+## 路由决策表（关键词快速匹配）
 
-> 单一报错/参数改动命中单条路由；整链路开发需求合并加载多个子技能，交叉检查初始化链路中的插件安装步骤。
+> 单一报错/参数改动命中单条路由；整链路开发需求合并加载多个子技能。
 
-| # | 问题类型 | 目标 Skill |
-|---|---------|-----------|
-| 1 | 启动/接入失败、渲染不可用、页面容器、脚本接入、交互层级问题 | `../wdp-api-initialization-unified/SKILL.md` |
-| 2 | 事件不触发、重复触发、回调异常 | `../wdp-api-general-event-registration/SKILL.md` |
-| 3 | 镜头飞行、聚焦、视角异常、相机漫游、相机跟随/跟拍问题 | `../wdp-api-camera-unified/SKILL.md` |
-| 4 | 属性获取与代理对象认知（.Get()方法、循环引用处理） | `../wdp-api-generic-base-attributes/SKILL.md` |
-| 5 | 实体检索、显隐、删除、落地、沿路径运动等通用行为问题（`Bound` / `Scene.Move` / `ClearByTypes`） | `../wdp-api-entity-general-behavior/SKILL.md` |
-| 6 | 覆盖物创建/更新/显隐/删除（实时视频、Window、POI、Web组件、HeatMap/Path/Particle/Effects、Scene.Create(s)） | `../wdp-api-coverings-unified/SKILL.md` |
-| 7 | AES 底板图层/单体控制、静态/骨骼/工程摆放模型问题 | `../wdp-api-layer-models/SKILL.md` |
-| 8 | 模型材质替换、材质高亮、材质拾取问题 | `../wdp-api-material-settings/SKILL.md` |
-| 9 | 点聚合数据部署、聚合样式、周边搜索问题（私有化/lite） | `../wdp-api-cluster/SKILL.md` |
-| 10 | 环境/控件/工具/设置等功能组件问题 | `../wdp-api-function-components/SKILL.md` |
-| 11 | BIM 模型/构件/空间行为问题、BIM 插件安装问题 | `../wdp-api-bim-unified/SKILL.md` |
-| 12 | GIS 图层接入与行为问题（GeoLayer、WMS/WMTS/3DTiles、GIS 事件） | `../gis-api-core-operations/SKILL.md` |
-| 13 | 空间理解、坐标转换、位置计算（GIS/Cartesian/屏幕坐标互转） | `../wdp-api-spatial-understanding/SKILL.md` |
-| 14 | 意图编排、复杂任务分解、需求精确化 | `../wdp-intent-orchestrator/SKILL.md` |
+| 能力域/关键词 | 目标 Skill |
+|--------------|-----------|
+| 初始化 / npm安装 / Renderer.Start / 黑屏 / 容器 / wdpapi包 / 实例创建 | `wdp-api-initialization-unified` |
+| 事件注册 / 回调 / 触发 / 解绑 / RegisterSceneEvent / OnEntityClicked / 事件不触发 / 重复触发 | `wdp-api-general-event-registration` |
+| 相机 / 视角 / 飞行 / 漫游 / 跟随 / CameraControl / Focus / FlyTo / CameraRoam / 跟拍 | `wdp-api-camera-unified` |
+| 属性读取 / .Get() / 代理对象 / GetBaseAttribute / SetBaseAttribute / 属性写入 / 循环引用 | `wdp-api-generic-base-attributes` |
+| 实体检索 / 显隐 / 删除 / Bound / Scene.Move / ClearByTypes / Selection / NodeSelection / SnapTo | `wdp-api-entity-general-behavior` |
+| 覆盖物 / POI / Window / Range / Path / 热力图 / Particle / Effects / 创建覆盖物 | `wdp-api-coverings-unified` |
+| 底板 / Tiles / EarthTiles / 图层 / 单体 / node / SetNodesHighlight / SetLayersVisibility | `wdp-api-layer-models` |
+| 材质 / 高亮 / 拾取 / PickerMaterial / SetEntitySlotsHighlight / Material / mesh / 材质替换 | `wdp-api-material-settings` |
+| 聚合 / Cluster / 周边搜索 / gather / 点聚合 / SearchByPoint | `wdp-api-cluster` |
+| 天气 / 光照 / 测量 / 剖切 / 取点 / 工具 / MiniMap / Compass / AssetLoader | `wdp-api-function-components` |
+| BIM / 构件 / node / 房间 / 剖切 / 拆楼 / SetNodeHighLight / SetRoomHighLight / Hierarchy | `wdp-api-bim-unified` |
+| GIS / GeoLayer / WMS / WMTS / 3DTiles / 图层 / 要素 / GIS事件 | `gis-api-core-operations` |
+| 坐标转换 / 空间信息 / 包围盒 / Cartesian / GIS / 取点 / PickerPoint / GetGlobal | `wdp-api-spatial-understanding` |
+| 意图编排 / 需求分解 / 架构设计 / 系统意图 / 任务规划 | `wdp-intent-orchestrator` |
 
-> 非路由目标（底层设施，按需引用）：`wdp-context-memory`（状态管理）、`wdp-css-layer-management`（UI 层叠规范）、`wdp-internal-case-acquisition`（案例采集）
-
-> 路由边界补充：
-> - `Path` 作为可视化路径实体的**创建与样式控制**，优先走 `wdp-api-coverings-unified`
-> - `Bound` / `Scene.Move` 作为“实体沿路径运动”的**行为编排**，优先走 `wdp-api-entity-general-behavior`
-> - `CameraControl.Follow` 作为“镜头跟随实体”的**相机行为**，优先走 `wdp-api-camera-unified`
-> - “车辆巡检 / 跟车 / 跟拍”这类整链路需求，通常需要同时命中 coverings + entity-behavior + camera 三个子域
+> **非路由目标（底层设施，按需引用）**：
+> | 设施 | 用途 | 引用时机 |
+> |------|------|---------|
+> | `wdp-intent-orchestrator` | 意图编排、复杂任务分解 | Step 1 必须读取 |
+> | `wdp-context-memory` | 长流程状态管理 | 长流程任务（>5步/跨skill） |
 
 ---
 
@@ -123,75 +121,13 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 
 ---
 
-## 状态管理基线（跨域基础设施）
+## 状态管理引用
 
-> `wdp-context-memory` 不是路由目标，而是包裹所有路由的底层设施。详情参考 `../wdp-context-memory/SKILL.md`
-
-每次调度必须遵守：
-1. **执行前**：`ReadState()` 获取前置上下文，禁止基于假设操作
-2. **执行后**：`UpdateState()` 回写所有状态变更，禁止私自缓存到局部变量
-3. **每 3-5 步**：`ValidateConsistency()` 校验状态与用户需求是否冲突
-4. **任务切换时**：触发自动修剪，归档 transient，保留 spatial/task 骨架
-
-上下文清理：任务切换时使用 `/clear`；使用 subagents 隔离不同任务。参考 `../wdp-context-memory/INTEGRATION_SPEC.md`，Schema 定义：`../wdp-context-memory/MEMORY_SCHEMA.json`
-
----
-
-## 小白友好原则
-
-1. **禁止假值**：核心参数缺失时必须追问，禁止填 `'YOUR_URL'` 等假值
-2. **配置分离**：所有需用户修改的配置统一提取到文件最顶部"用户配置区"，加中文注释
-3. **显性反馈**：关键执行节点（初始化成功/失败、数据加载、API 报错）必须包含 UI 提示（如 `alert()`），不依赖 Console
-4. **非核心参数可 Mock**：不影响运行的视觉参数可用默认值，但须提示用户"已使用默认展示效果"
-
----
-
-## 前端层叠规范（按需引用）
-
-数字孪生项目普遍采用"3D 场景 + 多模块 UI 覆盖层"架构，生成多模块 UI 或排查"点击无效/弹窗被遮挡"问题时，按需引用 `../wdp-css-layer-management/SKILL.md`。
-
-核心要点：所有模块全屏容器必须声明 z-index 并使用 `pointer-events: none/auto` 穿透模式。
-
----
-
-## 接入与排障基线检查（按需）
-
-> 排查现有工程不显示错误时使用（非全新搭建项目）
-
-1. 校验渲染口令：`env.url` 与 `env.order` 是否匹配环境
-2. 校验 SDK 依赖链：必须先有 `CloudApi`，再有 `WdpApi`；BIM/GIS 必须通过 `Plugin.Install`
-
----
-
-## ❌ 全局编码约束（强制执行）
-
-### 严禁编造 API 方法名
-WDP API 命名不遵循通用规范，必须通过 `../official_api_code_example/official-*.md` 确认。不得基于通识经验推测 API 存在。
-
-### 严禁凭经验猜测参数
-WDP API 参数命名不统一（如目标实体可能是 `eid`/`entity`/`targetEid`/`target`/`entityId`，时长可能是 `duration`/`flyTime`/`time`），必须通过官方文档确认。
-
----
-
-## 编码前自检清单
-
-### 🔴 关键项（出错率最高，必须确认）
-- [ ] **包名确认**：使用的是 `wdpapi` 不是 `@wdp-api/xxx`
-- [ ] **安装方式**：`npm install wdpapi@^2.3.0`，没有使用 CDN
-- [ ] **导入方式**：`import WdpApi from 'wdpapi'`，没有使用 `window.WdpApi`
-
-### 其他项
-- [ ] 事件回调返回的 object 通过 `.Get()` 获取属性
-- [ ] 未满足 Ready 信号时未执行业务 API
-- [ ] 查阅了 official 文档确认 API 方法名和参数
-
----
-
-## 案例吸收与生命周期规则
-
-1. 批量对象操作：同类对象统一采用"批量创建 / 批量更新 / 批量清理"三段式
-2. 事件门禁：未满足 Ready 信号时禁止执行业务 API，避免竞态
-3. 清理：所有实体覆盖物必须有相对应的清退机制（如 `.Clear()` / `.StopRoam()` 等）
+> `wdp-context-memory` 不是路由目标，而是包裹所有路由的底层设施。
+> 
+> 每次调度：执行前 `ReadState()` → 执行后 `UpdateState()` → 每3-5步 `ValidateConsistency()`
+> 
+> 详情参考 `../wdp-context-memory/SKILL.md`
 
 ---
 
@@ -210,37 +146,15 @@ WDP API 参数命名不统一（如目标实体可能是 `eid`/`entity`/`targetE
 
 ---
 
-## 参考资料读取顺序（相对路径）
+## 参考资料索引
 
-| 顺序 | 文件路径 | 说明 |
-|------|---------|------|
-| 1 | `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md` | 索引文件 |
-| 2 | `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md` | 在线文档覆盖审计 |
-| 3 | `../wdp-context-memory/INTEGRATION_SPEC.md` | 状态管理规范 |
-| 4 | `../wdp-context-memory/MEMORY_SCHEMA.json` | Schema 定义 |
-| 5 | `../official_api_code_example/official-*.md` | 根据路由命中对应的官方摘录 |
+**代码生成前必须阅读**：
+- `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md` — 官方文档索引
+- `../official_api_code_example/official-*.md` — 根据路由命中对应的官方摘录
 
-### 官方摘录文件列表
-- `official-initialize-scene.md` — 场景初始化
-- `official-general-event-registration.md` — 事件注册
-- `official-scene-camera.md` — 相机操作
-- `official-generic-base-attributes.md` — 基础属性
-- `official-entity-general-behavior.md` — 实体行为
-- `official-entity-coverings.md` — 覆盖物
-- `official-layer-models.md` — 图层模型
-- `official-material-settings.md` — 材质设置
-- `official-cluster.md` — 点聚合
-- `official-function-components.md` — 功能组件
-- `official-bim-full.md` — BIM 完整文档
-- `official-gis-full.md` — GIS 完整文档
-
----
-
-## 文档后台访问约束
-
-- 文档平台地址以 `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md` 为准
-- 不保存后台 token 到仓库
-- 每次需要读取后台文档时，先向用户请求临时 token
+**状态管理**：
+- `../wdp-context-memory/SKILL.md`
+- `../wdp-context-memory/INTEGRATION_SPEC.md`
 
 ---
 
@@ -261,3 +175,23 @@ WDP API 参数命名不统一（如目标实体可能是 `eid`/`entity`/`targetE
 4. 验证步骤与通过标准
 5. 缺失信息与待补充 case（如有）
 6. 状态变更记录（`ReadState`/`UpdateState` 摘要）
+
+---
+
+## 🧠 快速路由口诀
+
+### 核心口诀
+- 初始化问题 → initialization
+- 事件问题 → event-registration
+- 相机问题 → camera
+- 属性/.Get() → base-attributes
+- 实体检索/Bound → entity-behavior
+- POI/Window/Path → coverings
+- Tiles/底板 → layer-models
+- 材质/拾取 → material-settings
+- 聚合/Cluster → cluster
+- 天气/工具 → function-components
+- BIM/构件 → bim
+- GIS/图层 → gis
+- 坐标/空间 → spatial-understanding
+

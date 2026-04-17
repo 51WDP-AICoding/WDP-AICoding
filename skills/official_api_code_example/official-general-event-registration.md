@@ -104,7 +104,14 @@ App.Renderer.UnRegisterEvents(['onStopedRenderCloud']);
     {
       name: 'OnEntityClicked', func: async function (res) {
         // 覆盖物/实体被点击事件回调
-        // res.result: { object, position, nodeId, triggerType: 'LeftMouseButton'|'RightMouseButton'|'MiddleMouseButton', triggerArea: 'marker' }
+        // res.result: { 
+        //   object, 
+        //   position, 
+        //   nodeId, 
+        //   triggerType: 'LeftMouseButton'|'RightMouseButton'|'MiddleMouseButton', 
+        //   triggerArea: 'marker',
+        //   layerType: '3dtiles'|'wms'|'wmts'|'vector'|'poi'|'entity'  // WDP 2.3.0+ 新增，识别被点击的图层类型
+        // }
       }
     },
     {
@@ -146,7 +153,18 @@ App.Renderer.UnRegisterEvents(['onStopedRenderCloud']);
     {
       name: 'OnCameraMotionStartEvent', func: async function (res) {
         // 相机运动开始信息回调
-        // res.result.cameraMotionReason 枚举包含：E_API_FocusToEntities, E_API_FocusToPosition, E_API_CameraStop, E_API_CameraRotate, E_API_PlayCameraRoam 等
+        // res.result.cameraMotionReason 枚举值：
+        // - E_API_FocusToEntities: 相机聚焦实体 (FocusToNodes/Focus)
+        // - E_API_FocusToAllEntities: 按类型聚焦实体 (FocusToAll)
+        // - E_API_FocusToPosition: 相机聚焦到坐标点 (FlyTo)
+        // - E_API_CameraStop: 停止相机移动/旋转 (Stop)
+        // - E_API_FollowEntitiy: 相机跟随实体 (Follow)
+        // - E_API_CameraMove: 相机移动 (Move)
+        // - E_API_CameraRotate: 相机旋转 (Rotate)
+        // - E_API_CameraAround: 场景旋转 (Around)
+        // - E_API_PlayCameraRoam: 相机漫游 (PlayCameraRoam)
+        // - E_API_UpdateCamera: 更新镜头位置 (SetCameraPose/ResetCameraPose/UpdateCamera)
+        // - E_DeviceInput: 设备输入控制 (键盘/鼠标操作)
       }
     },
     {
@@ -156,7 +174,13 @@ App.Renderer.UnRegisterEvents(['onStopedRenderCloud']);
     },
     {
       name: 'OnCameraRoamingFrame', func: async function (res) {
-        // 相机漫游帧事件；res.result: { cameraRoam, frameIndex, bFinished, location, progressRatio }
+        // 相机漫游帧事件；res.result: { 
+        //   cameraRoam, 
+        //   frameIndex, 
+        //   bFinished, 
+        //   location: Array<number>,  // 当前位置坐标
+        //   progressRatio 
+        // }
       }
     },
     {

@@ -96,10 +96,11 @@ await App.Renderer.Start();
 | 启动指定任务 | `App.Renderer.StartByTaskId(io, taskId)` | 通过 TaskId 启动 |
 | 设置分辨率 | `App.Renderer.SetResolution(w, h)` | 固定分辨率模式 |
 | 设置分辨率倍率 | `App.Renderer.SetResolutionMultiple(n)` | 相对容器尺寸缩放 |
+| 设置渲染模式 | `App.Renderer.SetRendererMode(type, resolution)` | `fixed`固定/`full`自适应 |
 | 设置帧率上限 | `App.Renderer.SetFrameRateLimit(fps)` | 限制渲染帧率 |
 | 设置码率 | `App.Renderer.SetBitrate(mbps)` | 视频流码率控制 |
 | 获取实时状态 | `App.Renderer.GetStats()` | 码率、帧率、延迟等 |
-| 截图 | `App.Renderer.GetSnapshot([w,h], quality)` | 获取 Base64 图片 |
+| 注册云渲染事件| `App.Renderer.RegisterEvent()` | 监听云渲染状态 |
 | 注销事件 | `App.Renderer.UnRegisterEvent/UnRegisterErrorEvent/UnRegisterSceneEvent()` | 移除事件监听 |
 
 > 📖 **完整 API 签名和示例**：参考 `../official_api_code_example/official-initialize-scene.md` - 条目：Renderer 控制方法（id: 1344-ext）
@@ -122,38 +123,32 @@ await App.Renderer.Start();
 
 | 参数 | 说明 | 必填 | 注意 |
 |------|------|------|------|
-| `id` | 渲染容器DOM ID | ✅ | 参数名是`id`不是`container` |
-| `url` | 服务器地址 | ✅ | 与`order`必须匹配同一环境 |
-| `order` | 32位验证码 | ✅ | 勿硬编码入仓库 |
-| `resolution` | 输出分辨率 | ❌ | `[宽, 高]`，Chrome最高4K |
-| `debugMode` | 日志级别 | ❌ | `none`/`normal`/`high`/`all` |
-| `keyboard` | 键盘事件 | ❌ | `{ normal: false, func: false }` |
-| `bCached` | 实体缓存 | ❌ | `true`缓存所有entity |
+| `id` | [必填] 渲染容器DOM ID | 是 | 参数名是`id`不是`container` |
+| `url` | [必填] 服务器地址 | 是 | 与`order`必须匹配同一环境 |
+| `order` | [必填] 32位验证码 | 是 | 勿硬编码入仓库 |
+| `resolution` | [选填] 输出分辨率 `[宽, 高]` | 否 | Chrome最高4K |
+| `debugMode` | [选填] 日志级别 | 否 | `none`/`normal`/`high`/`all` |
+| `keyboard` | [选填] 键盘事件 | 否 | `{ normal: false, func: false }` |
+| `prefix` | [选填] 二次代理路径名 | 否 | 如 `/service` |
+| `initLog` | [选填] 品牌Logo日志 | 否 | `true`显示，`false`不显示 |
+| `bCached` | [选填] 实体缓存 | 否 | `true`缓存所有entity |
+
+**出参说明：**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `success` | boolean | 操作是否成功 |
+| `message` | string | 返回信息 |
+| `result` | WdpApi | WdpApi实例对象（App），后续所有API均通过该实例调用 |
+
+> 📖 **完整API签名和代码示例**：参考 `../official_api_code_example/official-initialize-scene.md`
 
 ### 2. 事件注册时机
 
-**Renderer.Start() 成功后**，需要注册以下事件：
+**Renderer.Start() 成功后**，需要注册场景就绪事件：
 
-**视频流事件**（RegisterEvent）：
-- `onVideoReady` - 视频流链接成功
-- `onStopedRenderCloud` - 渲染服务中断
-- `onVideoStart` - 视频流开始播放
-- `onVideoStop` - 视频流停止
-- `onVideoError` - 视频流错误
-
-**错误事件**（RegisterErrorEvent）：
-- `OnValidateError` - 鉴权失败
-
-**场景事件**（RegisterSceneEvent）：
-- `OnWdpSceneIsReady` - 场景加载进度（`res.result.progress === 100` 时完成）
-- `OnEntityClicked` - Entity 被点击
-- `OnMouseEnterEntity` - 鼠标滑入实体
-- `OnMouseOutEntity` - 鼠标滑出实体
-- `OnEntitySelectionChanged` - 实体被选取
-- `OnEntityReady` - 3DTilesEntity/WMSEntity/WMTSEntity 加载完成
-- 其他：详见官方文档
-
-> 📖 **完整事件列表和返回结构**：参考 `../official_api_code_example/official-initialize-scene.md`
+> 📖 **事件注册详情**：参考 `../wdp-api-general-event-registration/SKILL.md`
+> 📖 **完整事件列表和返回结构**：参考 `../official_api_code_example/official-general-event-registration.md`
 
 ---
 

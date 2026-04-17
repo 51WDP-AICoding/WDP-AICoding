@@ -55,6 +55,14 @@ const App = new WdpApi({
 | initLog | false/true | boolean | true = 显示品牌logo日志， false=不显示品牌logo日志 |
 | bCached | false/true | boolean | true = 场景加载完。默认缓存场景中所有entity， false = 场景加载完。不缓存场景中所有entity |
 
+- 出参说明：
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| success | boolean | 操作是否成功 |
+| message | string | 返回信息 |
+| result | WdpApi | WdpApi实例对象（App），后续所有API均通过该实例调用 |
+
 - 参数重置
 
 ```javascript
