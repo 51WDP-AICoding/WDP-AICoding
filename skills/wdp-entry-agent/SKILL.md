@@ -77,6 +77,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 | GIS 插件 | `@wdp-api/gis-api` | `2.1.0` | `npm install @wdp-api/gis-api@^2.1.0` |
 
 > ⚠️ **注意**：核心 SDK 包名没有 `@wdp-api/` 前缀！
+> ⚠️ **注意**：npm行为ai自行安装失败率很高，给出具体步骤，让用户自行完成相关指令！
 
 ---
 
