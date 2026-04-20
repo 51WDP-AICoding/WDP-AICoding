@@ -18,10 +18,11 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 按顺序读取：
 
-1. `resources/business-scenarios.json`
-2. `resources/api-patterns.json`
-3. `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md`
-4. 需要在线核对时再读 `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md`
+1. `resources/business-scenarios/_index.json`（轻量索引，仅含 keywords/synonyms/priority/skill 路由/文件名）
+2. 根据命中结果，**按需**读取 `resources/business-scenarios/<id>.json`（仅加载命中项，严禁一次性加载全部场景文件）
+3. `resources/api-patterns.json`
+4. `../official_api_code_example/OFFICIAL_EXCERPT_INDEX.md`
+5. 需要在线核对时再读 `../official_api_code_example/ONLINE_COVERAGE_AUDIT.md`
 
 具体 API 真值直接回到对应 `official-*.md` 摘录确认，不依赖本地二次汇总 catalog。
 
@@ -43,7 +44,15 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 #### 2.1 场景与模式匹配
 
-用 `resources/business-scenarios.json` 做场景模板匹配。
+用 `resources/business-scenarios/_index.json` 做场景模板匹配。匹配流程：
+
+1. 读取 `_index.json`，拿到所有场景的 `keywords ∪ synonyms` 清单
+2. 对用户自然语言需求做中文归一化（去空白、同义词对齐），在索引中检索命中项
+3. 多命中时按 `priority` 升序（数字小=优先）、再按命中词数降序，取 top1；仅当候选明显难分时再取 top2
+4. 按命中场景的 `file` 字段加载单个 `resources/business-scenarios/<id>.json` 获取完整 `api_flow / data_flow / cleanup_chain / modules`
+5. 全部未命中，或命中 `id: "other"` 兜底项：**跳过场景模板**，直接进入 `api-patterns.json` + `wdp-entry-agent` 的 skill 路由表，并在报告的“缺失输入”章节主动追问业务类型与对象来源
+
+**严禁**一次性读取 `business-scenarios/` 下的全部场景文件，也**严禁**加载未命中的场景文件。
 
 用 `resources/api-patterns.json` 做调用顺序匹配。
 
