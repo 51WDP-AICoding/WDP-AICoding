@@ -203,6 +203,21 @@ await App.Component.VideoUI.Add([obj]);
 
 > 📖 **完整 CustomPoi API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 自定义POI
 
+### 智能建模系列
+- **类型**：`Vegetation`, `ModelerEmbank`, `ModelerWater`, `ModelerRiver`, `ModelerFence`, `ModelerFloor`
+- **创建**：`new App.Vegetation({polygon2D, vegetationStyle})` 等
+- **添加**：`App.Scene.Add(obj)`
+- **方法**：基础覆盖物方法外，`Vegetation` 特有剔除区域管理（`QueryRegion`, `RemoveRegion`, `UpdateRegionName`, `ToggleRegion`）
+
+> 📖 **完整智能建模 API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 智能建模系列
+
+### 静态实例模型（StaticInstance）
+- **创建**：`new App.StaticInstance({instanceComponentInfos})`
+- **添加**：`App.Scene.Add(staticInstance)`
+- **方法**：`Update`（更新实例位置等）, `DeleteComponents`, `SetComponentsTransform`, `DeleteNodes`, `SetNodesTransform`, `OutlineComponents`, `FocusComponents`
+
+> 📖 **完整 StaticInstance API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 静态实例模型
+
 ### Group（实体组）
 - **创建**：`new App.Group({entityName, customId, bVisible})`
 - **添加**：`App.Scene.Add(group)`
@@ -219,15 +234,15 @@ await App.Component.VideoUI.Add([obj]);
 | **PoiUI** | `App.Component.PoiUI.Add([entity])` | 添加点位组件（对象方式） |
 | **PoiUI** | `App.Component.PoiUI.Create(jsonData)` | 创建单个点位组件 |
 | **PoiUI** | `App.Component.PoiUI.Creates(jsonData)` | 批量创建点位组件 |
-| **PoiUI** | `App.Component.PoiUI.Get()` | 获取所有点位组件 |
+| **PoiUI** | `App.Component.PoiUI.Get()` | 获取单个/所有点位组件 |
 | **VideoUI** | `App.Component.VideoUI.Add([entity])` | 添加视频组件（对象方式） |
 | **VideoUI** | `App.Component.VideoUI.Create(jsonData)` | 创建单个视频组件 |
 | **VideoUI** | `App.Component.VideoUI.Creates(jsonData)` | 批量创建视频组件 |
-| **VideoUI** | `App.Component.VideoUI.Get()` | 获取所有视频组件/DOM对象 |
+| **VideoUI** | `App.Component.VideoUI.Get()` | 获取单个/所有视频组件/DOM对象 |
 | **WindowUI** | `App.Component.WindowUI.Add([entity])` | 添加窗口组件（对象方式） |
 | **WindowUI** | `App.Component.WindowUI.Create(jsonData)` | 创建单个窗口组件 |
 | **WindowUI** | `App.Component.WindowUI.Creates(jsonData)` | 批量创建窗口组件 |
-| **WindowUI** | `App.Component.WindowUI.Get()` | 获取所有窗口组件 |
+| **WindowUI** | `App.Component.WindowUI.Get()` | 获取单个/所有窗口组件 |
 
 **事件绑定**：
 - `obj.onClick(callback)` - 点击事件
