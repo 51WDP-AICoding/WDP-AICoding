@@ -266,7 +266,7 @@ await App.Component.VideoUI.Add([obj]);
 |------|------|---------|
 | 覆盖物创建成功但无显示 | 坐标系错误、未配置 calculateCoordZ、场景未就绪 | 检查坐标系和位置参数；配置 `calculateCoordZ` 参数；确认 `SceneReady(100%)` |
 | POI/Window 添加后位置不对 | 高度参考设置错误或偏移值不合理 | 使用 `calculateCoordZ` 指定高度参考（surface/ground/altitude）；检查 `coordZOffset` |
-| 覆盖物更新无效 | 实例无效或参数错误 | 检查覆盖物实例是否有效；确认参数正确；确认已获取 `App.Scene.Add()` 返回的实例 |
+| 覆盖物更新无效 | 实例无效或参数错误 | 检查覆盖物实例是否有效；确认参数正确；确认已获取 `App.Scene.Add()` 返回的实例 `result.object` 并直接调用其 `Update` 方法 |
 | 覆盖物交互问题 | 事件注册或回调函数错误 | 检查事件注册和回调函数；POI/Particle 支持 `onClick` 事件绑定 |
 | POI 点击后未弹出 Window | 事件未绑定或参数错误 | 确认已使用 `poiObj.onClick()` 绑定事件；确认 Window 的 URL 和位置参数正确；参考 `official-entity-coverings.md` |
 
