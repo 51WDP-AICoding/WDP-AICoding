@@ -74,7 +74,6 @@ WDP API参数命名不统一，**必须通过官方文档确认参数格式**，
 - 相机环绕：Around（围绕指定实体旋转）
 - 获取相机信息：GetCameraPose、GetCameraInfo
 - 数字人漫游：PlayEntityRoam、StopEntityRoam（>= 2.3.1）
-- 属性读写：GetEntityName/SetEntityName, GetCustomId/SetCustomId, GetCustomData/SetCustomData, GetParentEid/SetParentEid (适用于 `new App.Camera()`)
 
 ### 2. 视角切换
 - 预设视角切换：ResetCameraPose
