@@ -586,21 +586,27 @@ const obj = new App.Text3D({
 | entityName | string | 可选 | - | 配置后可使用EntityName系列功能 |
 | customId | string | 可选 | - | 配置后可使用CustomId系列功能 |
 | customData | object | 可选 | - | 按业务需求配置 |
+| parentEid | string | 可选 | - | 父实体 EID |
 
 
 ```javascript
+// 获取 getter:
 // 获取 getter:
 // 方式一:
 console.log("bLocked:: ", obj.bLocked);
 console.log("bVisible:: ", obj.bVisible);
 console.log("entityName:: ", obj.entityName);
 console.log("customId:: ", obj.customId);
+console.log("customData:: ", obj.customData);
+console.log("parentEid:: ", obj.parentEid);
 
 // 方式二:
 console.log("GetLocked:: ", await obj.GetLocked());
 console.log("GetVisible:: ", await obj.GetVisible());
 console.log("GetEntityName:: ", await obj.GetEntityName());
 console.log("GetCustomId:: ", await obj.GetCustomId());
+console.log("GetCustomData:: ", await obj.GetCustomData());
+console.log("GetParentEid:: ", await obj.GetParentEid());
 ```
 
 ```javascript
@@ -610,12 +616,16 @@ obj.bLocked = false;
 obj.bVisible = false;
 obj.entityName = 'newName';
 obj.customId = 'newId';
+obj.customData = { data: 'myNewData' };
+obj.parentEid = 'parent-eid-xxx';
 
 // 方式二:
 await obj.SetLocked(false);
 await obj.SetVisible(false);
 await obj.SetEntityName('newName');
 await obj.SetCustomId('newId');
+await obj.SetCustomData({ data: 'myNewData' });
+await obj.SetParentEid('parent-eid-xxx');
 ```
 
 - 接收一：对象点击事件

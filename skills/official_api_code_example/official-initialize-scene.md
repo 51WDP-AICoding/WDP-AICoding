@@ -163,19 +163,19 @@ App.Renderer.Start().then((res: any) => {
             {
                 name: 'OnEntityClicked', func: async function (res: any) {
                     // Entity 被点击事件回调
-                    // res.result: { eid: string, oType: string, object: EntityObject, screenPos: [x,y] }
+                    // res.result: { oType: string, object: EntityObject, screenPos: [x,y] }
                 }
             },
             {
                 name: 'OnMouseEnterEntity', func: async function (res: any) {
                     // 鼠标滑入实体事件回调
-                    // res.result: { eid: string, oType: string, object: EntityObject }
+                    // res.result: { oType: string, object: EntityObject }
                 }
             },
             {
                 name: 'OnMouseOutEntity', func: async function (res: any) {
                     // 鼠标滑出实体事件回调
-                    // res.result: { eid: string, oType: string, object: EntityObject }
+                    // res.result: { oType: string, object: EntityObject }
                 }
             },
             {
@@ -193,7 +193,7 @@ App.Renderer.Start().then((res: any) => {
             {
                 name: 'OnMoveAlongPathEndEvent', func: async function (res: any) {
                     // 覆盖物移动结束信息回调
-                    // res.result: { eid: string }
+                    // res.result: { object: EntityObject }
                 }
             },
             {
@@ -215,7 +215,7 @@ App.Renderer.Start().then((res: any) => {
             {
                 name: 'OnEntitySelectionChanged', func: async function (res: any) {
                     // 实体被选取数据回调
-                    // res.result: { eids: string[], objects: EntityObject[] }
+                    // res.result: { objects: EntityObject[] }
                 }
             },
             {
@@ -227,7 +227,7 @@ App.Renderer.Start().then((res: any) => {
             {
                 name: 'OnRoamFinished', func: async function (res: any) {
                     // 相机漫游结束回调
-                    // res.result: { eid: string }
+                    // res.result: { object: EntityObject }
                 }
             },
             {

@@ -88,7 +88,7 @@ App.Renderer.UnRegisterEvents(['onStopedRenderCloud']);
     },
     {
       name: 'OnWdpSceneChanged', func: async function (res) {
-        // 实体对象操作后回调；res.result: {added: object[], updated: object[], removed: string[eid]}
+        // 实体对象操作后回调；res.result: {added: object[], updated: object[], removed: string[]}
       }
     },
     {

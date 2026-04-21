@@ -57,7 +57,7 @@ const res = await App.Scene.Add(realTimeVideo, {
 - 出参描述
 | 字段 | 类型 | 说明 |
 |------|------|------|
-| `result.eid` | `string` | 新建实体的唯一标识 |
+| `result.object` | `object` | 新建实体的唯一标识 |
 
 
 - 成员函数
@@ -494,6 +494,7 @@ const res = await App.Scene.Add(poi);
 | entityName | string | 实体名称 | 否 |
 | customId | string | 自定义 ID | 否 |
 | customData | object | 自定义数据 | 否 |
+| parentEid | string | 父实体 EID | 否 |
 
 
 - [demo]POI添加Window
@@ -746,6 +747,8 @@ const res = await App.Scene.Add(entityObj, {
   obj.SetRotator(json);
   obj.SetScale3d(json);
   obj.SetVisible(boolean);
+  obj.entityName; //方式一：属性访问
+  await obj.GetEntityName(); //方式二：异步方法
   obj.Get();
   obj.Delete();
   obj.onClick(ev => {

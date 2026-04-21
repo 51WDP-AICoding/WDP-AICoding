@@ -368,6 +368,30 @@ const res = await App.CameraControl.Around({
 await App.CameraControl.Stop();
 ```
 
+- 数字人漫游（PlayEntityRoam）
+
+```javascript
+const jsondata = {
+  followPitch: -20, // 跟随俯仰角
+  followDistance: 500, // 跟随距离
+  forwardSpeed: 600, // 前进速度
+  rotateSpeed: 100, // 旋转速度
+  enableSwitch: true, // 是否允许切换
+  enableCollision: true, // 是否开启碰撞
+  forwardClip: 'run', // 前进动画剪辑
+  accelerateClip: 'sprint', // 加速动画剪辑
+  jumpClip: 'jump' // 跳跃动画剪辑
+};
+
+await App.CameraControl.PlayEntityRoam(jsondata);
+```
+
+- 停止数字人漫游
+
+```javascript
+await App.CameraControl.StopEntityRoam();
+```
+
 ## 条目：相机Step行为（id: 1347）
 
 - 相机step移动
@@ -591,7 +615,9 @@ const cameraObj = new App.Camera({
   viewDistanceLimit: [0, 10000],
   fieldOfView: 90,
   controlMode: 'RTS',
-  entityName: '机位1'
+  entityName: '机位1',
+  customId: 'custom_id_1',
+  customData: { data: 'my_data' }
 });
 
 // 添加到场景
@@ -603,6 +629,19 @@ console.log(res);
 const applyRes = await App.CameraControl.Apply(cameraObj, 1); // 第二参数为 flyTime（秒）
 console.log(applyRes);
 // 出参: { success: boolean, message: string }
+
+// 读取/设置自定义字段
+const name = cameraObj.entityName; 
+const nameRes = await cameraObj.GetEntityName(); // { success: true, result: '机位1' }
+
+const id = cameraObj.customId; 
+const idRes = await cameraObj.GetCustomId();
+
+const data = cameraObj.customData;
+const dataRes = await cameraObj.GetCustomData();
+
+const parent = cameraObj.parentEid;
+const parentRes = await cameraObj.GetParentEid();
 
 // 获取机位信息
 const getRes = await cameraObj.Get();
