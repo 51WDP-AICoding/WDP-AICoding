@@ -32,19 +32,24 @@ description: 处理 WDP 通用基础属性 API 的实现与排障。用于规范
 2. 目标实体对象可检索（`GetByEids` 或现有对象引用）。
 3. 属性字段名和类型已确认。
 
-## 关键认知：WDP 实体对象是代理引用，不是普通 JSON
+## 关键认知：WDP 实体对象是具有属性和方法的代理对象
 
-`GetByEids` / `GetByCustomId` / `GetByEntityName` / `GetAll` 返回的对象，以及事件回调中的 `result.object`，都是 **WDP 实体代理对象**（Proxy/Object wrapper）。不能直接访问 `.eid`、`.entityName` 等属性。
+`App.Scene.Add`、`GetByEids` 返回的对象，以及事件回调中的 `result.object`，都是 **WDP 实体代理对象**。它们支持两种访问方式：
 
-| 操作 | 错误做法 | 正确做法 |
+| 访问方式 | 示例 | 特点 |
 |------|---------|---------|
-| 读取属性 | `obj.eid`（返回 undefined） | `await obj.Get()` 后读取 `result.eid` |
-| 获取实体信息 | 直接访问属性 | 调用 `.Get()` 方法获取 |
+| **同步属性访问** | `obj.entityName` | 简单直观，**推荐用于简单读取**。 |
+| **异步方法调用** | `await obj.GetEntityName()` | 返回 `{success, message, result}`，**推荐用于严谨业务逻辑**。 |
+
+**重要变更**：
+- `App.Scene.Add()` 现在返回 `{ success: true, result: { object: EntityObject } }`。
+- 🚨 **严禁**再通过 `res.result.eid` 获取 ID，应使用 `res.result.object.eid`。
+- **推荐做法**：直接持有 `res.result.object` 引用，随后可直接调用其成员方法（如 `obj.Update()`）。
 
 **防御性编程建议**：
-- 获取对象后始终通过 `.Get()` 读取属性
-- 使用 try-catch 处理可能的异常
-- 检查返回值的有效性
+- 获取对象后，优先通过 `obj.prop` 读取基础元数据。
+- 进行属性更新时，直接调用 `obj.Update(json)`，避免频繁通过 `App.Scene.Update` 全局查找。
+- 始终检查 `App.Scene.Add` 的 `success` 状态再进行后续操作。
 
 > 📖 **完整代码示例**：参考 `../official_api_code_example/official-generic-base-attributes.md`
 
