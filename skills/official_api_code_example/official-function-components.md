@@ -584,10 +584,6 @@ const snapshot = await App.Renderer.GetSnapshot([1920, 1080], 0.8);
 ```javascript
 await App.Renderer.SetRendererMode('fixed', [1920, 1080]);
 ```
-- 渲染模式参数说明：
-
-已将表格整理为 Markdown 格式：
-
 **参数说明：**
 
 | 参数 | 值 | 类型 | 备注 |

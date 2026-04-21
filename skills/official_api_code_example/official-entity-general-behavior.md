@@ -1949,7 +1949,6 @@ const res = await cache.get('moveObj').Update(jsondata);
 console.log(res);
 ```
 - Bound中可以更新的属性
-已将表格整理为 Markdown 格式：
 
 | 属性 | 子属性 | 是否可以更新 |
 |:---|:---|:---:|

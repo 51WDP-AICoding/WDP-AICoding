@@ -87,19 +87,13 @@ await App.Renderer.SetResolutionMultiple(1.5);
 ```
 
 - 参数说明： 
-  参数 
-  值 
-  类型 
-  备注 
-  type 
-  full, fixed 
-  string 
-  渲染模式; full: 自动适应容器尺寸; fixed: 固定分辨率 
-  resolution 
-  [100~7680, 100~4320] 
-  Integer 
-  渲染分辨率; fixed时有效 
-  注: chrome浏览器最高支持4K: 4096 * 2160; 使用51Browser可以达到8K支持 7680 * 4320
+
+| 参数 | 值 | 类型 | 备注 |
+|------|-----|------|------|
+| type | full, fixed | string | 渲染模式; full: 自动适应容器尺寸; fixed: 固定分辨率 |
+| resolution | [100~7680, 100~4320] | Integer | 渲染分辨率; fixed时有效 |
+
+> 注: chrome浏览器最高支持4K: 4096 * 2160; 使用51Browser可以达到8K支持 7680 * 4320
 
 - 设置接口请求超时时长
 
