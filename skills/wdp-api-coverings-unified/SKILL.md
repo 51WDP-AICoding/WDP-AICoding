@@ -95,175 +95,49 @@ await App.Component.VideoUI.Add([obj]);
 
 ## 常用覆盖物快速参考
 
-### POI（兴趣点标记）
-- **创建**：`new App.Poi({location, poiStyle, entityName, customId})`
-- **添加**：`App.Scene.Add(poi, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
+### 标准覆盖物（Scene.Add 方式）
 
-> 📖 **完整 POI API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: POI
+| 覆盖物 | 创建方式 | 通用方法 | 特殊能力 | 参考文档 |
+|--------|---------|---------|---------|---------|
+| **POI** | `new App.Poi({location, poiStyle})` | Update, SetVisible, Get, Delete, **onClick** | 点击/双击/悬停事件 | spatial.md |
+| **Window** | `new App.Window({location, windowStyle: {url, size}})` | Update, SetVisible, Get, Delete | - | spatial.md |
+| **Range** | `new App.Range({polygon2D, rangeStyle})` | Update, **GetRangeInfo**, SetVisible, Delete | 支持圆形轮廓 | spatial.md |
+| **Text3D** | `new App.Text3D({location, text3DStyle})` | Update, SetVisible, Get, Delete, **onClick** | 点击/双击/悬停事件 | spatial.md |
+| **RealTimeVideo** | `new App.RealTimeVideo({location, realTimeVideoStyle})` | Update, SetVisible, Get, Delete | 支持 RTSP 视频流 | spatial.md |
+| **CustomPoi** | `new App.CustomPoi({location, poiStyle})` | Update, SetVisible, Get, Delete, **onClick** | **SetLabelContent/Style** | spatial.md |
+| **Path** | `new App.Path({polyline, pathStyle})` | Update, SetVisible, Get, Delete, **onClick** | **Modify** - 动态增删路径点 | path.md |
+| **Particle** | `new App.Particle({location, particleType})` | Update, SetVisible, Get, Delete, **onClick** | 预置粒子类型库 | path.md |
+| **HeatMap系列** | `new App.HeatMap({heatMapStyle, points})` | Update, **GetHeatValue**, **Filter/UnFilter**, SetVisible, Delete | **Clip/UnClip** 裁剪 | effects.md |
+| **Parabola** | `new App.Parabola({polyline, parabolaStyle})` | Update, SetVisible, Get, Delete, **onClick** | **SetGather/GetGather** | effects.md |
+| **Effects** | `new App.Effects({location, effectsStyle})` | Update, SetVisible, Get, Delete | 粒子特效渲染 | effects.md |
+| **Light** | `new App.Light({location, lightStyle})` | Update, SetVisible, Get, Delete | 动态光照 | effects.md |
+| **Viewshed** | `new App.Viewshed({location, viewshedStyle})` | Update, SetVisible, Get, Delete, **onClick** | 视锥体分析 | effects.md |
+| **Raster** | `new App.Raster({location, rasterStyle})` | Update, SetVisible, Get, Delete | 栅格图渲染 | effects.md |
+| **HighlightArea** | `new App.HighlightArea({polygon2D, highlightAreaStyle})` | Update, SetVisible, Get, Delete, **onClick** | 区域高亮 | effects.md |
 
-### Window（内嵌窗口）
-- **创建**：`new App.Window({location, windowStyle: {url, size}})`
-- **添加**：`App.Scene.Add(window, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
+> **通用交互事件**：支持 `onClick` / `onDbClick` / `onMouseEnter` / `onMouseOut` 的覆盖物已标注 **onClick**
 
-> 📖 **完整 Window API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: Window
+### 高级实体
 
-### Range（区域轮廓）
-- **创建**：`new App.Range({polygon2D/circlePolygon2D, rangeStyle})`
-- **添加**：`App.Scene.Add(range, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `GetRangeInfo`, `SetVisible`, `Delete`
+| 实体 | 用途 | 关键方法 | 参考文档 |
+|------|------|---------|---------|
+| **Hierarchy** | 动态切换资产模型（seedId），支持材质替换 | Update, **SetSeedId**, **SetChangedMaterialInfo** | spatial.md |
+| **ProjectInstance** | 控制 BIM/工程模型的内部节点 | Update, **SetNodesHighlight**, **SetNodesVisible** | spatial.md |
+| **Group** | 实体组管理 | **Add/Remove**(成员), **UnGroup**, SetVisible | spatial.md |
 
-> 📖 **完整 Range API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 区域轮廓/圆形区域轮廓
+> **Modeler 特殊约束**：
+> 1. `ModelerFence` 样式 key 必须大写 `M`：`ModelerFenceStyle`
+> 2. `ModelerFloor`/`ModelerWater` 的 `coordinates` 必须是三维数组 `[][][]`
 
-### HeatMap（热力图系列）
-- **类型**：`HeatMap`, `ColumnarHeatMap`, `SpaceHeatMap`, `RoadHeatMap`, `MeshHeatMap`
-- **创建**：`new App.HeatMap({heatMapStyle, points})` 等
-- **添加**：`App.Scene.Add(heatmap, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `GetHeatValue`, `Filter`, `UnFilter`, `SetVisible`, `Delete`
-- **特殊方法**：`Clip` / `UnClip` - 热力图裁剪/取消裁剪
+### Web 行为组件（App.Component 方式）
 
-> 📖 **完整热力图 API 签名**：参考 `../official_api_code_example/official-entity-coverings-effects.md` - Topic: 区域热力图/柱状热力图/点云热力图/路径热力图/3D网格热力图
+| 组件 | 创建/添加 | 获取 | 特殊能力 |
+|------|----------|------|---------|
+| **PoiUI** | `App.Component.PoiUI.Add([entity])` / `.Create(json)` / `.Creates(json)` | `.Get()` | onClick, onHover |
+| **VideoUI** | `App.Component.VideoUI.Add([entity])` / `.Create(json)` / `.Creates(json)` | `.Get()` | onClick, onHover |
+| **WindowUI** | `App.Component.WindowUI.Add([entity])` / `.Create(json)` / `.Creates(json)` | `.Get()` | onClick, onHover, **PostMessage** |
 
-### Path（路径）
-- **创建**：`new App.Path({polyline, pathStyle})`
-- **添加**：`App.Scene.Add(path, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **特殊方法**：`Modify` - 动态增删路径点
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
-
-> 📖 **完整 Path API 签名**：参考 `../official_api_code_example/official-entity-coverings-path.md` - Topic: 路径
-
-### Parabola（抛物线/迁徙图）
-- **创建**：`new App.Parabola({polyline, parabolaStyle})`
-- **添加**：`App.Scene.Add(parabola, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **特殊方法**：`SetGather` / `GetGather` - 设置聚集/扩展方向
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
-
-> 📖 **完整 Parabola API 签名**：参考 `../official_api_code_example/official-entity-coverings-effects.md` - Topic: 抛物线
-
-### Particle（粒子特效）
-- **创建**：`new App.Particle({location, particleType, scale3d})`
-- **添加**：`App.Scene.Add(particle, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
-
-> 📖 **完整 Particle API 签名**：参考 `../official_api_code_example/official-entity-coverings-path.md` - Topic: 粒子
-
-### Light（灯光）
-- **创建**：`new App.Light({location, lightStyle})`
-- **添加**：`App.Scene.Add(light, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
-
-> 📖 **完整 Light API 签名**：参考 `../official_api_code_example/official-entity-coverings-effects.md` - Topic: 灯光
-
-### Text3D（3D文字）
-- **创建**：`new App.Text3D({location, text3DStyle})`
-- **添加**：`App.Scene.Add(text3d, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
-
-> 📖 **完整 Text3D API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 3D文字
-
-### Viewshed（可视域）
-- **创建**：`new App.Viewshed({location, viewshedStyle})`
-- **添加**：`App.Scene.Add(viewshed, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
-
-> 📖 **完整 Viewshed API 签名**：参考 `../official_api_code_example/official-entity-coverings-effects.md` - Topic: 可视域
-
-### Raster（栅格图）
-- **创建**：`new App.Raster({location, rasterStyle})`
-- **添加**：`App.Scene.Add(raster, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
-
-> 📖 **完整 Raster API 签名**：参考 `../official_api_code_example/official-entity-coverings-effects.md` - Topic: 栅格图
-
-### HighlightArea（高亮区域）
-- **创建**：`new App.HighlightArea({polygon2D, highlightAreaStyle})`
-- **添加**：`App.Scene.Add(highlightArea, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
-
-> 📖 **完整 HighlightArea API 签名**：参考 `../official_api_code_example/official-entity-coverings-effects.md` - Topic: 高亮区域
-
-### RealTimeVideo（实时视频）
-- **创建**：`new App.RealTimeVideo({location, realTimeVideoStyle})`
-- **添加**：`App.Scene.Add(realTimeVideo, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`
-
-> 📖 **完整 RealTimeVideo API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 实时视频
-
-### CustomPoi（自定义POI）
-- **创建**：`new App.CustomPoi({location, poiStyle})`
-- **添加**：`App.Scene.Add(customPoi, {calculateCoordZ: {...}})`
-- **方法**：`Update`, `SetVisible`, `Get`, `Delete`, `onClick`
-- **特殊方法**：`SetLabelContent`, `SetLabelStyle`, `SetGeneralLabelStyle`, `SetSpecificLabelStyle`
-- **交互事件**：`onClick`, `onDbClick`, `onMouseEnter`, `onMouseOut`
-
-> 📖 **完整 CustomPoi API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 自定义POI
-
-### 结构模型（Hierarchy）
-- **特点**：支持通过 `seedId` 动态绑定/切换资产模型（如建筑物），并可以局部替换指定的材质（`changedMaterialInfo`）。**认知指引**：当模型不仅仅是展示，还需要在运行时动态切换资产 ID 或换色、换皮（替换子材质）且保留同一实体引用时，应使用 Hierarchy 类。
-- **创建**：`new App.Hierarchy({seedId, changedMaterialInfo, location...})`
-- **方法**：`Update`, `SetSeedId`, `SetChangedMaterialInfo`
-
-> 📖 **完整 Hierarchy API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 结构模型
-
-### 智能建模系列（Modeler）
-- **类型**：`Vegetation`（植被）, `ModelerEmbank`（路基）, `ModelerFence`（围栏）, `ModelerFloor`（楼板）, `ModelerWater`（水面）, `ModelerRiver`（河道）。
-- **创建**：`new App.ModelerFloor({...})` 等
-- **🚨 特殊约束（极易出错，必须检查）**：
-  1. `ModelerFence` 的样式对象 key 必须大写 `M`：`ModelerFenceStyle`，而非 `modelerFenceStyle`。
-  2. `ModelerFloor` 和 `ModelerWater` 的 `coordinates` 必须是三维数组 `[][][]`。
-- **方法**：除 `.Update(json)` 外，支持高度动态化，也可以通过直接对 `coordinates` 等属性赋值来刷新路径/边界，实现交互式实时建模。
-
-> 📖 **完整 Modeler API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 智能建模系列
-
-### 工程实例模型（ProjectInstance）
-- **特点**：用于加载和控制具有内部节点树的 BIM 或工程模型。**认知指引**：当需要控制 BIM 模型或工程预设内部的单个子构件/节点时（如隐藏某根管线、高亮某面墙），应使用 ProjectInstance 实体，而非普通的 Static 或 Group。
-- **创建**：`new App.ProjectInstance({hiddenNodes, location...})`
-- **方法**：`Update`, `SetNodesHighlight`, `ClearNodesHighlight`, `SetNodesOutline`, `SetNodesVisible`
-
-> 📖 **完整 ProjectInstance API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 工程实例模型
-
-### Group（实体组）
-- **创建**：`new App.Group({entityName, customId, bVisible})`
-- **添加**：`App.Scene.Add(group)`
-- **方法**：`Add(entities)` - 添加成员, `Remove(entities)` - 移除成员, `UnGroup()` - 解散组, `SetVisible(boolean)`, `Get()`, `Delete()`
-
-> 📖 **完整 Group API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: 实体组
-
-### Web 行为组件（PoiUI / VideoUI / WindowUI）
-
-**创建方式**：通过 `App.Component.xxx` 工厂类管理（非 `App.Scene.Add`）
-
-| 组件 | 方法 | 说明 |
-|------|------|------|
-| **PoiUI** | `App.Component.PoiUI.Add([entity])` | 添加点位组件（对象方式） |
-| **PoiUI** | `App.Component.PoiUI.Create(jsonData)` | 创建单个点位组件 |
-| **PoiUI** | `App.Component.PoiUI.Creates(jsonData)` | 批量创建点位组件 |
-| **PoiUI** | `App.Component.PoiUI.Get()` | 获取单个/所有点位组件 |
-| **VideoUI** | `App.Component.VideoUI.Add([entity])` | 添加视频组件（对象方式） |
-| **VideoUI** | `App.Component.VideoUI.Create(jsonData)` | 创建单个视频组件 |
-| **VideoUI** | `App.Component.VideoUI.Creates(jsonData)` | 批量创建视频组件 |
-| **VideoUI** | `App.Component.VideoUI.Get()` | 获取单个/所有视频组件/DOM对象 |
-| **WindowUI** | `App.Component.WindowUI.Add([entity])` | 添加窗口组件（对象方式） |
-| **WindowUI** | `App.Component.WindowUI.Create(jsonData)` | 创建单个窗口组件 |
-| **WindowUI** | `App.Component.WindowUI.Creates(jsonData)` | 批量创建窗口组件 |
-| **WindowUI** | `App.Component.WindowUI.Get()` | 获取单个/所有窗口组件 |
-
-**事件绑定**：
-- `obj.onClick(callback)` - 点击事件
-- `obj.onHover(callback)` - 悬停事件
-- `windowUIObj.PostMessage(data)` - WindowUI 与内嵌页面通信
-
-> 📖 **完整 Web 行为组件 API 签名**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: UI 组件事件监听与坐标跟随
-
-> 📖 **完整事件回调结构**：参考 `../official_api_code_example/official-entity-coverings-spatial.md`
+> 📖 **完整 Web 行为组件 API**：参考 `../official_api_code_example/official-entity-coverings-spatial.md` - Topic: UI 组件事件监听与坐标跟随
 
 ## 质量门槛
 
