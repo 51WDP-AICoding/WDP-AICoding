@@ -203,20 +203,29 @@ await App.Component.VideoUI.Add([obj]);
 
 > 📖 **完整 CustomPoi API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 自定义POI
 
-### 智能建模系列
-- **类型**：`Vegetation`, `ModelerEmbank`, `ModelerWater`, `ModelerRiver`, `ModelerFence`, `ModelerFloor`
-- **创建**：`new App.Vegetation({polygon2D, vegetationStyle})` 等
-- **添加**：`App.Scene.Add(obj)`
-- **方法**：基础覆盖物方法外，`Vegetation` 特有剔除区域管理（`QueryRegion`, `RemoveRegion`, `UpdateRegionName`, `ToggleRegion`）
+### 结构模型（Hierarchy）
+- **特点**：支持通过 `seedId` 动态绑定/切换资产模型（如建筑物），并可以局部替换指定的材质（`changedMaterialInfo`）。
+- **创建**：`new App.Hierarchy({seedId, changedMaterialInfo, location...})`
+- **方法**：`Update`, `SetSeedId`, `SetChangedMaterialInfo`
 
-> 📖 **完整智能建模 API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 智能建模系列
+> 📖 **完整 Hierarchy API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 结构模型
 
-### 静态实例模型（StaticInstance）
-- **创建**：`new App.StaticInstance({instanceComponentInfos})`
-- **添加**：`App.Scene.Add(staticInstance)`
-- **方法**：`Update`（更新实例位置等）, `DeleteComponents`, `SetComponentsTransform`, `DeleteNodes`, `SetNodesTransform`, `OutlineComponents`, `FocusComponents`
+### 智能建模系列（Modeler）
+- **类型**：`Vegetation`（植被）, `ModelerEmbank`（路基）, `ModelerFence`（围栏）, `ModelerFloor`（楼板）, `ModelerWater`（水面）, `ModelerRiver`（河道）。
+- **创建**：`new App.ModelerFloor({...})` 等
+- **🚨 特殊约束（极易出错，必须检查）**：
+  1. `ModelerFence` 的样式对象 key 必须大写 `M`：`ModelerFenceStyle`，而非 `modelerFenceStyle`。
+  2. `ModelerFloor` 和 `ModelerWater` 的 `coordinates` 必须是三维数组 `[][][]`。
+- **方法**：`Update`, `Delete`；`Vegetation` 有特有的剔除区域管理方法。
 
-> 📖 **完整 StaticInstance API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 静态实例模型
+> 📖 **完整 Modeler API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 智能建模系列
+
+### 工程实例模型（ProjectInstance）
+- **特点**：用于加载和控制具有内部节点树的 BIM 或工程模型，可以对指定节点（Node）进行显示、高亮和描边控制。
+- **创建**：`new App.ProjectInstance({hiddenNodes, location...})`
+- **方法**：`Update`, `SetNodesHighlight`, `ClearNodesHighlight`, `SetNodesOutline`, `SetNodesVisible`
+
+> 📖 **完整 ProjectInstance API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 工程实例模型
 
 ### Group（实体组）
 - **创建**：`new App.Group({entityName, customId, bVisible})`

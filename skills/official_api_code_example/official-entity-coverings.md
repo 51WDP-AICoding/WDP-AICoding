@@ -2112,109 +2112,123 @@ await vegObj.UpdateRegionName([{ index: 0, name: 'AAA' }]);
 // 启用/禁用剔除区域
 await vegObj.ToggleRegion([{ index: 0, bEnable: true }]);
 
-// 挡水岸堤（ModelerEmbank）
+// ====================
+// 2. 其他智能建模实体
+// ====================
+
+// 示例1：路基/堤坝 (ModelerEmbank)
 const embank = new App.ModelerEmbank({
-  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2400,0]] },
-  entityName: '挡水岸堤', customId: 'my-embank', bVisible: true,
-  embankStyle: { width: 20, height: 5, slope: 1.5 }
-});
+  coordinates: [[121.5, 31.2, 0], [121.51, 31.2, 0]], // 折线路径坐标
+  attributes: [ { cornerRadius: 800, cornerSplitNum: 5, baseWidth: 1, sideWidthScale: 1 }, { cornerRadius: 800, cornerSplitNum: 5, baseWidth: 1, sideWidthScale: 1 } ],
+  bClosed: false,
+  modelerEmbankStyle: {
+    baseType: 'Asphalt', // 底面材质：Asphalt | Brick | Concert 等
+    baseWidth: 400, baseHeight: 200,
+    sideType: 'GrassSlope', // 侧面材质：GrassSlope | Brick 等
+    bTwoSide: true,
+    fenceType: 'MetalRail' // 护栏类型：MetalRail | WoodRail 等
+  }
+})
 await App.Scene.Add(embank);
 
-// 水面水体（ModelerWater）
-const water = new App.ModelerWater({
-  polygon2D: { coordinates: [[[121.4853,31.2384],[121.4900,31.2384],[121.4900,31.2420]]] },
-  entityName: '水面水体', customId: 'my-water', bVisible: true,
-  waterStyle: { waterLevel: 5, color: '0066ffaa', waveSpeed: 1.0, waveHeight: 0.5 }
-});
-await App.Scene.Add(water);
-
-// 河道水岸（ModelerRiver）
-const river = new App.ModelerRiver({
-  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2400,0]] },
-  entityName: '河道水岸', customId: 'my-river', bVisible: true,
-  riverStyle: { width: 50, waterLevel: 2, bankHeight: 3 }
-});
-await App.Scene.Add(river);
-
-// 智能建模围栏（ModelerFence）
+// 示例2：围栏 (ModelerFence)
 const fence = new App.ModelerFence({
-  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2384,0],[121.4900,31.2420,0],[121.4853,31.2420,0]] },
-  entityName: '围栏', customId: 'my-fence', bVisible: true,
-  fenceStyle: { height: 3, type: 'iron', bClosed: true }
-});
+  coordinates: [[121.5, 31.2, 0], [121.51, 31.2, 0]], 
+  bClosed: true,
+  ModelerFenceStyle: { // 🚨注意：必须大写 M -> ModelerFenceStyle
+    fenceMeshTypeName: 'SM_P_wall_04',
+    fenceScale: 1,
+    cornerRadius: 0,
+    bRotCol: false
+  }
+})
 await App.Scene.Add(fence);
 
-// 智能建模楼板（ModelerFloor）
+// 示例3：楼板 (ModelerFloor)
 const floor = new App.ModelerFloor({
-  polygon2D: { coordinates: [[[121.4853,31.2384],[121.4900,31.2384],[121.4900,31.2420],[121.4853,31.2420]]] },
-  entityName: '楼板', customId: 'my-floor', bVisible: true,
-  floorStyle: { height: 0, thickness: 0.3, color: 'ccccccff' }
-});
+  coordinates: [ // 🚨注意：必须是三维数组 [][][] 
+    [ [121.5, 31.2, 10], [121.52, 31.2, 10], [121.52, 31.24, 10], [121.5, 31.2, 10] ]
+  ],
+  modelerFloorStyle: {
+    innerMatName: 'face_grass_1', // 顶面材质
+    outerMatName: 'side_brick_9', // 侧面材质
+    innerHeight: 20, outerHeight: 20, outerWidth: 20,
+    cornerRadius: 100, cornerSplitNum: 10,
+    bAlignZ: true, bInverseNormal: true
+  }
+})
 await App.Scene.Add(floor);
+
+// 示例4：水面与河道 (ModelerWater / ModelerRiver)
+const water = new App.ModelerWater({
+  coordinates: [ // 🚨水面也是多边形闭合区域，必须三维数组 [][][]
+    [ [121.5, 31.2, 0], [121.52, 31.2, 0], [121.52, 31.24, 0] ]
+  ],
+  modelerWaterStyle: {
+    waterType: 'Water03', waterColor: '1a5276ff',
+    waterHeight: 200, waveHeight: 1.5, waveSpeed: 0.05, waterTransparency: 0.2
+  }
+})
+await App.Scene.Add(water);
+
+const river = new App.ModelerRiver({
+  coordinates: [[121.5, 31.2, 0], [121.51, 31.2, 0]], // 河道是折线
+  modelerRiverStyle: {
+    riverWidth: 500, riverHeight: 200,
+    waterType: 'River01', waterColor: '1a5276ff',
+    waveHeight: 2, waveSpeed: 0.05
+  }
+})
+await App.Scene.Add(river);
 ```
 
 ---
 
-## Topic: 静态实例模型（StaticInstance）(id: 1395-instance)  
+## Topic: 结构模型 (Hierarchy)
+- 新增 `App.Hierarchy`，支持动态指定资产ID（seedId）加载模型，并可替换模型的材质信息。
+```javascript
+const hierarchy = new App.Hierarchy({
+  location: [121.51132810, 31.23485399, 0], 
+  rotator: { pitch: 0, yaw: 0, roll: 0 },
+  scale3d: [1, 1, 1],
+  bVisible: true,
+  seedId: 'building_asset_001', // 模型资产 ID（从 DaaS 获取）
+  changedMaterialInfo: [ // 动态材质变更
+    { materialName: 'facade_mat', color: 'c0c0c0ff' },
+    { materialName: 'glass_mat', color: '4fc3f7cc' },
+  ],
+  entityName: '主楼节点'
+})
+const res = await App.Scene.Add(hierarchy)
+// 更新资产和材质
+hierarchy.seedId = 'new_asset'
+hierarchy.changedMaterialInfo = [{ materialName: 'roof', color: 'ffffffff' }]
+```
 
-`App.StaticInstance` 将同一个模型资产在多个位置同时实例化，所有实例共享同一份模型数据，渲染性能远优于创建多个独立的 `App.Static` 实体。每个实例可独立设置位置、旋转、缩放和自定义 ID。
+## Topic: 工程实例模型（ProjectInstance）(id: 1395-instance)  
+
+`App.ProjectInstance` 允许加载具有节点树结构的BIM/工程模型实例，并对其内部节点进行轮廓、高亮、可见性操作。
 
 ```javascript
-// StaticInstance：静态模型的实例化，适合大量重复模型（如树木、路灯）
-// instanceComponentInfos 完整结构（来自 docx 原始文档）：
-const staticInstance = new App.StaticInstance({
-  entityName: '静态实例', customId: 'my-static-instance', bVisible: true,
-  instanceComponentInfos: [{
-    componentName: '实验学校06',       // 组件名称
-    parentName: '',                    // 父组件名称（顶层为空）
-    assetId: '883786d39171015f0fc8396ae4115a66', // 资产 ID
-    meshName: 'WZ_WZSYXX_06',         // 网格名称
-    componentLocation: [0, 0, 0],     // 组件自身位置（笛卡尔，单位：厘米）
-    componentRotator: { pitch: 0, yaw: 0, roll: 0 },
-    componentScale: [1, 1, 1],
-    nodeIds: [10000001, 10000002],     // 实例节点 ID 列表
-    positions: [[0,0,0], [5000,0,0]], // 各节点位置（笛卡尔，单位：厘米）
-    idToRotator: {},                  // 节点 ID → 旋转（可选，覆盖默认）
-    idToScale: {},                    // 节点 ID → 缩放（可选，覆盖默认）
-    hiddenIds: []                     // 隐藏的节点 ID 列表
-  }]
-});
-const res = await App.Scene.Add(staticInstance);
+// ProjectInstance：工程模型的实例化，支持节点级别的渲染控制
+const instance = new App.ProjectInstance({
+  location: [121.51132810, 31.23485399, 0], 
+  rotator: { pitch: 0, yaw: 0, roll: 0 },
+  scale3d: [1, 1, 1],
+  hiddenNodes: ['node-pipe-001', 'node-elec-002'], // 默认隐藏节点
+})
+await App.Scene.Add(instance)
 
-// 更新某个实例的位置（通过 nodeId 定位）
-await staticInstance.Update({
-  instanceComponentInfos: [{ nodeIds: [10000001], positions: [[1000,0,0]] }]
-});
+// 控制节点高亮
+await instance.SetNodesHighlight({ nodeIds: ['node-structure-001'], color: 'ff6b6bff', opacity: 0.8 })
+await instance.ClearNodesHighlight()
 
-// StaticInstance 额外方法（来自 docx 原始文档）：
-// 删除指定组件
-await staticInstance.DeleteComponents(['实验学校06']);
+// 控制节点轮廓描边
+await instance.SetNodesOutline({ nodeIds: ['node-structure-001'], color: '00d4ffff' })
+await instance.ClearNodesOutline()
 
-// 设置组件变换（key 为 "componentName_meshName" 格式）
-await staticInstance.SetComponentsTransform({
-  '实验学校06_WZ_WZSYXX_06': {
-    rotator: { pitch: 0, yaw: 45, roll: 0 },
-    location: [0, 0, 0],
-    scale3d: [1, 1, 1]
-  }
-});
-
-// 删除指定节点
-await staticInstance.DeleteNodes([10000001, 10000002]);
-
-// 设置节点变换
-await staticInstance.SetNodesTransform([{
-  nodeIds: [10000001],
-  rotator: { pitch: 0, yaw: 30, roll: 0 },
-  location: [1000, 0, 0],
-  scale3d: [1, 1, 1]
-}]);
-
-// 描边指定组件（第二参数 true=开启, false=关闭）
-await staticInstance.OutlineComponents(['实验学校06'], true);
-
-// 聚焦指定组件
-await staticInstance.FocusComponents(['实验学校06']);
+// 控制节点显隐
+await instance.SetNodesVisible({ nodeIds: ['node-pipe-001'], bVisible: false })
 ```
 
 ---
