@@ -90,7 +90,10 @@ const model = await modelObj.Get();
 console.log(model);
 
 // 示例: 隐藏AES静态模型
-modelObj.SetVisible(false); // true: 显示; false: 隐藏
+// 方式一：
+// modelObj.bVisible = false;
+// 方式二：
+await modelObj.SetVisible(false); // true: 显示; false: 隐藏
 
 
 // 示例: 更新路径Path
@@ -162,6 +165,9 @@ console.log(res);
 // particleObj 为 new App.Particle({...}) 时创建的对象;
 
 // SetVisible (true or false)
+// 方式一：
+// particleObj.bVisible = false;
+// 方式二：
 const res = await particleObj.SetVisible(false);
 console.log(res);
 ```
@@ -1981,12 +1987,18 @@ obj.SetOffset({
   "forward": 0, //实体沿着路径的前后调整，前+，后-，单位：米
   "up": 0 //实体相对路径走向的垂直上下，上+，下-，单位：米
 });
-obj.SetRotator({ 
+// 方式一：
+// obj.rotator = {pitch: 0, yaw: 30, roll: 0};
+// 方式二：
+await obj.SetRotator({ 
   "pitch": 0, //相对路径的俯仰角，上+，下-，参考(-180~180)
   "yaw": 30, //相对路径的偏航角, 左+，右-，参考(0沿路径, -180~180)
   "roll": 0 //相对路径的翻滚角,左+，右-， 参考(-180~180)
 });
-obj.SetVisible(boolean);
+// 方式一：
+// obj.bVisible = boolean;
+// 方式二：
+await obj.SetVisible(boolean);
 obj.Get();
 obj.Delete();
 ```

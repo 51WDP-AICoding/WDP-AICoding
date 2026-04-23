@@ -29,8 +29,9 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 
 本技能处理的是 **环境 / 控件 / 工具 / 设置** 一类的功能组件域，典型包括：
 
-- 环境控制：天气、光照时间、场景风格
+- 环境控制：天气、光照时间、场景风格、后处理特效 (Effects)
 - 控件与系统信息：API 信息、插件信息、渲染状态、快照
+- 场景与工程资产：大纲层级树 (Outliner)、导入模型工程的高亮轮廓 (Project)
 - 坐标与拾取工具：坐标转换、屏幕取点、取线、测量、剖切、CAD 地理参考
 - 屏幕与辅助组件：MiniMap、Compass、ChinaMap、DOM 坐标绑定
 - 资源与数据：AssetLoader、DaaS 云盘文件列表
@@ -142,6 +143,15 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 | `UpdateShapePoints(points)` | 批量更新形状点位 |
 | `RangePickShapePoints(startPos, endPos, mode)` | 框选形状点，mode: New/Add/Remove |
 
+### 场景扩展方法索引 (新版)
+
+| 模块 | 方法 | 说明 |
+|------|------|------|
+| **Outliner** | `Create(opt)` / `Get(eid)` | 创建并获取场景大纲/实体列表层级树，用于分类管理 |
+| **Outliner** | `Move(objects, position, category)` | 调整大纲中实体的排列顺序和所属分类 |
+| **Project** | `SetNodesHighlight` / `SetNodesOutline` | (工厂级) 批量设置工程/BIM模型内部节点的渲染效果 |
+| **Effects** | `new App.Effects(opt)` | (覆盖物方式) 创建后处理特效（如景深），传入资产 seedId |
+
 ### 数据模型方法索引
 
 | 模块 | 方法 | 说明 |
@@ -214,11 +224,17 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 - 原因：混用了 GIS / Cartesian / Screen 坐标，或高度参考系理解错误
 - 处理：先确认输入坐标类型，再确认是否需要 `surface / ground / altitude`
 
-### 3. 工具开启后无法退出
-- 原因：只实现了 Start，没有实现 End / Remove
-- 处理：编码时必须成对检查启停 API
+### 3. 工具开启后无法退出 / 坐标拾取结果为空
+- 原因：只实现了 `Start`，没有实现 `End` / `Remove`；或者将 `StartPickPoint`、`EndPickPoint` 和 `GetPickedPoints` 同步写在了同一个函数内，导致交互生命周期瞬间结束。
+- 处理：
+  1. 编码时必须成对检查启停 API。
+  2. 针对**拾取类工具**（`PickerPoint`、`PickerPolyline`、`Measure`），**必须明确设计异步交互的生命周期状态机**。即：通过按钮或入口调用 `Start` 后，让代码执行完成并交出控制权；必须在另一个用户交互动作（如“完成”按钮）或满足指定点数（在 `PickPointEvent` 事件中计数）后，再调用 `End` 和 `Get`。
 
-### 4. 把实体创建误写进功能组件域
+### 4. ChinaMap（中国地图）与原有场景实体的遮挡/冲突
+- 原因：`ChinaMap.Switch` 开启的是一个**全局状态**视角，若此时场景中存在大量市级/区级的 Poi、热力图或三维建筑，会导致视觉错乱和重叠。
+- 处理：一旦开启 `ChinaMap`，必须在逻辑中增加“清理或隐藏当前不相关的覆盖物”的步骤；在关闭 `ChinaMap` 钻取回局部视角时，再重新加载/显示这些实体。
+
+### 5. 把实体创建误写进功能组件域
 - 原因：把天气/工具类 API 和场景覆盖物 API 混在一起
 - 处理：凡是 `new App.Poi / Window / Path / Particle / Effects` 这类实体创建，优先转 coverings
 

@@ -631,16 +631,24 @@ console.log(applyRes);
 // 出参: { success: boolean, message: string }
 
 // 读取/设置自定义字段
-const name = cameraObj.entityName; 
+// 方式一：
+// console.log(cameraObj.entityName);
+// 方式二：
 const nameRes = await cameraObj.GetEntityName(); // { success: true, result: '机位1' }
 
-const id = cameraObj.customId; 
+// 方式一：
+// console.log(cameraObj.customId);
+// 方式二：
 const idRes = await cameraObj.GetCustomId();
 
-const data = cameraObj.customData;
+// 方式一：
+// console.log(cameraObj.customData);
+// 方式二：
 const dataRes = await cameraObj.GetCustomData();
 
-const parent = cameraObj.parentEid;
+// 方式一：
+// console.log(cameraObj.parentEid);
+// 方式二：
 const parentRes = await cameraObj.GetParentEid();
 
 // 获取机位信息

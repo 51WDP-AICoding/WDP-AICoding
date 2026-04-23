@@ -70,8 +70,14 @@ const res = await App.Scene.Add(realTimeVideo, {
   obj.SetResolution([w, h]);
   obj.Delete();
   obj.GetData();//获取实体当前所有属性数据。
-  obj.GetLocation();//获取实时视频的坐标位置，[121.47025042, 31.23065615, 90]
-  obj.SetLocation([121.47025042, 31.23065615, 90]);//设置实时视频的坐标位置。
+  // 方式一：
+  // console.log(obj.location);
+  // 方式二：
+  await obj.GetLocation();//获取实时视频的坐标位置，[121.47025042, 31.23065615, 90]
+  // 方式一：
+  // obj.location = [121.47025042, 31.23065615, 90];
+  // 方式二：
+  await obj.SetLocation([121.47025042, 31.23065615, 90]);//设置实时视频的坐标位置。
 ```
 
 ```javascript
@@ -249,8 +255,14 @@ const res = await App.Scene.Add(window, {
   obj.SetVisible(boolean);
   obj.GetData();//获取实体当前所有属性数据
   obj.Delete();
-  obj.GetLocation();//获取窗口锚点的经纬度坐标及高度。
-  obj.SetLocation();//设置窗口锚点的经纬度坐标及高度
+  // 方式一：
+  // console.log(obj.location);
+  // 方式二：
+  await obj.GetLocation();//获取窗口锚点的经纬度坐标及高度。
+  // 方式一：
+  // obj.location = [121.47025042, 31.23065615, 90];
+  // 方式二：
+  await obj.SetLocation([121.47025042, 31.23065615, 90]);//设置窗口锚点的经纬度坐标及高度
  
 ```
 
@@ -447,12 +459,30 @@ const res = await App.Scene.Add(poi);
   obj.SetVisible(boolean);
   obj.GetData();//获取实体当前所有属性数据
   obj.GetOType();//获取实体的类型标识
-  obj.GetLocation();//获取 POI 的位置坐标
-  obj.SetLocation([121.5, 31.2, 10]);//设置 POI 的位置坐标
-  obk.GetLocked();//获取 POI 的锁定状态
-  obj.SetLocked(true);//设置 POI 的锁定状态
-  obj.GetPivotOffset();//获取 POI 的轴心偏移
-  obj.SetPivotOffset([0, 0, 5]);//设置 POI 的轴心偏移
+  // 方式一：
+  // console.log(obj.location);
+  // 方式二：
+  await obj.GetLocation();//获取 POI 的位置坐标
+  // 方式一：
+  // obj.location = [121.5, 31.2, 10];
+  // 方式二：
+  await obj.SetLocation([121.5, 31.2, 10]);//设置 POI 的位置坐标
+  // 方式一：
+  // console.log(obj.bLocked);
+  // 方式二：
+  await obj.GetLocked();//获取 POI 的锁定状态
+  // 方式一：
+  // obj.bLocked = true;
+  // 方式二：
+  await obj.SetLocked(true);//设置 POI 的锁定状态
+  // 方式一：
+  // console.log(obj.pivotOffset);
+  // 方式二：
+  await obj.GetPivotOffset();//获取 POI 的轴心偏移
+  // 方式一：
+  // obj.pivotOffset = [0, 0, 5];
+  // 方式二：
+  await obj.SetPivotOffset([0, 0, 5]);//设置 POI 的轴心偏移
   obj.Delete();
   obj.onClick(ev => {
     const newObj = ev.result.object;
@@ -691,12 +721,30 @@ const res = await App.Scene.Add(particle, {
 // 示例
   const obj = new App.Particle({...});
   obj.Update(json);
-  obj.SetRotator(json);
-  obj.SetScale3d(json);
-  obj.SetVisible(boolean);
-  obj.SetParticleType('smoke_chimney');//切换特效类型
-  obj.GetLocked();//获取场景特效的锁定状态
-  obj.SetLocked();//设置场景特效的锁定状态
+  // 方式一：
+  // obj.rotator = {pitch: 0, yaw: 30, roll: 0};
+  // 方式二：
+  await obj.SetRotator({pitch: 0, yaw: 30, roll: 0});
+  // 方式一：
+  // obj.scale3d = [30, 30, 30];
+  // 方式二：
+  await obj.SetScale3d([30, 30, 30]);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
+  // 方式一：
+  // obj.particleType = 'smoke_chimney';
+  // 方式二：
+  await obj.SetParticleType('smoke_chimney');//切换特效类型
+  // 方式一：
+  // console.log(obj.bLocked);
+  // 方式二：
+  await obj.GetLocked();//获取场景特效的锁定状态
+  // 方式一：
+  // obj.bLocked = true;
+  // 方式二：
+  await obj.SetLocked(true);//设置场景特效的锁定状态
   obj.Get();
   obj.Delete();
   obj.onClick(ev => {
@@ -744,11 +792,22 @@ const res = await App.Scene.Add(entityObj, {
 // 示例
   const obj = new App.Effects({...});
   obj.Update(json);
-  obj.SetRotator(json);
-  obj.SetScale3d(json);
-  obj.SetVisible(boolean);
-  obj.entityName; //方式一：属性访问
-  await obj.GetEntityName(); //方式二：异步方法
+  // 方式一：
+  // obj.rotator = {pitch: 0, yaw: 0, roll: 0};
+  // 方式二：
+  await obj.SetRotator({pitch: 0, yaw: 0, roll: 0});
+  // 方式一：
+  // obj.scale3d = [1, 1, 1];
+  // 方式二：
+  await obj.SetScale3d([1, 1, 1]);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
+  // 方式一：
+  // console.log(obj.entityName);
+  // 方式二：
+  await obj.GetEntityName();
   obj.Get();
   obj.Delete();
   obj.onClick(ev => {
@@ -792,7 +851,10 @@ const res = await App.Scene.Add(entityObj, {
 // 示例
   const obj = new App.Light({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.GetData();//获取实体当前所有属性数据
   obj.Delete();
 ```
@@ -869,9 +931,18 @@ const res = await App.Scene.Add(text3d, {
 // 示例
   const obj = new App.Text3D({...});
   obj.Update(json);
-  obj.SetRotator(json);
-  obj.SetScale3d(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.rotator = {pitch: 0, yaw: 30, roll: 0};
+  // 方式二：
+  await obj.SetRotator({pitch: 0, yaw: 30, roll: 0});
+  // 方式一：
+  // obj.scale3d = [100, 30, 30];
+  // 方式二：
+  await obj.SetScale3d([100, 30, 30]);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.Get();
   obj.Delete();
   obj.onClick(ev => {
@@ -942,11 +1013,26 @@ const res = await App.Scene.Add(viewshed, {
 // 示例
   const obj = new App.Viewshed({...});
   obj.Update(json);
-  obj.SetRotator(json);
-  obj.SetScale3d(json);
-  obj.SetVisible(boolean);
-  obj.GetLocation();//获取观测点坐标
-  obj.SetLocation();//设置观测点坐标
+  // 方式一：
+  // obj.rotator = {pitch: 0, yaw: 30, roll: 0};
+  // 方式二：
+  await obj.SetRotator({pitch: 0, yaw: 30, roll: 0});
+  // 方式一：
+  // obj.scale3d = [30, 30, 30];
+  // 方式二：
+  await obj.SetScale3d([30, 30, 30]);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
+  // 方式一：
+  // console.log(obj.location);
+  // 方式二：
+  await obj.GetLocation();//获取观测点坐标
+  // 方式一：
+  // obj.location = [121.47025042, 31.23065615, 90];
+  // 方式二：
+  await obj.SetLocation([121.47025042, 31.23065615, 90]);//设置观测点坐标
   obj.GetData();//获取实体当前所有属性数据
   obj.Delete();
   obj.onClick(ev => {
@@ -1015,7 +1101,10 @@ const res = await App.Scene.Add(path, {
 // 示例
   const obj = new App.Path({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.Get();
   obj.Delete();
   obj.onClick(ev => {
@@ -1128,7 +1217,10 @@ console.log('删除结果:', del.result)
 // 示例
   const obj = new App.Parabola({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.Get();
   obj.Delete();
   obj.onClick(ev => {
@@ -1210,7 +1302,10 @@ const res = await App.Scene.Add(entityObj, {
 // 示例
 const obj = new App.Range({ ...});
 obj.Update(json);
-obj.SetVisible(boolean);
+// 方式一：
+// obj.bVisible = boolean;
+// 方式二：
+await obj.SetVisible(boolean);
 obj.Get();
 obj.GetRangeInfo()
 obj.Delete();
@@ -1369,7 +1464,10 @@ const res = await App.Scene.Add(entityObj, {
 // 示例
 const obj = new App.Range({ ...});
 obj.Update(json);
-obj.SetVisible(boolean);
+// 方式一：
+// obj.bVisible = boolean;
+// 方式二：
+await obj.SetVisible(boolean);
 obj.Get();
 obj.Delete();
 obj.onClick(ev => {
@@ -1461,7 +1559,10 @@ console.log('热力值范围:', range.result)   // [10, 90]
 // 示例
   const obj = new App.HeatMap({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.Get();
   obj.GetHeatValue([121.49579361,31.23447654,81]);
   obj.Filter();
@@ -1543,7 +1644,10 @@ const res = await App.Scene.Add(columnarheatmap, {
 // 示例
   const obj = new App.ColumnarHeatMap({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.GetData();//获取柱状热力图实体的所有属性对象
   obj.GetHeatValue([121.49579361,31.23447654,81]);
   obj.Filter();
@@ -1619,7 +1723,10 @@ const res = await App.Scene.Add(spaceheatmap, {
 // 示例
   const obj = new App.SpaceHeatMap({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.GetData();// 获取点云热力图实体的所有属性对象
   obj.Delete();
   obj.onClick(ev => {
@@ -1696,7 +1803,10 @@ const res = await App.Scene.Add(roadheatmap, {
 // 示例
   const obj = new App.RoadHeatMap({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.Get();
   obj.Delete();
   obj.onClick(ev => {
@@ -1764,7 +1874,10 @@ console.log(res);
 // 示例
   const obj = new App.MeshHeatMap({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.GetData();//获取3D网格热力图实体的所有属性对象
   obj.Delete();
   obj.onClick(ev => {
@@ -1825,10 +1938,19 @@ const res = await App.Scene.Add(raster, {
 // 示例
   const obj = new App.Raster({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.GetData();//获取实体当前所有属性数据
-  obj.GetLocation();//获取栅格图的中心坐标位置
-  obj.SetLocation();//设置栅格图的中心坐标位置
+  // 方式一：
+  // console.log(obj.location);
+  // 方式二：
+  await obj.GetLocation();//获取栅格图的中心坐标位置
+  // 方式一：
+  // obj.location = [121.47025042, 31.23065615, 90];
+  // 方式二：
+  await obj.SetLocation([121.47025042, 31.23065615, 90]);//设置栅格图的中心坐标位置
   obj.Delete();
   obj.onClick(ev => {
     const newObj = ev.result.object;
@@ -1934,7 +2056,10 @@ console.log('删除结果:', del.result)
 // 示例
   const obj = new App.HighlightArea({...});
   obj.Update(json);
-  obj.SetVisible(boolean);
+  // 方式一：
+  // obj.bVisible = boolean;
+  // 方式二：
+  await obj.SetVisible(boolean);
   obj.Get();
   obj.Delete();
 ```

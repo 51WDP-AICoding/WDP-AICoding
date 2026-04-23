@@ -820,3 +820,106 @@ await App.DataModel.Cluster.Modify({
   }
 });
 ```
+
+---
+
+## Topic: 场景大纲管理 (App.Outliner) (id: 1408-outliner)
+
+```javascript
+// 1. 创建场景大纲实体
+const outlinerResult = await App.Outliner.Create({
+  entityName: '主场景大纲',
+  customId: 'outliner-001',
+  entities: { // 初始化分类及对应的实体对象数组（对象需带 eid）
+    'Poi': [poiObj1, poiObj2],
+    'Static': [staticObj],
+  },
+});
+const outlinerEid = outlinerResult.result.object.eid;
+
+// 2. 获取大纲实体
+const getResult = await App.Outliner.Get(outlinerEid); // 不传 eid 则获取所有缓存大纲
+const outlinerEntity = getResult.result.object;
+
+// 3. 读取当前分类下绑定的实体 eids
+// 方式一：同步读取
+console.log(outlinerEntity.eids); 
+// 方式二：异步获取
+const eidsResult = await outlinerEntity.GetEids();
+console.log(eidsResult.result); // { 'Poi': { eids: ['eid-1', 'eid-2'] } }
+
+// 4. 手动更新本地分类分组映射
+await outlinerEntity.SetEids({
+  'Poi': { eids: [poiObj1.eid] },
+});
+
+// 5. 调整大纲中实体的排列位置（0-indexed）
+await App.Outliner.Move([poiObj1], 0, 'Poi');
+
+// 6. 强制从远程拉取并刷新指定大纲实体的最新数据
+await App.Outliner.GetOnly(outlinerEid);
+```
+
+---
+
+## Topic: 工程资产管理 (App.Project) (id: 1408-project)
+
+> **注**：工程实体代表场景中导入的一组资产集合（底板/模型工程），与 `ProjectInstance` 同属于处理包含节点结构的大型模型集合。
+
+```javascript
+// 获取场景中所有工程实体列表
+const projects = await App.Project.GetProject();
+const proj = projects[0]; // proj 为具体的工程实体对象
+
+// --- 工厂级 API：直接通过类调用（若不传 project 参数，默认操作第一个工程） ---
+
+// 批量高亮工程内部的指定节点
+await App.Project.SetNodesHighlight({
+  nodeIds: ['node-floor-01', 'node-floor-02'],
+  bHighlight: true,
+  styleName: 'Default',
+});
+// 隐藏节点
+await App.Project.SetNodesVisibility({
+  nodeIds: ['node-floor-01'],
+  bVisible: false,
+});
+
+// --- 实体级 API：通过工程实例精确操作 ---
+
+// 对该工程实体内指定节点设置轮廓描边
+await proj.SetNodesOutline({
+  nodeIds: ['node-wall-01'],
+  bOutline: true,
+});
+// 获取工程实体内指定节点的三维包围盒
+const bboxResult = await proj.GetNodesBoundingBox(['node-wall-01']);
+console.log('包围盒数据：', bboxResult.result);
+```
+
+---
+
+## Topic: 场景后处理特效 (App.Effects) (id: 1408-effects)
+
+> **注**：此 Effects 是基于相机后处理的滤镜（如景深、泛光、颜色分级等），需要在平台预先配置资产种子（seedId）。与涵盖火焰、烟雾的 Particle 不同。
+
+```javascript
+// 创建并添加后处理特效实体
+const effects = new App.Effects({
+  seedId: 'effect-seed-dof-001', // 特效资产种子 ID
+  bActive: true,                 // 是否激活
+  speed: 1,                      // 特效播放速度
+  entityName: '景深特效'
+});
+const addResult = await App.Scene.Add(effects);
+
+// 更新特效播放速度或停用特效
+await effects.Update({ speed: 2, bActive: false });
+
+// 获取当前数据
+const data = effects.GetData();
+console.log('当前激活状态：', data.bActive);
+
+// 删除特效
+await effects.Delete();
+```

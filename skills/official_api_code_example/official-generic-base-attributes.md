@@ -591,14 +591,13 @@ const obj = new App.Text3D({
 
 ```javascript
 // 获取 getter:
-// 获取 getter:
 // 方式一:
-console.log("bLocked:: ", obj.bLocked);
-console.log("bVisible:: ", obj.bVisible);
-console.log("entityName:: ", obj.entityName);
-console.log("customId:: ", obj.customId);
-console.log("customData:: ", obj.customData);
-console.log("parentEid:: ", obj.parentEid);
+// console.log("bLocked:: ", obj.bLocked);
+// console.log("bVisible:: ", obj.bVisible);
+// console.log("entityName:: ", obj.entityName);
+// console.log("customId:: ", obj.customId);
+// console.log("customData:: ", obj.customData);
+// console.log("parentEid:: ", obj.parentEid);
 
 // 方式二:
 console.log("GetLocked:: ", await obj.GetLocked());
@@ -612,12 +611,12 @@ console.log("GetParentEid:: ", await obj.GetParentEid());
 ```javascript
 // 设置 setter:
 // 方式一:
-obj.bLocked = false;
-obj.bVisible = false;
-obj.entityName = 'newName';
-obj.customId = 'newId';
-obj.customData = { data: 'myNewData' };
-obj.parentEid = 'parent-eid-xxx';
+// obj.bLocked = false;
+// obj.bVisible = false;
+// obj.entityName = 'newName';
+// obj.customId = 'newId';
+// obj.customData = { data: 'myNewData' };
+// obj.parentEid = 'parent-eid-xxx';
 
 // 方式二:
 await obj.SetLocked(false);
@@ -683,10 +682,10 @@ App.Renderer.RegisterSceneEvents([
 // 获取Particle属性
 async function getParticleAttr () {
     // 方式一:
-    console.log("location:: ", particleObj.location);
-    console.log("type:: ", particleObj.particleType);
-    console.log("rotator:: ", particleObj.rotator);
-    console.log("scale3d:: ", particleObj.scale3d);
+    // console.log("location:: ", particleObj.location);
+    // console.log("type:: ", particleObj.particleType);
+    // console.log("rotator:: ", particleObj.rotator);
+    // console.log("scale3d:: ", particleObj.scale3d);
 
     // 方式二:
     console.log("location:: ", await particleObj.GetLocation());
@@ -700,12 +699,12 @@ getParticleAttr();
 // 设置Particle属性
 async function setParticleAttr () {
     // 方式一:
-    particleObj.location = [121.46141528,31.23360944,86];
-    particleObj.particleType = "vehicle_car_white";
-    particleObj.rotator = {
-        "pitch": 0, "yaw": 40, "roll": 0
-    };
-    particleObj.scale3d = [200, 200, 200];
+    // particleObj.location = [121.46141528,31.23360944,86];
+    // particleObj.particleType = "vehicle_car_white";
+    // particleObj.rotator = {
+    //     "pitch": 0, "yaw": 40, "roll": 0
+    // };
+    // particleObj.scale3d = [200, 200, 200];
 
     // 方式二:
     await particleObj.SetLocation([121.46141528,31.23360944,86]);
@@ -727,11 +726,11 @@ setParticleAttr();
 // 获取Path属性
 async function getPathAttr (attr) {
     // 方式一:
-    console.log("coordinates:: ", pathObj.coordinates);
-    console.log("sType:: ", pathObj.sType);
-    console.log("width:: ", pathObj.width);
-    console.log("color:: ", pathObj.color);
-    console.log("passColor:: ", pathObj.passColor);
+    // console.log("coordinates:: ", pathObj.coordinates);
+    // console.log("sType:: ", pathObj.sType);
+    // console.log("width:: ", pathObj.width);
+    // console.log("color:: ", pathObj.color);
+    // console.log("passColor:: ", pathObj.passColor);
 
     // 方式二:
     console.log("coordinates:: ", await pathObj.GetCoordinates());
@@ -746,15 +745,15 @@ getPathAttr();
 // 设置Path属性
 async function setPathAttr (attr) {
     // 方式一:
-    pathObj.coordinates = [
-      [121.50056782,31.22792919,23],
-      [121.49728647,31.22611933,90],
-      [121.48236809,31.23146931,60]
-    ];
-    pathObj.sType = "solid";
-    pathObj.width = 50;
-    pathObj.color = "ff4b3dff";
-    pathObj.passColor = "affff2ff";
+    // pathObj.coordinates = [
+    //   [121.50056782,31.22792919,23],
+    //   [121.49728647,31.22611933,90],
+    //   [121.48236809,31.23146931,60]
+    // ];
+    // pathObj.sType = "solid";
+    // pathObj.width = 50;
+    // pathObj.color = "ff4b3dff";
+    // pathObj.passColor = "affff2ff";
 
     // 方式二:
     await pathObj.SetCoordinates([
@@ -779,24 +778,49 @@ setPathAttr();
 ```javascript
 const obj = new App.Text3D({ ... });
 obj.Update(json);
-obj.Get/SetLocation(json);
-obj.Get/SetRotator(json);
-obj.Get/SetScale3d(json);
-obj.Get/SetLocked(boolean);
-obj.Get/SetVisible(boolean);
-obj.Get/SetEntityName(string);
-obj.Get/SetCustomId(string);
-obj.Get/SetCustomData(json);
-obj.Get();
+
+// 方式一：
+// obj.location = [121.49328325, 31.23863899, 10];
+// 方式二：
+await obj.SetLocation([121.49328325, 31.23863899, 10]);
+
+// 方式一：
+// obj.rotator = {pitch: 0, yaw: 60, roll: 0};
+// 方式二：
+await obj.SetRotator({pitch: 0, yaw: 60, roll: 0});
+
+// 方式一：
+// obj.scale3d = [5,5,5];
+// 方式二：
+await obj.SetScale3d([5,5,5]);
+
+// 方式一：
+// obj.bLocked = boolean;
+// 方式二：
+await obj.SetLocked(boolean);
+
+// 方式一：
+// obj.bVisible = boolean;
+// 方式二：
+await obj.SetVisible(boolean);
+
+// 方式一：
+// obj.entityName = '';
+// 方式二：
+await obj.SetEntityName('');
+
+// 方式一：
+// obj.customId = '';
+// 方式二：
+await obj.SetCustomId('');
+
+// 方式一：
+// obj.customData = {};
+// 方式二：
+await obj.SetCustomData({});
+
+obj.Get();  // 获取所有属性
 obj.oType;  //get
-obj.bLocked = boolean;   //get/set
-obj.location = [121.49328325, 31.23863899, 10];   //get/set
-obj.rotator = {pitch: 0, yaw: 60, roll: 0}   //get/set
-obj.scale3d = [5,5,5];   //get/set
-obj.bVisible = boolean;   //get/set
-obj.entityName = '';   //get/set
-obj.customId = '';   //get/set
-obj.customData = {};   //get/set
 obj.Delete(); //不支持工程模型
 obj.onClick(ev => {
     const newObj = ev.result.object;

@@ -204,7 +204,7 @@ await App.Component.VideoUI.Add([obj]);
 > 📖 **完整 CustomPoi API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 自定义POI
 
 ### 结构模型（Hierarchy）
-- **特点**：支持通过 `seedId` 动态绑定/切换资产模型（如建筑物），并可以局部替换指定的材质（`changedMaterialInfo`）。
+- **特点**：支持通过 `seedId` 动态绑定/切换资产模型（如建筑物），并可以局部替换指定的材质（`changedMaterialInfo`）。**认知指引**：当模型不仅仅是展示，还需要在运行时动态切换资产 ID 或换色、换皮（替换子材质）且保留同一实体引用时，应使用 Hierarchy 类。
 - **创建**：`new App.Hierarchy({seedId, changedMaterialInfo, location...})`
 - **方法**：`Update`, `SetSeedId`, `SetChangedMaterialInfo`
 
@@ -216,12 +216,12 @@ await App.Component.VideoUI.Add([obj]);
 - **🚨 特殊约束（极易出错，必须检查）**：
   1. `ModelerFence` 的样式对象 key 必须大写 `M`：`ModelerFenceStyle`，而非 `modelerFenceStyle`。
   2. `ModelerFloor` 和 `ModelerWater` 的 `coordinates` 必须是三维数组 `[][][]`。
-- **方法**：`Update`, `Delete`；`Vegetation` 有特有的剔除区域管理方法。
+- **方法**：除 `.Update(json)` 外，支持高度动态化，也可以通过直接对 `coordinates` 等属性赋值来刷新路径/边界，实现交互式实时建模。
 
 > 📖 **完整 Modeler API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 智能建模系列
 
 ### 工程实例模型（ProjectInstance）
-- **特点**：用于加载和控制具有内部节点树的 BIM 或工程模型，可以对指定节点（Node）进行显示、高亮和描边控制。
+- **特点**：用于加载和控制具有内部节点树的 BIM 或工程模型。**认知指引**：当需要控制 BIM 模型或工程预设内部的单个子构件/节点时（如隐藏某根管线、高亮某面墙），应使用 ProjectInstance 实体，而非普通的 Static 或 Group。
 - **创建**：`new App.ProjectInstance({hiddenNodes, location...})`
 - **方法**：`Update`, `SetNodesHighlight`, `ClearNodesHighlight`, `SetNodesOutline`, `SetNodesVisible`
 

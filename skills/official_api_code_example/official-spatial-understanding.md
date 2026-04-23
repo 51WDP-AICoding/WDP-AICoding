@@ -165,22 +165,29 @@ console.log(bboxRes);
 
 ## 条目：坐标系对象（id: 2004）
 
-### GeoReference 对象（全局坐标系）
+### GeoReference 对象（全局坐标系 / 地理参考系统）
 
 ```javascript
-// 通过 GetGlobal() 获取 GeoReference 对象
+// 1. 通过 GetGlobal() 获取当前生效的 GeoReference 对象
 const globalRes = await App.Scene.GetGlobal();
-const geoRef = globalRes.result.geoReference;
+const currentGeoRef = globalRes.result.geoReference;
 
 // 读取坐标系信息
-console.log(geoRef.origin);       // 坐标系原点 [lng, lat, z]
-console.log(geoRef.coordSystem);  // 坐标系类型（如 'WGS84'）
+console.log(currentGeoRef.originLocation); // 坐标系原点 [lng, lat, z]
+console.log(currentGeoRef.apiCRS);         // API 坐标系参考标准
 
-// 也可以直接创建 GeoReference 对象
-const geoRefObj = new App.DataModel.GeoReference({
-  origin: [121.4853, 31.2384, 0],
-  coordSystem: 'WGS84'
+// 2. 创建并应用新的 GeoReference 实体（可用于对齐导入的 CAD 模型）
+const geoRef = new App.GeoReference({
+  coordType: 'Geo',                     // 坐标类型：'Geo' (GIS) 或 'Local' (笛卡尔/CAD)
+  apiCRS: 'EPSG:4326',                  // API 使用的坐标系参考标准
+  originLocation: [121.4737, 31.2304, 0], // 坐标系原点（非常重要）
+  originRotation: { pitch: 0, yaw: 0, roll: 0 },
+  originScale: [1, 1, 1]
 });
+await App.Scene.Add(geoRef);
+
+// 3. 更新原点位置
+await geoRef.SetData({ originLocation: [121.48, 31.24, 0] });
 ```
 
 ### LocalGeoReference 对象（局部坐标系）
