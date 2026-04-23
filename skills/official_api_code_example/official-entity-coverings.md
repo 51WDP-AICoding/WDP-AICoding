@@ -2114,81 +2114,43 @@ await vegObj.ToggleRegion([{ index: 0, bEnable: true }]);
 
 // 挡水岸堤（ModelerEmbank）
 const embank = new App.ModelerEmbank({
-  "polyline": {
-    "coordinates": [[121.4853, 31.2384, 10], [121.4900, 31.2400, 10]]
-  },
-  "modelerEmbankStyle": {
-    "leftStyle": "Grass01", // 左侧材质
-    "rightStyle": "Grass02", // 右侧材质
-    "topStyle": "Asphalt", // 顶面材质
-    "leftWidth": 10,
-    "rightWidth": 10,
-    "fenceType": "None" // 护栏类型：None, Fence01~04 等
-  }
+  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2400,0]] },
+  entityName: '挡水岸堤', customId: 'my-embank', bVisible: true,
+  embankStyle: { width: 20, height: 5, slope: 1.5 }
 });
 await App.Scene.Add(embank);
 
+// 水面水体（ModelerWater）
+const water = new App.ModelerWater({
+  polygon2D: { coordinates: [[[121.4853,31.2384],[121.4900,31.2384],[121.4900,31.2420]]] },
+  entityName: '水面水体', customId: 'my-water', bVisible: true,
+  waterStyle: { waterLevel: 5, color: '0066ffaa', waveSpeed: 1.0, waveHeight: 0.5 }
+});
+await App.Scene.Add(water);
+
+// 河道水岸（ModelerRiver）
+const river = new App.ModelerRiver({
+  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2400,0]] },
+  entityName: '河道水岸', customId: 'my-river', bVisible: true,
+  riverStyle: { width: 50, waterLevel: 2, bankHeight: 3 }
+});
+await App.Scene.Add(river);
+
 // 智能建模围栏（ModelerFence）
-// 注意：必须大写 M -> ModelerFenceStyle
 const fence = new App.ModelerFence({
-  "polyline": {
-    "coordinates": [[121.4853, 31.2384, 10], [121.4900, 31.2400, 10]]
-  },
-  "ModelerFenceStyle": {
-    "style": "Fence01",
-    "color": "ffffffff",
-    "height": 2
-  }
+  polyline: { coordinates: [[121.4853,31.2384,0],[121.4900,31.2384,0],[121.4900,31.2420,0],[121.4853,31.2420,0]] },
+  entityName: '围栏', customId: 'my-fence', bVisible: true,
+  fenceStyle: { height: 3, type: 'iron', bClosed: true }
 });
 await App.Scene.Add(fence);
 
 // 智能建模楼板（ModelerFloor）
-// 注意：coordinates 必须是三维数组 [][][]
 const floor = new App.ModelerFloor({
-  "polygon2D": {
-    "coordinates": [
-      [
-        [121.4853, 31.2384], [121.4900, 31.2384], [121.4900, 31.2420], [121.4853, 31.2420]
-      ]
-    ]
-  },
-  "modelerFloorStyle": {
-    "topStyle": "Floor01",
-    "sideStyle": "Wall01",
-    "color": "ffffffff",
-    "thickness": 3
-  }
+  polygon2D: { coordinates: [[[121.4853,31.2384],[121.4900,31.2384],[121.4900,31.2420],[121.4853,31.2420]]] },
+  entityName: '楼板', customId: 'my-floor', bVisible: true,
+  floorStyle: { height: 0, thickness: 0.3, color: 'ccccccff' }
 });
 await App.Scene.Add(floor);
-
-// 水面与河道 (ModelerWater / ModelerRiver)
-const water = new App.ModelerWater({
-  "polygon2D": {
-    "coordinates": [
-      [ [121.4853, 31.2384], [121.4900, 31.2384], [121.4900, 31.2420] ]
-    ]
-  },
-  "modelerWaterStyle": {
-    "style": "Water01",
-    "color": "00aaffff",
-    "waveIntensity": 0.5,
-    "waveScale": 10
-  }
-});
-await App.Scene.Add(water);
-
-const river = new App.ModelerRiver({
-  "polyline": {
-    "coordinates": [[121.4853, 31.2384, 10], [121.4900, 31.2400, 10]]
-  },
-  "modelerRiverStyle": {
-    "style": "Water01",
-    "color": "00aaffff",
-    "waveIntensity": 0.5,
-    "waveScale": 10
-  }
-});
-await App.Scene.Add(river);
 ```
 
 ---
