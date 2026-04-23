@@ -107,7 +107,7 @@
   - 关注：`App.Tools.Picker.PickAesTilesNodeByScreenPos`、`App.Tools.Picker.PickAesTilesNodesByRectangle`
 
 - "通过 eid 查对象 / 通过 customId 查对象 / 拿到对象实例"
-  - 先查：`official-entity-general-behavior.md`
+  - 先查：`official-entity-general-behavior-core.md`
   - 关注：`App.Scene.GetByEids`、`App.Scene.GetByCustomId`
 
 - "查 BIM 构件 nodeId / 搜索构件 / 获取构件树 / 获取构件属性"
@@ -133,7 +133,7 @@
   - 关注：`SetGeoLayerFeatureHighlight`
 
 - "实体显隐 / 删除对象 / 清空一类对象"
-  - 先查：`official-entity-general-behavior.md`
+  - 先查：`official-entity-general-behavior-core.md`
   - 关注：`SetVisible`、`Delete`、`ClearByTypes`
 
 ### 环境、工具与清理
@@ -148,7 +148,7 @@
 
 - "离开页面清空 / 卸载清理 / 退出时解绑 / 清理屏幕绑定"
   - 先查：`official-general-event-registration.md`
-  - 再查：`official-entity-general-behavior.md`、`official-function-components.md`、`official-scene-camera.md`
+  - 再查：`official-entity-general-behavior-core.md`、`official-function-components.md`、`official-scene-camera.md`
   - 关注：事件解绑、`Delete` / `ClearByTypes`、`RemoveScreenPosBound`、`StopRoam`
 
 ## 按官网分类的整理进度（WDP API 2.3.0）
