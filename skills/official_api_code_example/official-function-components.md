@@ -95,71 +95,61 @@ await App.Renderer.GetStats();
 await App.Scene.GetBoundingBox([obj, obj, obj]);
 ```
 
-- 小地图
+- 小地图 (MiniMap)
 
 ```javascript
-const _url = "http://wdpapi.51aes.com/doc-static/images/static/MiniMap/"
-const jsondata = {
-    "type": "manual",
-    "source": {
-        "bg": _url + "Minimap.png",  //背景平面图(注: 大小4096x4096 必需)
-        "needle": _url + "Minimap_needle.png", //中心指针
-        "mask": _url + "Minimap_mask.jpg", //遮罩图(黑白色 必需)
-        "frame": _url + "Minimap_outline.png" //外框图
-    },
-    "mappingAnchors": [ 
-       //图片左上角、右下角映射到场景坐标(注: 平面图上方为正北)
-        [121.54900666925667, 31.175366234862334],
-        [121.42595948541654, 31.068307985569852]
-    ],
-    "display": {
-        "position": [300, 100], //位置(单位:像素; 注:以屏幕分辨率1920 * 1080的左上角为基准点，基准点可按anchors参数调整)
-        "size": 300, //大小(单位:像素; 注:以屏幕分辨率1920 * 1080为基准)
-        "anchors": "leftTop" // 同时影响位置参考点&屏幕拉伸参考点
-        // 拉伸：不同分辨率下，小地图位置会按1920*1080进行短边自适应。在开发和展示的屏幕比例不同时，可选择相应的缩放锚点
-        // leftTop, leftMiddle, leftDown
-        // middleTop, middleCenter, middleDown
-        // rightTop, rightMiddle, rightDown
-    }
-}
+// 开启小地图（需要配置小地图切片源、遮罩及 GIS 映射范围）
+const startRes = await App.Tools.MiniMap.Start({
+  source: {
+    bg: 'https://example.com/minimap-bg.png',       // 背景平面图
+    needle: 'https://example.com/minimap-needle.png',// 中心指针
+    mask: 'https://example.com/minimap-mask.png',   // 遮罩图
+    frame: 'https://example.com/minimap-frame.png'  // 外框图
+  },
+  mappingAnchors: [
+    [121.425959, 31.068307], // 西南角 GIS 坐标
+    [121.549006, 31.175366]  // 东北角 GIS 坐标
+  ],
+  display: {
+    position: [16, 16],      // 位置偏移量 [x, y]
+    size: 180,               // 大小尺寸
+    anchors: 'leftTop'       // 屏幕拉伸锚点
+  }
+});
+console.log(startRes);
 
-const res = await App.Tools.MiniMap.Start(jsondata);
-console.log(res)
+// 获取小地图状态
+const getRes = await App.Tools.MiniMap.Get();
+console.log(getRes);
 
-
-
-//关闭小地图
-const res = await App.Tools.MiniMap.End();
-console.log(res)
+// 关闭小地图
+const endRes = await App.Tools.MiniMap.End();
+console.log(endRes);
 ```
 
-- 指南针
+- 指南针 (Compass)
 
 ```javascript
-const jsondata = {
-    "source": {
-        "bg": "http://wdpapi.51aes.com/doc-static/images/static/compass_bg.png", //指南针背景图
-        "needle": "http://wdpapi.51aes.com/doc-static/images/static/compass_needle.png" //中心指针
-    },
-    "display": {
-        "position": [300,100], //位置(单位:像素; 注:以屏幕分辨率1920 * 1080的左上角为基准点，基准点可按anchors参数调整))
-        "size": 300, //大小(单位:像素; 注:以屏幕分辨率1920 * 1080为基准)
-        "anchors": "leftTop" // 同时影响位置参考点&屏幕拉伸参考点
-        // 拉伸：不同分辨率下，指南针位置会按1920*1080进行短边自适应。在开发和展示的屏幕比例不同时，可选择相应的缩放锚点
-        // leftTop, leftMiddle, leftDown
-        // middleTop, middleCenter, middleDown
-        // rightTop, rightMiddle, rightDown
-    }
-}
+// 开启指南针（可自定义背景图和锚点位置）
+const startRes = await App.Tools.Compass.Start({
+  source: {
+    bg: 'https://example.com/compass-bg.png', // 可选：替换表盘
+  },
+  display: {
+    anchors: 'rightTop', // 定位锚点：leftTop, rightBottom 等
+    position: [16, 16],  // 偏移量 [x, y]
+    size: 60             // 尺寸
+  }
+});
+console.log(startRes);
 
-const res = await App.Tools.Compass.Start(jsondata);
-console.log(res)
+// 获取指南针状态
+const data = await App.Tools.Compass.Get();
+console.log(data);
 
-
-
-//关闭指南针
-const res = await App.Tools.Compass.End();
-console.log(res)
+// 关闭指南针
+const endRes = await App.Tools.Compass.End();
+console.log(endRes);
 ```
 
 ## Topic: 工具 (id: 1408)

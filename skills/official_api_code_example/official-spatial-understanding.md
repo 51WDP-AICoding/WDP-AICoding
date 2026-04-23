@@ -334,8 +334,9 @@ console.log(res);
 ### 启动取点工具（用户在场景中点击获取坐标）
 
 ```javascript
-// 启动取点工具
-await App.Tools.PickerPoint.StartPickPoint();
+// 1. 开启拾取：参数1(是否显示坐标文本), 参数2(是否显示默认图标), 参数3(高度基准)
+// 🚨注意：这 3 个参数缺一不可，参数3通常为 'surface' / 'ground' / 'altitude'
+await App.Tools.PickerPoint.StartPickPoint(true, true, 'surface');
 
 // 监听取点事件（在 RegisterSceneEvent 中注册）
 App.Renderer.RegisterSceneEvent([
@@ -366,21 +367,40 @@ await App.Tools.PickerPoint.EndPickPoint();
 ### 获取已取点列表
 
 ```javascript
-const res = await App.Tools.PickerPoint.GetPickedPoints();
-console.log(res);
+// 4. 获取拾取结果（需指定与开启时一致的高度基准）
+const res = await App.Tools.PickerPoint.GetPickedPoints('surface');
+console.log('获取到的点数组：', res.result);
 /*
   出参示例：
   {
     success: true,
     message: '',
-    result: {
-      points: [
-        { location: [121.4853, 31.2384, 5.2], worldPos: [12345.67, 23456.78, 5.2] },
-        { location: [121.4900, 31.2400, 3.1], worldPos: [12400.00, 23500.00, 3.1] }
-      ]
-    }
+    result: [
+      [121.4853, 31.2384, 5.2], 
+      [121.4900, 31.2400, 3.1]
+    ]
   }
 */
+```
+
+## 条目：拾取折线 (PickerPolyline) (id: 2006-ext)
+
+### 拾取折线
+
+```javascript
+// 开启绘制折线模式
+await App.Tools.PickerPolyline.StartPickPolyline()
+
+// 用户在场景中绘制多段线...
+
+// 结束绘制
+await App.Tools.PickerPolyline.EndPickPolyline()
+
+// 获取折线结果：传入高度基准（0 代表 surface）
+const linesRes = await App.Tools.PickerPolyline.GetPickedPolylines(0)
+linesRes.result.forEach(line => {
+  console.log('折线节点坐标：', line.coordinates)
+})
 ```
 
 ---
