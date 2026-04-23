@@ -28,7 +28,9 @@
 - `official-initialize-scene.md`（场景初始）
 - `official-scene-camera.md`（场景相机）
 - `official-generic-base-attributes.md`（通用基础属性）
-- `official-entity-general-behavior.md`（实体/单体通用行为：实体一般行为）
+- `official-entity-general-behavior-core.md`（实体查询与管理：GetByXxx/ClearByXxx/SetVisible/事件）
+- `official-entity-general-behavior-movement.md`（实体移动与批量操作：Bound/Scene.Create/Creates）
+- `official-entity-general-behavior-interaction.md`（实体交互与编辑：Picker/Selection/Outline/Highlight/Modify/Clip）
 - `official-entity-coverings-spatial.md`（空间标注与交互覆盖物：POI、Window、Range、Text3D、RealTimeVideo）
 - `official-entity-coverings-path.md`（路径与运动覆盖物：Path、Particle）
 - `official-entity-coverings-effects.md`（数据可视化与特效覆盖物：HeatMap、Parabola、Effects、Light、Viewshed、Raster、HighlightArea）
@@ -53,7 +55,7 @@
   - 关注：`Path`
 
 - "沿路径移动 / 路径回放 / 车辆行驶 / 巡检车移动 / 沿路线走"
-  - 先查：`official-entity-general-behavior.md`
+  - 先查：`official-entity-general-behavior-movement.md`
   - 关注：`App.Bound`、`App.Scene.Move`
 
 - "跟车 / 跟拍 / 镜头跟随 / 相机跟随实体"
@@ -157,6 +159,7 @@
 4. 通用基础属性：已整理
 5. 实体/单体通用行为：已整理（补充GetBoundingBox/ArrayDuplicate/RunAction/CreateByGeoJson等、补充 OnWdpMaterialHit 材质级与子构件级击中事件）
 6. 实体覆盖物：已整理（拆分为 spatial/path/effects 三个文件，补充CustomPoi/Group/智能建模系列/StaticInstance/UI事件监听）
+6.5 实体/单体通用行为：已整理（拆分为 core/movement/interaction 三个文件）
 7. 图层/模型：已整理（补充Tiles激活/节点分组/NodeSelection/GetNodesBoundingBox）
 8. 材质设置：已整理
 9. 点聚合【私有化环境/lite】：已整理
