@@ -203,11 +203,14 @@ await App.Component.VideoUI.Add([obj]);
 
 > 📖 **完整 CustomPoi API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 自定义POI
 
-### 智能建模系列
-- **类型**：`Vegetation`, `ModelerEmbank`, `ModelerWater`, `ModelerRiver`, `ModelerFence`, `ModelerFloor`
-- **创建**：`new App.Vegetation({polygon2D, vegetationStyle})` 等
+### 智能建模系列（Modeler）
+- **类型**：`Vegetation`, `ModelerEmbank`（路基/堤坝）, `ModelerWater`（水面）, `ModelerRiver`（河道）, `ModelerFence`（围栏）, `ModelerFloor`（楼板）
+- **创建**：`new App.ModelerFloor({polygon2D, modelerFloorStyle})` 等
 - **添加**：`App.Scene.Add(obj)`
-- **方法**：基础覆盖物方法外，`Vegetation` 特有剔除区域管理（`QueryRegion`, `RemoveRegion`, `UpdateRegionName`, `ToggleRegion`）
+- **特殊传参约束（极易错点）**：
+  - **`ModelerFloor`（楼板）**：`polygon2D.coordinates` 的数据格式必须为三维数组 `[][][]`（类似于包含内环/外环的多边形）。
+  - **`ModelerFence`（围栏）**：样式键名首字母**必须**大写，即 `ModelerFenceStyle`，而非 `modelerFenceStyle`。
+- **方法**：除基础方法外，`Vegetation` 特有剔除区域管理（`QueryRegion`, `RemoveRegion`, `UpdateRegionName`, `ToggleRegion`）。
 
 > 📖 **完整智能建模 API 签名**：参考 `../official_api_code_example/official-entity-coverings.md` - Topic: 智能建模系列
 

@@ -38,8 +38,21 @@ description: 处理 WDP 通用基础属性 API 的实现与排障。用于规范
 
 | 访问方式 | 示例 | 特点 |
 |------|---------|---------|
-| **同步属性访问** | `obj.entityName` | 简单直观，**推荐用于简单读取**。 |
-| **异步方法调用** | `await obj.GetEntityName()` | 返回 `{success, message, result}`，**推荐用于严谨业务逻辑**。 |
+| **同步属性访问** | `obj.entityName` | 简单直观，**推荐用于简单读取/写入**。 |
+| **异步方法调用** | `await obj.GetEntityName()` / `await obj.SetEntityName('xxx')` | 返回 `{success, message, result}`，**推荐用于严谨业务逻辑**。 |
+
+> 🚨 **AI 生成代码时的格式强制要求 (双写展示)**：
+在为用户展示实体 Getter/Setter 方法示例时，**必须同时提供两种方式**，请遵循以下标准模板格式：
+```javascript
+// 方式一：属性访问，直接返回或赋值
+console.log(entity.entityName);
+entity.entityName = "newName";
+
+// 方式二：异步方法，返回包含 result 字段的 JSON 对象
+const res = await entity.GetEntityName();
+console.log(res.result);
+await entity.SetEntityName("newName");
+```
 
 **重要变更**：
 - `App.Scene.Add()` 现在返回 `{ success: true, result: { object: EntityObject } }`。

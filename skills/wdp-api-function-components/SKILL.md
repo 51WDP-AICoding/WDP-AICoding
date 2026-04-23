@@ -116,10 +116,10 @@ description: 处理 WDP 功能组件域 API 的实现与排障。用于环境控
 | **测量** | `App.Tools.Measure.Start()` | `App.Tools.Measure.End()` | 距离/面积测量 |
 | **取点** | `App.Tools.PickerPoint.Start()` | `App.Tools.PickerPoint.End()` | 屏幕取点 |
 | **取线** | `App.Tools.PickerPolyline.Start()` | `App.Tools.PickerPolyline.End()` | 屏幕取线 |
-| **MiniMap** | `App.Tools.MiniMap.Show()` | `App.Tools.MiniMap.Hide()` | 小地图 |
-| **Compass** | `App.Tools.Compass.Show()` | `App.Tools.Compass.Hide()` | 指南针 |
-| **ChinaMap** | `App.Tools.ChinaMap.Show()` | `App.Tools.ChinaMap.Hide()` | 中国地图 |
-| **CoordAide** | `App.Tools.CoordAide.Display({points, type})` | `App.Tools.CoordAide.Clear()` | 坐标辅助标注，type: surface/absolute |
+| **MiniMap** | `App.Tools.MiniMap.Start()` | `App.Tools.MiniMap.End()` | 小地图 |
+| **Compass** | `App.Tools.Compass.Start()` | `App.Tools.Compass.End()` | 指南针 |
+| **ChinaMap** | `App.Tools.ChinaMap.Start()` | `App.Tools.ChinaMap.End()` | 中国地图 |
+| **CoordAide** | `App.Tools.CoordAide.Display({entity, coordZRef, coordZ})` | `App.Tools.CoordAide.Clear()` | 坐标轴辅助标注 |
 
 #### Picker 拾取工具方法索引
 
