@@ -54,3 +54,6 @@ WDP-SKILL-OFFICIAL-边界规范.md
 
 # Frontend framework sample (local development only)
 wdp-front-end-framework-sample/
+
+# Local API statistics script (not for team use)
+api_stats.py
