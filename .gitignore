@@ -21,6 +21,7 @@ logs/
 # Build outputs
 dist/
 build/
+.vite/
 
 # Environment variables
 .env

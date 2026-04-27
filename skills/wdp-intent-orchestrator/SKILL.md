@@ -82,6 +82,7 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 | `bim` / `bim-core` / `构件` | `wdp-api-bim-unified` |
 | `gis` / `GIS要素` | `gis-api-core-operations` |
 | `spatial-understanding` / `空间/坐标信息获取` | `wdp-api-spatial-understanding` |
+| `scene-discovery` / `场景发现` / `拾取` / `要素查询` / `场景检查` | `wdp-api-scene-discovery` |
 
 #### 2.3 Official 文档索引
 
@@ -108,6 +109,8 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 - BIM 构件查询结果
 - GIS 要素点击或属性查询结果
 - 平台资源发布信息
+- 场景发现遍历结果（前提：已执行 wdp-api-scene-discovery 并完成写入验证）
+- context-memory Business 层缓存快照（前提：Business.entities.snapshot 非空且未过期）
 
 #### 动作门禁
 
@@ -182,6 +185,7 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 - “高亮构件” -> `bim`
 - “高亮 GIS 要素” -> `gis`
 - “离开页面清空 / 卸载清理” -> 清理链路，通常跨 `events`、`entity-behavior`、`coverings`、`camera`
+- “有什么 / 列出所有 / 场景里有哪些 / 帮我看看场景 / 检查场景...” -> `scene-discovery`
 
 ## 输出要求
 

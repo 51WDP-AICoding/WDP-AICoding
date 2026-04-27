@@ -38,6 +38,20 @@
     "wdp-api-camera-unified",
     "wdp-api-general-event-registration"
   ],
+  "pre_discovery": {
+    "required": true,
+    "strategy": "type_query_or_picker",
+    "when": "object_id_missing",
+    "target_skill": "wdp-api-scene-discovery",
+    "discovery_path": "A_or_B",
+    "steps": [
+      "若用户无法提供巡检实体 ID / 路径对象 → 自动路由到 wdp-api-scene-discovery",
+      "优先路径 A（屏幕拾取）：生成页面让用户点击巡检实体 → 拿到 entityId",
+      "备选路径 B（实体扫描）：GetByType 或 GetAll 列出可移动实体供选择",
+      "路径坐标若缺失 → 路径 E（PickerPoint 取点）",
+      "发现后写入 Cold.entities.snapshot + Hot.selection 再继续主流程"
+    ]
+  },
   "required_clarifications": [
     "路径是新建还是已有",
     "巡检实体的对象类别和对象 Id 来源",

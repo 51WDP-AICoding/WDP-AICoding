@@ -1,102 +1,67 @@
 ---
 name: wdp-context-memory
-description: WDP 上下文状态管理。Hot 层（运行时状态）、Warm 层（路由链路）、Cold 层（业务数据）。MCP 自动处理路由记录和步数计数，AI 按需调用 ReadState/WriteState。
+description: WDP 上下文状态管理双层架构。System 层（系统路由缓存，MCP自动处理），Business 层（业务逻辑缓存，AI手动维护）。
 ---
 
 # WDP Context Memory
 
 ## 核心定位
 
-防止长对话后 skill 路由漂移，提供跨步骤的上下文连续性。
+防止长对话后业务状态与路由配置丢失，提供跨轮对话的上下文连续性。
 
-**MCP 自动处理**：路由记录、步数计数、域切换追踪、阈值刷新
-**AI 按需调用**：ReadState 查询上下文，WriteState 更新状态
-
----
-
-## 三层存储
-
-| 层级 | 内容 | AI 使用方式 |
-|------|------|------------|
-| **Hot** | currentSkill, stepCount, selection, camera | 自动注入上下文，可直接读取 |
-| **Warm** | routingChain, currentRouting | ReadState("warm", "currentRouting") |
-| **Cold** | entities, spatialData, apiParams | ReadState("cold", "entities.xxx") |
+**MCP 自动处理（System层）**：路由记录、文档快照、意图摘要
+**AI 按需调用（Business层）**：通过 `read_context_state` 查询业务缓存，通过 `write_context_state` 更新业务数据
 
 ---
 
-## 客户端持久化缓存管理（重要！）
+## 双层存储架构
 
-**MCP 服务端不直接在本地系统上创建和写入缓存文件**，为了保护服务安全和用户隐私，缓存持久化是由作为客户端的 **你（AI 编程助手）** 负责的。
+| 层级 | 内容 | 维护者 | 使用方式 |
+|------|------|--------|------------|
+| **System** | workflow匹配的技能、摘要、当前路由配置 | **MCP服务端全自动** | `read_context_state("system")` |
+| **Business**| 业务关键参数（如URL、Token、坐标、生成的模型ID、核心场景配置等） | **AI助手主动写入** | `write_context_state("business", data)` |
 
-1. **处理服务端发出的缓存写入指令**
-   当服务端在执行 `start_wdp_workflow` 或 `write_context_state` 返回 `_cache` 字段或明确要求写入时，如果指令要求写入本地文件，请 **务必立刻调用你自带的系统文件写入能力（例如 node 的 fs、python 的写入命令或直接执行 bash/powershell 脚本）** 将对应的 `content` 数据写入到对应的本地 `.wdp-cache` 目录下的指定路径。
-   *(注意：如果目标目录 `.wdp-cache` 不存在，必须在写入前先新建它。内容格式为严格的 JSON。)*
-
-2. **读取本地缓存进行加速（Warm / Cold 层）**
-   由于长流程文档非常长，在后续对话或新的路由阶段：
-   - 检查本地是否已经有合法的 `.wdp-cache/warm.json` 或 `cold.json`
-   - 若存在且包含有效缓存，请在传参时带上，服务端或你自身可以优先使用已缓存的摘要，避免高额的 Token 损耗。
+*所有缓存文件统一由服务端落盘至 `.wdp-cache/context-memory/` 目录下。*
 
 ---
 
-## 什么时候调用 ReadState？
+## 什么时候调用 `write_context_state`？
 
-**必须调用**：
-- 长对话后恢复上下文（第50步提到"刚才的门"）
-- 跨步骤引用之前的数据（"刚才的车"、"之前的路径"）
-- 确认当前 skill 域（防止路由漂移）
+**只要在对话中产生了明确的、对后续有用的关键业务数据，就应该立即保存！**
+
+**典型场景**：
+- 用户确认了正确的 WDP Server URL 和 Order 口令
+- 生成/导入 BIM 模型后获取到的 `eid` 或 `assetId`
+- 从 API 返回值里拿到的关键业务坐标、空间边界 (`location` / `bound`)
+- 处理大体量数据（如 `scene-discovery` 发现的上百个实体快照，详见 `wdp-api-scene-discovery/SKILL.md`）
+
+**调用要求**：
+- **layer 参数**：固定传 `"business"`
+- 你不需要通过操作本地文件系统（`fs`）来落盘！服务端底层会自动执行合并覆盖。只要你调用了该工具，数据就会稳定保留。
 
 **示例**：
 ```javascript
-// 恢复上下文
-const selection = ReadState("hot", "selection");
-const entity = ReadState("cold", `entities.targetNodes.${selection.nodeId}`);
-const routing = ReadState("warm", "currentRouting");
+// 当获取到重要的模型实体 ID 后，立即存入业务记忆
+write_context_state({
+  projectPath: "...",
+  layer: "business",
+  data: { 
+    coreConfig: { serviceUrl: "https://...", targetEid: "model-123" }
+  }
+});
 ```
 
 ---
 
-## 什么时候调用 WriteState？
+## 什么时候调用 `read_context_state`？
 
-**必须调用**：
-- 用户操作后记录选中状态（点击、选择）
-- API 调用后更新业务数据（创建实体后记录 eid）
-
-**示例**：
-```javascript
-// 记录用户选择
-WriteState("hot", { selection: { nodeId: "node-597", type: "bimNode" } });
-
-// 记录创建的实体
-WriteState("cold", { entities: { pois: [{ eid: "poi-001", location: [x,y,z] }] } });
-```
-
----
-
-## 什么时候不需要调用？
-
-| 操作 | 说明 |
-|------|------|
-| 路由链路记录 | MCP 自动写入 Warm 层 |
-| 步数计数 | MCP 自动递增 Hot.stepCount |
-| 域切换追踪 | MCP 自动更新 Hot.currentSkill |
-| 阈值刷新 | step % 20 === 0 时 MCP 自动重新加载 skill |
-
----
-
-## 接口定义
-
-### ReadState(layer, path)
-- **layer**: "hot" | "warm" | "cold"
-- **path**: 数据路径，如 "currentRouting" 或 "entities.targetNodes.node-597"
-- **返回**: 对应路径的数据对象
-
-### WriteState(layer, data)
-- **layer**: "hot" | "warm" | "cold"
-- **data**: 要写入的数据对象
+**典型场景**：
+- 开启新的一轮长对话，或在执行下一步任务前需要回顾之前的设定
+- 跨步骤引用之前的数据（"上次生成的那个 POI 坐标"、"之前激活的大楼 ID"）
+- 你在分析逻辑时，发现丢失了某个必须的参数，可以尝试在 `business` 层查询。
 
 ---
 
 ## 一句话总结
 
-> **MCP 自动处理关键路径，AI 按需 ReadState 查询上下文、WriteState 更新状态。**
+> **MCP 服务端全自动接管了 System 层路由记忆；作为 AI，你在获得关键业务参数后随手调用工具写入 Business 层即可保障数据稳定继承。**
