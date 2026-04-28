@@ -72,7 +72,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 | 类型 | 包名 | 版本 | 安装命令 |
 |:---:|:---|:---:|:---|
 | **核心 SDK** ⚠️ | `wdpapi` | `2.3.0` | `npm install wdpapi@^2.3.0` |
-| BIM 插件 | `@wdp-api/bim-api` | `2.2.0` | `npm install @wdp-api/bim-api@^2.2.0` |
+| BIM 插件 | `@wdp-api/bim-api` | `2.2.1` | `npm install @wdp-api/bim-api@^2.2.1` |
 | GIS 插件 | `@wdp-api/gis-api` | `2.1.0` | `npm install @wdp-api/gis-api@^2.1.0` |
 
 > ⚠️ **注意**：核心 SDK 包名没有 `@wdp-api/` 前缀！

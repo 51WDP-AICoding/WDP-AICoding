@@ -1,4 +1,4 @@
-# official-bim-full（BIM 2.2.0 在线完整摘录 - 2026.03.26 更新）
+# official-bim-full（BIM 2.2.1 在线完整摘录 - 2026.04.28 更新）
 
 来源：`https://wdpapidoc-admin.51aes.com/manual/doc` 对应在线接口。
 
@@ -1062,7 +1062,7 @@ console.log(res);
 | flyTime | number | 过渡时长（单位：秒） | 大于0的数字，默认1 | 否 |
 
 
-## 批量构件专题高亮（新增于 2.2.0）
+## 批量构件专题高亮（新增于 2.2.1）
 
 ### 批量构件专题高亮（id: 1738）
 
@@ -1093,5 +1093,14 @@ await entity.SetNodesHighlight([
 | hightlight | boolean | 是否高亮 | true / false | 是 |
 | opacity | number | 高亮透明度 | 0.0 ~ 1.0 | 否 |
 | bCanBeOccluded | boolean | 是否可被遮挡 | true / false | 否 |
+
+### 清除构件高亮（id: 1738-ext）
+
+```javascript
+// 清除所有构件专题高亮（快捷方式）
+await entity.ClearNodeHighlight();
+```
+
+> 💡 **说明**：`ClearNodeHighlight()` 是 2.2.1 新增的快捷方法，等同于 `SetNodesHighlight([{ nodeId: "all", hightlight: false }])`，用于一次性清除所有批量专题高亮。
 
 

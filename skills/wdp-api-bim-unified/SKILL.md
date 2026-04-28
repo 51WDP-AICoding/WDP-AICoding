@@ -224,7 +224,7 @@ await entity.SetNodeHighLight("597", true, true, {
   }
 });
 
-// 批量构件专题高亮（BIM 2.2.0+）
+// 批量构件专题高亮（BIM 2.2.1+）
 await entity.SetNodesHighlight([
   { nodeId: "597", color: "76fffc", hightlight: true, opacity: 1, bCanBeOccluded: true },
   { nodeId: ["598", "599"], color: "00B3E6", hightlight: true, opacity: 1, bCanBeOccluded: true }
@@ -232,10 +232,13 @@ await entity.SetNodesHighlight([
 
 // 清除所有高亮
 await entity.SetNodesHighlight([{ nodeId: "all", hightlight: false }]);
+
+// 或使用 2.2.1 新增的快捷方法
+await entity.ClearNodeHighlight();
 ```
 
 **SetNodeHighLight vs SetNodesHighlight 区别**：
-| 特性 | SetNodeHighLight | SetNodesHighlight (2.2.0+) |
+| 特性 | SetNodeHighLight | SetNodesHighlight (2.2.1+) |
 |------|------------------|---------------------------|
 | 适用场景 | 单个构件交互反馈 | 批量构件专题展示 |
 | 性能 | 逐个调用 | 批量处理 |

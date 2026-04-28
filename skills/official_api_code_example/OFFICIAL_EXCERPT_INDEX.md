@@ -2,14 +2,14 @@
 
 版本基线：WDP API 2.3.0
 - GIS API 2.1.0 (2026.03.26)
-- BIM API 2.2.0 (2026.03.26)
+- BIM API 2.2.1 (2026.04.28)
 
 ## 本轮 API 更新摘要（2026.03.26）
 
 | API | 版本 | 更新内容 | 对应 Skill |
 |-----|------|---------|-----------|
 | **GIS API** | 2.1.0 | `OnGeoLayerFeatureClicked` 新增 `featureType` 字段 (point/line/polygon) | `gis-api-core-operations` |
-| **BIM API** | 2.2.0 | 新增 `SetNodesHighlight` 批量构件专题高亮 | `wdp-api-bim-unified` |
+| **BIM API** | 2.2.1 | 版本更新至 2.2.1，建议同步更新以获取最新稳定性修复 | `wdp-api-bim-unified` |
 | **WDP API** | 2.3.0 | 鼠标事件扩展 `layerType` 字段，支持 3DT/WMS/WMTS/矢量图层识别 | `wdp-api-general-event-registration` |
 
 > **更新说明**：以上更新已同步至 official_api_code_example 各摘录文件，skills 已引用最新 API 能力。
