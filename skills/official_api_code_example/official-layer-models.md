@@ -306,6 +306,7 @@ const Static = new App.Static({
   "scale3d": [30, 30, 30],
   "bVisible": true, //是否可见
   "seedId": "9ab0dfa9cc0d811dd04e5f8f688d7080", //从DaaS中获取
+  "bReceivesDecals":false   // boolean，模型是否受工程定制场景的贴花影响
 });
 
 const res = await App.Scene.Add(Static);
@@ -357,14 +358,15 @@ const skeletal = new App.Skeletal({
   "scale3d": [30, 30, 30],
   "bVisible": true, //是否可见(true/false)
   "seedId": "11cf4fabacb485caaa58ec8b1362047d", //从DaaS中获取
-  "animSequenceIndex": 0,
-  "bPause": false,
-  "bLoop": true,
-  "playRate": 1,
+  "animSequenceIndex": 0,//需要播放的动画的index（存在多个动画片段时）
+  "bPause": false,//是否播放
+  "bLoop": true,//是否循环
+  "playRate": 1,//播放进度（速率）支持任意浮点数
   "playInterval": {
     "min": 0,
     "max": 100
-  }
+  },
+  "bReceivesDecals":false   // boolean，模型是否受工程定制场景的贴花影响
 });
 
 const res = await App.Scene.Add(skeletal);

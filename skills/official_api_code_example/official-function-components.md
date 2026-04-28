@@ -133,12 +133,16 @@ console.log(endRes);
 // 开启指南针（可自定义背景图和锚点位置）
 const startRes = await App.Tools.Compass.Start({
   source: {
-    bg: 'https://example.com/compass-bg.png', // 可选：替换表盘
+    bg: 'https://example.com/compass-bg.png', // 指南针背景图，可选：替换表盘
+    needle: "http://wdpapi.51aes.com/doc-static/images/static/compass_needle.png" //中心指针
   },
   display: {
-    anchors: 'rightTop', // 定位锚点：leftTop, rightBottom 等
-    position: [16, 16],  // 偏移量 [x, y]
-    size: 60             // 尺寸
+    anchors: 'rightTop', // 同时影响位置参考点&屏幕拉伸参考点
+    // leftTop, leftMiddle, leftDown
+    // middleTop, middleCenter, middleDown
+    // rightTop, rightMiddle, rightDown
+    position: [16, 16],  // 位置(单位:像素; 注:以屏幕分辨率1920 * 1080的左上角为基准点，基准点可按anchors参数调整))
+    size: 60             // 尺寸，(单位:像素; 注:以屏幕分辨率1920 * 1080为基准)
   }
 });
 console.log(startRes);

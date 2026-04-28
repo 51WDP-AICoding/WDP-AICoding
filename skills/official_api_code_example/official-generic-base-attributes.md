@@ -464,8 +464,8 @@ await App.Scene.GetBound([obj, obj, obj]);
 
 ```javascript
 const object = new App.Poi({
-  "location": [121.46434372, 31.23499129, 200],
-  "poiStyle": { ... }
+  "location": [121.46434372, 31.23499129, 200],// [lng, lat, coordz]; coordz: 海拔高度
+  "poiStyle": { ... }//JSON 数据
 })
 ```
 
@@ -486,8 +486,8 @@ const object = new App.Path({
             [121.49956979, 31.25093239, 96],
             [121.47613890, 31.23725069, 39]
         ]
-    },
-    "pathStyle": { ... }
+    },//坐标位置,格式[[lng, lat, coordz],[[lng, lat, coordz],....]
+    "pathStyle": { ... }//JSON 数据
 });​
 ```
 
@@ -517,8 +517,8 @@ const object= new App.Range({
                 [121.46707798490596, 31.24170746459223]
             ]
         ]
-    },
-    "rangeStyle": { ... }
+    },//坐标，格式中第一个数组为外环，后续为内环:<br>[<br>[[lng,lat],[lng,lat],...],<br>[[lng,lat],[lng,lat],...],<br>....<br>]
+    "rangeStyle": { ... }//JSON 数据
 })
 ```
 

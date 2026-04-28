@@ -77,7 +77,7 @@ await App.System.SetOption({
 
 ```javascript
 // 设置固定渲染模式
-await App.Renderer.SetRendererMode('fixed', [3840, 2160]);  // 可以是 'fixed' 或 'full'
+await App.Renderer.SetRendererMode('fixed', [3840, 2160]);  //参数一：渲染模式type,  full: 自动适应容器尺寸; fixed: 固定分辨率；参数二：渲染分辨率，fixed时有效
 
 // 设置或者调整具体的分辨率
 await App.Renderer.SetResolution(1920, 1080);
