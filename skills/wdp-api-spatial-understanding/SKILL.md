@@ -121,7 +121,7 @@ AI 在编写 `PickerPoint`、`PickerPolyline` 和 `Measure` 等**用户交互拾
 | PickPointEvent 未触发 | 未启动取点工具或事件未注册 | 确认 `StartPickPoint()` 已调用；确认事件在 `Renderer.Start()` 后注册 |
 | GetAll 返回空列表 | 场景未完全加载或缓存设置问题 | 确认 `progress === 100`；检查初始化时 `bCached` 设置 |
 | GetGlobal() 没有实体数据 | `App.Scene.GetGlobal()` 仅获取场景全局配置（坐标系原点、相机初始位置），**不包含实体列表** | 获取实体列表请使用 `GetAll()` 或 `GetByTypes([...])` |
-
+| 对实体操作无效果（如高亮、移动） | 对 `GetAll()` / `GetByEntityName()` 返回的对象进行了转存或展开操作（如 `{...item}`），导致方法丢失 | 直接使用 API 返回的原始对象调用方法，禁止转存新建对象 |
 
 ---
 
