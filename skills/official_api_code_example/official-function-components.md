@@ -234,8 +234,8 @@ console.log(res.result.to);
 - 屏幕坐标转GIS坐标
 
 ```javascript
-const res = await App.Tools.Picker.PickWorldPointByScreenPos([480, 573]);
-console.log(res);
+const { result: worldPoint } = await App.Tools.Picker.PickWorldPointByScreenPos([640, 360])
+console.log('世界坐标点:', worldPoint.ponit)   // [x, y, z]
 ```
 
 - 坐标几何辅助

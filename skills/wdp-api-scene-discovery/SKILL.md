@@ -34,11 +34,11 @@ description: 场景要素发现。当缺少对象ID/坐标/相机位时，提供
 ### 路径 A：屏幕拾取实体（交互式，首选）
 
 ```
-目标：获取 entityId / nodeId
-路由：→ function-components (Picker 能力) + general-event-registration (事件注册)
+目标：获取 eid / nodeId / entityName 等实体信息
+路由：→ function-components (Picker 能力，只返回point坐标和eid)+ general-event-registration (OnEntityClicked 实体点击回调，包含数据信息与实体对象)
 策略：
   1. 生成页面，启动 WDP 场景
-  2. 注册拾取事件，回调中拿到 entityId / nodeId / 坐标
+  2. 注册拾取事件，回调中拿到 eid / nodeId / entityName / 坐标  （所有返回结构和字段名称必须查阅official真值文档）
   3. 将结果写入 context-memory（见下方回写模式）
   4. 拾取完成后，触发后续业务步骤
 优势：零前置信息，任何可渲染场景都适用
