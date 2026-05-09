@@ -124,7 +124,7 @@ const { result } = await modelObj.GetMaterial();
 await App.DataModel.Material.SetEntitySlotsHighlight([
   {
   	entity: obj,
-    meshName: 'xxx',
+    meshName: 'xxx',//meshName可通过App.Tools.PickerMaterial.Start() 交互式获取；或者在事件注册中监听材质击中事件  App.SceneEvent.OnWdpMaterialHit
     MaterialIndex: -1,
     bHighlight: true
   }

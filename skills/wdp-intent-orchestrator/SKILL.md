@@ -44,15 +44,18 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 #### 2.1 场景与模式匹配
 
-用 `resources/business-scenarios/_index.json` 做场景模板匹配。匹配流程：
+> ⚠️ **MCP 已在 `start_wdp_workflow` 时自动完成场景模板匹配和歧义消解**。你收到的 `matchedSkills` 已经是场景命中的结果（如命中则直接包含 primary_skills + secondary_skills 的有序列表）。本节保留场景模板定义和 `api-patterns.json` 的使用说明，供你理解匹配结果和查阅调用模式。
 
-1. 读取 `_index.json`，拿到所有场景的 `keywords ∪ synonyms` 清单
-2. 对用户自然语言需求做中文归一化（去空白、同义词对齐），在索引中检索命中项
-3. 多命中时按 `priority` 升序（数字小=优先）、再按命中词数降序，取 top1；仅当候选明显难分时再取 top2
-4. 按命中场景的 `file` 字段加载单个 `resources/business-scenarios/<id>.json` 获取完整 `api_flow / data_flow / cleanup_chain / modules`
-5. 全部未命中，或命中 `id: "other"` 兜底项：**跳过场景模板**，直接进入 `api-patterns.json` + `wdp-entry-agent` 的 skill 路由表，并在报告的“缺失输入”章节主动追问业务类型与对象来源
+**场景匹配规则**（MCP 自动执行，你无需手动匹配）：
 
-**严禁**一次性读取 `business-scenarios/` 下的全部场景文件，也**严禁**加载未命中的场景文件。
+1. 在 `_index.json` 中对用户自然语言需求做中文归一化，按 `keywords ∪ synonyms` 检索场景
+2. 多命中时按 `priority` 升序（数字小=优先）、再按命中词数降序，取 top1
+3. 全部未命中时，MCP 走关键词加权兜底匹配，你收到的 `matchedSkills` 即为兜底结果
+
+**你仍需手动读取的场景详情**（仅限 `_index.json` 中的 `file` 字段）：
+- 按命中场景的 `file` 加载单个 `resources/business-scenarios/<id>.json` 获取完整 `api_flow / data_flow / cleanup_chain / modules`
+
+**严禁**一次性读取 `resources/business-scenarios/` 下的全部场景文件，也**严禁**加载未命中的场景文件。
 
 用 `resources/api-patterns.json` 做调用顺序匹配。
 
@@ -174,19 +177,16 @@ description: WDP 意图编排与需求精确化。用于在编码前把自然语
 
 如发现规划级问题，在报告"合规性检查"章节简要列出（不展开详细检查过程）。
 
-### 4. 归一化高频歧义
 
-遇到以下自然语言时，按下面方式拆解：
-
-- “画路径” -> `coverings`
-- “沿路径走 / 巡检车行驶 / 路线回放” -> `entity-behavior`
-- “跟车 / 跟拍 / 跟随实体” -> `camera`
-- “点模型拿 nodeId / 点底板单体” -> `function-components` 的 picker 能力，后续再路由到 `layers-models` 或 `bim`
-- “高亮构件” -> `bim`
-- “高亮 GIS 要素” -> `gis`
-- “离开页面清空 / 卸载清理” -> 清理链路，通常跨 `events`、`entity-behavior`、`coverings`、`camera`
-- “有什么 / 列出所有 / 场景里有哪些 / 帮我看看场景 / 检查场景...” -> `scene-discovery`
-
+> ⚠️ **歧义消解已由 MCP 自动完成**。`start_wdp_workflow` 调用时，MCP 路由引擎已自动执行关键词歧义消解和场景模板匹配。你收到的 `matchedSkills` 和 `requiredOfficialFiles` 已经是消歧后的结果。本节仅描述如何基于路由结果分析需求。
+>
+> MCP 已处理的歧义场景示例：
+> - "画路径" → 覆盖物（coverings）
+> - "沿路径走/巡检/漫游" → 实体行为（entity-behavior）
+> - "跟车/跟拍/跟随实体" → 相机控制（camera）
+> - "高亮构件/房间" → BIM
+> - "高亮GIS要素" → GIS
+> - "有什么/列出所有/检查场景" → scene-discovery
 ## 输出要求
 
 输出 `《系统意图与架构设计报告》`，用于指导后续编码工作。报告应简洁明了，避免冗余信息。

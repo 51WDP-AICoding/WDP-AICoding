@@ -180,7 +180,7 @@ await entity.Update({ "tempLoad": false });
 await entity.GetNodeTree();
 
 // 获取指定节点下的树
-await entity.GetNodeTree({ nodeId: "xxx", pageNumber: 1, pageSize: 50 });
+await entity.GetNodeTree(nodeId: "xxx", { pageNumber: 1, pageSize: 50 , fetchAll: true});
 ```
 
 ### 3.2 构件搜索

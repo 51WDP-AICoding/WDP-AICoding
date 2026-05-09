@@ -724,7 +724,7 @@ console.log(res);
 ```javascript
 //entity可通过Eid获取实体或通过新模型加载获取实体
 //tip::: 查询模型列表; 参数为空, 则查询顶层树
-const res = await entity.GetNodeTree();  //entity可通过Eid获取实体或通过模型列表获取进行调用
+const res = await entity.GetNodeTree(nodeId: "xxx", { pageNumber: 1, pageSize: 50 , fetchAll: true});  //entity可通过Eid获取实体或通过模型列表获取进行调用
 console.log(res);
 ```
 

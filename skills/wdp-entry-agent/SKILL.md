@@ -24,7 +24,7 @@ description: WDP 能力统一入口与调度技能。用于识别需求所属 AP
 | 步骤 | 必须读取 | 关键获取 | 阻断检查 |
 |:---:|:---|:---|:---|
 | **Step 0** | 判断任务类型 | - | 长流程任务必须通过 wdp-context-memory 维护业务状态 |
-| **Step 1** | `../wdp-intent-orchestrator/SKILL.md` | 《系统意图与架构设计报告》 | 未输出报告禁止继续 |
+| **Step 1** | `../wdp-intent-orchestrator/SKILL.md` | 《系统意图与架构设计报告》（MCP 已在 start_wdp_workflow 时自动完成场景匹配与歧义消解，你按 matchedSkills 列表依次读取 sub skill 即可开始编码）| 未输出报告禁止继续 |
 | **Step 2** ⚠️ | `../wdp-api-initialization-unified/SKILL.md` | `npm install wdpapi@^2.3.0`<br>`import WdpApi from 'wdpapi'` | **包名必须是 `wdpapi`**<br>不是 `@wdp-api/xxx` |
 | **Step 3** | 按需读取 BIM/GIS skill | `Plugin.Install(xxxApi)` | 必须在 Renderer.Start 之前 |
 | **Step 4** | 按需读取功能 skill：<br>- 事件注册：`wdp-api-general-event-registration`<br>- 相机控制：`wdp-api-camera-unified`<br>- 实体行为：`wdp-api-entity-general-behavior`<br>- 覆盖物：`wdp-api-coverings-unified`<br>- 图层模型：`wdp-api-layer-models`<br>- 材质设置：`wdp-api-material-settings`<br>- 点聚合：`wdp-api-cluster`<br>- 功能组件：`wdp-api-function-components`<br>- BIM：`wdp-api-bim-unified`<br>- GIS：`gis-api-core-operations`<br>- 空间理解：`wdp-api-spatial-understanding` | 业务 API 代码 | 必须等待 Scene Ready |
