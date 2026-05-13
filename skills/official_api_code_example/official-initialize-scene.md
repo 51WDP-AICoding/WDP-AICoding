@@ -1,6 +1,6 @@
-# 官方脚本摘录（新版后台）：场景初始
+﻿# 官方脚本摘录（新版后台）：场景初始
 
-版本基线：WDP API 2.3.0
+版本基线：WDP API 2.3.1
 来源：wdpapidoc-admin（鉴权后台接口）
 
 ## 使用说明
@@ -27,7 +27,7 @@ import WdpApi from "wdpapi";
 const App = new WdpApi({
   id: 'player', // [必填] 渲染场景容器(DOM id)
   url: 'http://IP:Port/service', // [必填] 云渲染服务地址,通过云平台获取
-  order: '8099702a64dbb8ef4a0a2f7b5b1c42b0', // [必填] 云渲染口令, 通过云平台获取
+  order: '<your-order-token>', // [必填] 云渲染口令, 通过云平台获取
   resolution: [3840, 2160], //[选填] 设置云渲染输出分辨率[宽度，高度]
   debugMode: 'normal', //[选填] none: 无日志输出, normal: 普通级别日志输出，high：高级别日志输出，all：全日志输出
   keyboard: { //[选填] 键盘事件（开关）
@@ -67,8 +67,8 @@ const App = new WdpApi({
 
 ```javascript
 await App.System.SetOption({
-    "url": "https://dtp-api.51aes.com",
-    "order": "2399702a64dbb8ef4a0a2f7b5b1c41a0",
+    "url": "<your-renderer-url>",
+    "order": "<your-order-token>",
     "resolution": [3840,2160]
 })
 ```
@@ -392,7 +392,7 @@ console.log(res);
     result: {
       platform: 'web',
       browserVersion: 'Chrome/120.0',
-      sdkVersion: '2.3.0',
+      sdkVersion: '2.3.1',
       rendererVersion: '5.x.x'
     }
   }
@@ -410,7 +410,7 @@ console.log(res);
     success: true,
     message: '',
     result: {
-      version: '2.3.0'
+      version: '2.3.1'
     }
   }
 */

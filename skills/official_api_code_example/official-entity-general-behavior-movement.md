@@ -1,6 +1,6 @@
-# Official excerpt sync: 实体移动与批量操作
+﻿# Official excerpt sync: 实体移动与批量操作
 
-Version baseline: WDP API 2.3.0
+Version baseline: WDP API 2.3.1
 Source: public wdpapidoc API (category: 实体移动与批量操作, categoryId: 571)
 
 ## Notes

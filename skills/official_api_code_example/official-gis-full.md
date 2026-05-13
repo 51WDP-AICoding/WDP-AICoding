@@ -1,6 +1,6 @@
-# official-gis-full（GIS 2.1.0 在线完整摘录 - 2026.03.26 更新）
+﻿# official-gis-full（GIS 2.1.0 在线完整摘录 - 2026.03.26 更新）
 
-来源：`https://wdpapidoc-admin.51aes.com/manual/doc` 对应在线接口。
+来源：内部鉴权后台接口（非公开）。
 
 整理规则：只使用在线文档管理平台数据；其他资料本轮不参与。
 
@@ -266,8 +266,8 @@ import GisApi from "@wdp-api/gis-api";
 // 设置初始化参数
 const config = {
   "id": 'player',
-  "url": "https://dtp-api.51aes.com",
-  "order": "27c5520d11545b8d433edcd6dcbe405e",
+  "url": "<your-renderer-url>",
+  "order": "<your-order-token>",
   "debugMode": "normal",
   "resolution": [1920, 1080],
   "keyboard": {
@@ -482,7 +482,7 @@ const res = await App.Scene.Add(entityObj);
 
 ```javascript
 const entityObj = new App.GeoLayer({ //创建图层对象
-    "geoLayerUrl": "WFS:http://cim.51aes.com/geoserver/Shanghai/ows?", //WFS地址前需标注“WFS:”
+    "geoLayerUrl": "WFS:<your-geoserver-url>", //WFS地址前需标注“WFS:”
     "geoLayerType": "WFS", //Shp，支持shp，WFS,geojson
     "geoLayerOperation": {
         "tile_MaximumScreenSpaceError": 8
@@ -542,7 +542,7 @@ const res = await App.Scene.Add(entityObj);
 
 ```javascript
 const entityObj = new App.GeoLayer({  //创建图层对象
-    "geoLayerUrl": "WFS:http://cim.51aes.com/geoserver/Shanghai/ows?", //WFS地址前需标注“WFS:”
+    "geoLayerUrl": "WFS:<your-geoserver-url>", //WFS地址前需标注“WFS:”
     "geoLayerType": "shp", //Shp，支持shp，WFS，geojson
     "geoLayerOperation": {
         "tile_MaximumScreenSpaceError": 8
@@ -608,7 +608,7 @@ const res = await App.Scene.Add(entityObj);
 
 ```javascript
 const entityObj = new App.GeoLayer({ //创建图层对象
-    "geoLayerUrl": "WFS:http://cim.51aes.com/geoserver/Shanghai/ows?", //WFS地址前需标注“WFS:”
+    "geoLayerUrl": "WFS:<your-geoserver-url>", //WFS地址前需标注“WFS:”
     "geoLayerType": "WFS", //Shp，支持shp，WFS，geojson
     "geoLayerParams": {
         "serviceLayerName": "TEST:SHANGHAI",  //图层名称，必填
@@ -649,7 +649,7 @@ const res = await App.Scene.Add(entityObj);
 
 ```javascript
 const entityObj = new App.GeoLayer({ //创建图层对象
-    "geoLayerUrl": "WFS:http://cim.51aes.com/geoserver/Shanghai/ows?", //WFS地址前需标注“WFS:”
+    "geoLayerUrl": "WFS:<your-geoserver-url>", //WFS地址前需标注“WFS:”
     "geoLayerType": "WFS", //Shp, 支持shp, WFS，geojson
     "geoLayerParams": {
         "serviceLayerName": "",
@@ -845,7 +845,7 @@ async function SetClickEvent () {
 
 ```javascript
 const entityObj = new App.GeoLayer({//创建图层对象
-  "geoLayerUrl": "http://cim.51aes.com/geoserver/Shanghai/wms?layers=Shanghai:clip",  //WMS服务地址示例
+  "geoLayerUrl": "<your-wms-url>",  //WMS服务地址示例
   "geoLayerType": "wms",  //图层类型
   "geoLayerParams": {
         "layerHeightOffset":500
@@ -867,7 +867,7 @@ const res = await App.Scene.Add(entityObj);  //将图层对象加载到场景中
 
 ```javascript
 const entityObj = new App.GeoLayer({//创建图层对象
-  "geoLayerUrl": "https://t0.tianditu.gov.cn/img_c/wmts?tk=5d73b4bcbf63acbfbcc08ad39931d032&request=GetCapabilities&service=wmts",  //WMTS服务地址示例
+  "geoLayerUrl": "https://t0.tianditu.gov.cn/img_c/wmts?tk=<your-tk>&request=GetCapabilities&service=wmts",  //WMTS服务地址示例
   "geoLayerType": "WMTS",  //图层类型
     "geoLayerParams": {
         "layerHeightOffset":500
@@ -891,7 +891,7 @@ const res = await App.Scene.Add(entityObj);  //将图层对象加载到场景中
 
 ```javascript
 const entityObj = new App.GeoLayer({//创建图层对象
-  "geoLayerUrl": "http://10.67.8.110:9003/model/tl10qi4Qf/tileset.json",  //3D Tiles服务地址示例,目前仅支持倾斜摄影模型转换的3D tiles模型
+  "geoLayerUrl": "<your-3dtiles-url>",  //3D Tiles服务地址示例,目前仅支持倾斜摄影模型转换的3D tiles模型
   "geoLayerType": "3DTiles",  //图层类型
   "geoLayerOperation": {
       "tile_MaximumScreenSpaceError": 8  //瓦片最大屏幕空间误差,此参数越小，越倾向于加载高层级瓦片

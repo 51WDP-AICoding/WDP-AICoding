@@ -1,6 +1,6 @@
-# Official excerpt sync: 实体查询与管理
+﻿# Official excerpt sync: 实体查询与管理
 
-Version baseline: WDP API 2.3.0
+Version baseline: WDP API 2.3.1
 Source: public wdpapidoc API (category: 实体查询与管理, categoryId: 571)
 
 ## Notes

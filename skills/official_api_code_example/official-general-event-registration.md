@@ -1,6 +1,6 @@
-# 官方脚本摘录（新版后台）：通用事件监听
+﻿# 官方脚本摘录（新版后台）：通用事件监听
 
-版本基线：WDP API 2.3.0
+版本基线：WDP API 2.3.1
 来源：wdpapidoc-admin（鉴权后台接口）
 
 ## 使用说明
@@ -110,7 +110,7 @@ App.Renderer.UnRegisterEvents(['onStopedRenderCloud']);
         //   nodeId, 
         //   triggerType: 'LeftMouseButton'|'RightMouseButton'|'MiddleMouseButton', 
         //   triggerArea: 'marker',
-        //   layerType: '3dtiles'|'wms'|'wmts'|'vector'|'poi'|'entity'  // WDP 2.3.0+ 新增，识别被点击的图层类型
+        //   layerType: '3dtiles'|'wms'|'wmts'|'vector'|'poi'|'entity'  // WDP 2.3.1+ 新增，识别被点击的图层类型
         // }
       }
     },

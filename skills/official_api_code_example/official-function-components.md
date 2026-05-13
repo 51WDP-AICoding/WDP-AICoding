@@ -1,6 +1,6 @@
-# Official excerpt sync: 功能组件
+﻿# Official excerpt sync: 功能组件
 
-Version baseline: WDP API 2.3.0
+Version baseline: WDP API 2.3.1
 Source: public wdpapidoc API (category: 功能组件, categoryId: 576)
 
 ## Notes

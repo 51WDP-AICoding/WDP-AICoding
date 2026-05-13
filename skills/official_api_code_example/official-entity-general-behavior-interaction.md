@@ -1,6 +1,6 @@
-# Official excerpt sync: 实体交互与编辑
+﻿# Official excerpt sync: 实体交互与编辑
 
-Version baseline: WDP API 2.3.0
+Version baseline: WDP API 2.3.1
 Source: public wdpapidoc API (category: 实体交互与编辑, categoryId: 571)
 
 ## Notes

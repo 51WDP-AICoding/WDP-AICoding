@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "wdp-app",
   "version": "1.0.0",
   "type": "module",
@@ -7,6 +7,6 @@
     "build": "vite build"
   },
   "dependencies": {
-    "wdpapi": "^2.3.0"
+    "wdpapi": "^2.3.1"
   }
 }

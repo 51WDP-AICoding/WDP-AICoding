@@ -1,6 +1,6 @@
 # official-bim-full（BIM 2.2.1 在线完整摘录 - 2026.04.28 更新）
 
-来源：`https://wdpapidoc-admin.51aes.com/manual/doc` 对应在线接口。
+来源：内部鉴权后台接口（非公开）。
 
 整理规则：只使用在线文档管理平台数据；其他资料本轮不参与。
 
@@ -344,8 +344,8 @@ import BimApi from '@wdp-api/bim-api';
 // 设置初始化参数
 const config = {
     "id": "player", //渲染容器dom id
-    "url": "https://dtp-api.51aes.com/Renderers/Any/order", //渲染服务地址
-    "order": "8099702a64dbb8ef4a0a2f7b5b1c42b0", //渲染口令
+    "url": "<your-renderer-url>", //渲染服务地址
+    "order": "<your-order-token>", //渲染口令
     "resolution": [1920,1080], //场景输出分辨率;
     "debugMode": "normal", //[可选] none:不打印日志, normal:普通日志
     "keyboard": { //[可选]

@@ -1,6 +1,6 @@
-# Official excerpt sync: 路径与运动覆盖物
+﻿# Official excerpt sync: 路径与运动覆盖物
 
-Version baseline: WDP API 2.3.0
+Version baseline: WDP API 2.3.1
 Source: public wdpapidoc API (category: 路径与运动覆盖物, categoryId: 572)
 
 ## Notes
