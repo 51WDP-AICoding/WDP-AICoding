@@ -72,7 +72,7 @@ const jsondata = [
     "type": "Window",
     "location": [121.46426478,31.22406702,47],
     "windowStyle": {
-      "url": "http://wdpapi.51aes.com/doc-static/images/static/echarts.html",
+      "url": "<doc-static-host>/doc-static/images/static/echarts.html",
       "size": [500, 350],
       "offset": [0, 0]
     },
@@ -89,10 +89,10 @@ const jsondata = [
     "type": "Poi",
     "location": [121.46491415,31.21866105,87],
     "poiStyle": {
-      "markerNormalUrl": "http://wdpapi.51aes.com/doc-static/images/static/markerNormal.png",
-      "markerActivateUrl": "http://wdpapi.51aes.com/doc-static/images/static/markerActive.png",
+      "markerNormalUrl": "<doc-static-host>/doc-static/images/static/markerNormal.png",
+      "markerActivateUrl": "<doc-static-host>/doc-static/images/static/markerActive.png",
       "markerSize": [100, 228],
-      "labelBgImageUrl": "http://wdpapi.51aes.com/doc-static/images/static/LabelBg.png",
+      "labelBgImageUrl": "<doc-static-host>/doc-static/images/static/LabelBg.png",
       "labelBgSize": [200, 50],
       "labelBgOffset": [50, 200],
       "labelContent": [" 文本内容A", "ff0000ff", "24"]
@@ -902,10 +902,10 @@ obj.Delete();
 const poi = new App.Poi({
   "location": [121.37624691,31.15963937,37],
   "poiStyle": {
-    "markerNormalUrl": "https://wdpapi.51aes.com/doc-static/images/static/markerNormal.png",
-    "markerActivateUrl": "https://wdpapi.51aes.com/doc-static/images/static/markerActive.png",
+    "markerNormalUrl": "<doc-static-host>/doc-static/images/static/markerNormal.png",
+    "markerActivateUrl": "<doc-static-host>/doc-static/images/static/markerActive.png",
     "markerSize": [50,114],
-    "labelBgImageUrl": "https://wdpapi.51aes.com/doc-static/images/static/LabelBg.png",
+    "labelBgImageUrl": "<doc-static-host>/doc-static/images/static/LabelBg.png",
     "labelBgSize": [115,22],
     "labelBgOffset": [25,100], //x>0,y>0 向右、上偏移(x,y 单位:像素)
     "labelContent": ["数据驱动移动","fcffb7ff","12"],

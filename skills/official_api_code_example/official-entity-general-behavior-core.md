@@ -593,7 +593,7 @@ await App.Scene.Add(entityObj).then(async res => {
                 const entityObj = new App.Window({
                     "location": ev.result.position,
                     "windowStyle": {
-                        "url": "http://wdpapi.51aes.com/doc-static/images/static/echarts.html",
+                        "url": "<doc-static-host>/doc-static/images/static/echarts.html",
                         "size": [500, 350],
                         "offset": [0, 0]
                     }

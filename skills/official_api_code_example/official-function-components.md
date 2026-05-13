@@ -134,7 +134,7 @@ console.log(endRes);
 const startRes = await App.Tools.Compass.Start({
   source: {
     bg: 'https://example.com/compass-bg.png', // 指南针背景图，可选：替换表盘
-    needle: "http://wdpapi.51aes.com/doc-static/images/static/compass_needle.png" //中心指针
+    needle: "<doc-static-host>/doc-static/images/static/compass_needle.png" //中心指针
   },
   display: {
     anchors: 'rightTop', // 同时影响位置参考点&屏幕拉伸参考点

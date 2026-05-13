@@ -17,7 +17,7 @@ Source: public wdpapidoc API (category: 空间标注与交互覆盖物, category
 const realTimeVideo = new App.RealTimeVideo({
   "location": [121.50007292, 31.22579403, 30],
   "realTimeVideoStyle": {
-    "url": "rtsp://admin:admin123456@121.63.247.105:20037/h264/ch1/sub/av_stream",
+    "url": "rtsp://<username>:<password>@<rtsp-host>:<port>/<path>",
     "resolution": [400, 300], //窗口大小(单位:像素)
     "offset": [0, 0], //x>0,y>0 向右、上偏移(x,y 单位:像素)
     "state": "pause",  //play:播放; pause:暂停;
@@ -26,7 +26,7 @@ const realTimeVideo = new App.RealTimeVideo({
     "conrnerShift": [
       [40, -40], [0, -40], [10, 0], [0, 0]
     ] //角点偏移(单位:像素); 点位固定顺序 [左上,右上,左下,右下]; 每个角点的原始位置为[0,0]; X>0 向右,Y>0 向上
-    "bgUrl":"https://wdp5-api-debug.51aes.com/static/newLabel.png",
+    "bgUrl":"<doc-static-host>/static/newLabel.png",
     "bgPadding":[0, 0, 0, 0],
     "bgOverlap":"hide",
     "labelContent":['xxxx', '000000ff', '24'] ,
@@ -208,7 +208,7 @@ App.Component.VideoUI.AddEvents([
 const window = new App.Window({
   "location": [121.50007292, 31.22579403, 30],
   "windowStyle": {
-    "url": "http://wdpapi.51aes.com/doc-static/images/static/echarts.html",//窗口内容的网页 URL（以 iframe 形式嵌入）
+    "url": "<doc-static-host>/doc-static/images/static/echarts.html",//窗口内容的网页 URL（以 iframe 形式嵌入）
     resolution: [400, 300],// 窗口像素尺寸（宽、高）
     "size": [500, 350], //window大小(单位:像素)
     "offset": [0, 0],//屏幕像素偏移量
@@ -320,7 +320,7 @@ App.Renderer.RegisterSceneEvent([
 //方法一：
 const windowUI = new App.WindowUI({
   "windowUIContent": {
-    "url": "http://wdpapi.51aes.com/doc-static/images/static/echarts.html"
+    "url": "<doc-static-host>/doc-static/images/static/echarts.html"
   },
   "windowStyle": {
     "width": "500px",
@@ -396,11 +396,11 @@ App.Component.WindowUI.Get();
 const poi = new App.Poi({
   "location": [121.50007292, 31.22579403, 30],
   "poiStyle": {
-    "markerNormalUrl": "https://wdp5-api-debug.51aes.com/static/newMarker.png",//必填，正常状态,图片url地址,支持2种形式：1，在线地址:如"http://wdpapi.51aes.com/doc-static/images/static/markerNormal.png" 2，本地地址:如"file:///D:/xxx/markerNormal.png"; D: 在线席位所在盘符
-    "markerActivateUrl": "https://wdp5-api-debug.51aes.com/static/newMarker_active.png",//必填，激活状态,由鼠标划过或点击触发
+    "markerNormalUrl": "<doc-static-host>/static/newMarker.png",//必填，正常状态,图片url地址,支持2种形式：1，在线地址:如"<doc-static-host>/doc-static/images/static/markerNormal.png" 2，本地地址:如"file:///D:/xxx/markerNormal.png"; D: 在线席位所在盘符
+    "markerActivateUrl": "<doc-static-host>/static/newMarker_active.png",//必填，激活状态,由鼠标划过或点击触发
     "markerSize": [100,159],//必填，图标尺寸（像素）
     "labelVisible":true,//是否显示label
-    "labelBgImageUrl": "https://wdp5-api-debug.51aes.com/static/newLabel.png",//非必填，图片url地址
+    "labelBgImageUrl": "<doc-static-host>/static/newLabel.png",//非必填，图片url地址
     "labelBgSize": [177,66],//label图片大小(宽, 高 单位:像素)
     "labelBgOffset": [10,168], //// label可以向上下左右偏移；当[0,0]时，label切图的左上角对齐location (x,y 单位:像素)
     "labelContent": [" 文本内容A","ffffff","18"],//	富文本; 格式: ["text", "color" ,"size"] color: HEXA格式；size:(字号*分辨率高/分辨率宽)得出值再取整；
@@ -425,7 +425,7 @@ const poi = new App.Poi({
       "hideDistance": 2000,  //定义实体隐藏的距离(单位:米),相机超过此距离时,实体会被隐藏
       "hideType": "default", //实体超出显示距离(none:不显示; default:圆圈显示)
       "scaleMode": "2D" ,//是否受相机的透视影响(2D:不影响; 3D:影响)；透视包括近大远小、overlapOrder生效
-      "url": "https://wdp5-api-debug.51aes.com/static/newLabel.png",//hideType设置成url，当超过设定的hideDistance，缩略图为url
+      "url": "<doc-static-host>/static/newLabel.png",//hideType设置成url，当超过设定的hideDistance，缩略图为url
       "size":[10,10] //	url的大小
     },
     "interaction": { //被"交互"影响的可见性(POI有效)
@@ -548,8 +548,8 @@ const jsonData = [
     "entityName": "myPoi",
     "customData": {"data": "myCustomData"},
     "poiStyle": {
-      "markerNormalUrl": "http://wdpapi.51aes.com/doc-static/images/static/markerNormal.png",
-      "markerActivateUrl": "http://wdpapi.51aes.com/doc-static/images/static/markerActive.png",
+      "markerNormalUrl": "<doc-static-host>/doc-static/images/static/markerNormal.png",
+      "markerActivateUrl": "<doc-static-host>/doc-static/images/static/markerActive.png",
       "markerSize": [100,228],
       "labelVisible": false
     }
@@ -561,7 +561,7 @@ const jsonData = [
     "entityName": "myPoi_window",
     "customData": {"data": "myCustomData"},
     "windowStyle": {
-      "url": "https://wdpapi.51aes.com/doc-static/sample1.html",
+      "url": "<doc-static-host>/doc-static/sample1.html",
       "size": [500, 320],
       "offset": [52, 176]
     }
@@ -604,8 +604,8 @@ if (res.success) {
 //方法一：
 const poiUI = new App.PoiUI({
   "poiUIContent": {
-    "normalImage": "http://wdpapi.51aes.com/doc-static/images/static/markerNormal.png",
-    "activeImage": "http://wdpapi.51aes.com/doc-static/images/static/markerActive.png",
+    "normalImage": "<doc-static-host>/doc-static/images/static/markerNormal.png",
+    "activeImage": "<doc-static-host>/doc-static/images/static/markerActive.png",
     "content": ""
   },
   "windowStyle": {
@@ -864,7 +864,7 @@ obj.onClick(ev => {
 - 添加SHP轮廓
 
 ```javascript
-const _shp = "http://wdpapi.51aes.com/doc-static/images/static/gis/polygon.shp"
+const _shp = "<doc-static-host>/doc-static/images/static/gis/polygon.shp"
 const resultGeo = await App.DataModel.Geometry.CreateGeometryFromShapefile(_shp);
 if (resultGeo.success) {
   //tip::: 创建覆盖物对象
@@ -910,7 +910,7 @@ if (resultGeo.success) {
 - 添加GeoJson轮廓
 
 ```javascript
-const _geojson = "http://wdpapi.51aes.com/doc-static/images/static/gis/polygon.geojson"
+const _geojson = "<doc-static-host>/doc-static/images/static/gis/polygon.geojson"
 const resultGeo = await App.DataModel.Geometry.CreateGeometryFromGeoJson(_geojson);
 if (resultGeo.success) {
   //tip::: 创建覆盖物对象
@@ -1036,7 +1036,7 @@ const labelStyle = {
   zIndex: 0, // 默认0（只有0,1）， 0 是maker在上，label在下，1是maker在下，label在上。不重叠的情况下，都可以点击
   background: [
     "ffffffff",
-    "https://wdp5-api-debug.51aes.com/static/LabelBg.png",
+    "<doc-static-host>/static/LabelBg.png",
     //label的背景色，颜色可以和图片颜色叠加
   ],
 };
@@ -1066,9 +1066,9 @@ const specificLabelStyle = {
 const poi = new App.CustomPoi({
   location: [121.46182747, 31.13989956, 64],
   poiStyle: {
-    markerNormalUrl: "https://wdp5-api-debug.51aes.com/static/newMarker.png",//正常状态,图片url地址,支持2种形式:·在线地址:如"http://wdpapi.51aes.com/doc-static/images/static/markerNormal.png"·本地地址:如"file:///D:/xxx/markerNormal.png"; D: 在线席位所在盘符注意：当不用markerNormalUrl时候，入参要写成markerNormalUrl:""
+    markerNormalUrl: "<doc-static-host>/static/newMarker.png",//正常状态,图片url地址,支持2种形式:·在线地址:如"<doc-static-host>/doc-static/images/static/markerNormal.png"·本地地址:如"file:///D:/xxx/markerNormal.png"; D: 在线席位所在盘符注意：当不用markerNormalUrl时候，入参要写成markerNormalUrl:""
     markerActivateUrl:
-      "https://wdp5-api-debug.51aes.com/static/newMarker_active.png",//激活状态,由鼠标划过或点击触发注意：当不用markerActivateUrl时候，入参要写成markerActivateUrl:""
+      "<doc-static-host>/static/newMarker_active.png",//激活状态,由鼠标划过或点击触发注意：当不用markerActivateUrl时候，入参要写成markerActivateUrl:""
     markerSize: [100, 159],
     markerOffset: [0, 0],
     labelContent: [
@@ -1085,7 +1085,7 @@ const poi = new App.CustomPoi({
         hideDistance: 2000, // 定义实体隐藏的距离(单位:米),相机超过此距离时,实体会被隐藏
         hideType: "default", // 实体超出显示距离(none:不显示; default:圆圈显示)
         scaleMode: "2D", // 是否受相机的透视影响(2D:不影响; 3D:影响)；透视包括近大远小、overlapOrder生效
-        url:"https://wdp5-api-debug.51aes.com/static/newMarker.png",//当hideType设置成url时，url才生效
+        url:"<doc-static-host>/static/newMarker.png",//当hideType设置成url时，url才生效
         size:[40,50],//图片大小
       },
       interaction: {

@@ -684,7 +684,7 @@ console.log(res);
 ```javascript
 const raster = new App.Raster({
   "rasterStyle": {
-    "path": "http://wdpapi.51aes.com/doc-static/images/static/raster/raster.tif", //tif格式支持：Float32 - Thirty two bit floating point;tif文件地址，支持2种形式：·在线地址：如"http://wdpapi.51aes.com/doc-static/images/static/raster/raster.tif"·本地地址：如"D:/xxx/raster.tif"； D: 在线席位所在盘符
+    "path": "<doc-static-host>/doc-static/images/static/raster/raster.tif", //tif格式支持：Float32 - Thirty two bit floating point;tif文件地址，支持2种形式：·在线地址：如"<doc-static-host>/doc-static/images/static/raster/raster.tif"·本地地址：如"D:/xxx/raster.tif"； D: 在线席位所在盘符
     "type": "fit", //样式类型(fit: 投影型 plane: 平面型)
     "gradientSetting": [
       //自定义渐变颜色(HEXA颜色值)
