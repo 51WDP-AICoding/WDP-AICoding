@@ -1,6 +1,6 @@
 ﻿# Official excerpt sync: 空间标注与交互覆盖物
 
-Version baseline: WDP API 2.3.1
+Version baseline: WDP API 2.3.0
 Source: public wdpapidoc API (category: 空间标注与交互覆盖物, categoryId: 572)
 
 ## Notes

@@ -1,4 +1,4 @@
----
+﻿---
 name: wdp-api-camera-unified
 description: 处理场景相机控制、视角切换、漫游路径与动画的实现与排障。用于相机操作、视角切换、路径漫游、动画控制等功能实现。
 ---
@@ -73,7 +73,7 @@ WDP API参数命名不统一，**必须通过官方文档确认参数格式**，
 - 相机旋转：Rotate（按方向/角度）
 - 相机环绕：Around（围绕指定实体旋转）
 - 获取相机信息：GetCameraPose、GetCameraInfo
-- 数字人漫游：PlayEntityRoam、StopEntityRoam（>= 2.3.1）
+- 数字人漫游：PlayEntityRoam、StopEntityRoam（>= 2.3.0）
 
 ### 2. 视角切换
 - 预设视角切换：ResetCameraPose

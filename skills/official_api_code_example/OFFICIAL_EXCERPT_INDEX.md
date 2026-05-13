@@ -1,6 +1,6 @@
 ﻿# API Code Example Index（新版后台摘录）
 
-版本基线：WDP API 2.3.1
+版本基线：WDP API 2.3.0
 - GIS API 2.1.0 (2026.03.26)
 - BIM API 2.2.1 (2026.04.28)
 
@@ -10,7 +10,7 @@
 |-----|------|---------|-----------|
 | **GIS API** | 2.1.0 | `OnGeoLayerFeatureClicked` 新增 `featureType` 字段 (point/line/polygon) | `gis-api-core-operations` |
 | **BIM API** | 2.2.1 | 版本更新至 2.2.1，建议同步更新以获取最新稳定性修复 | `wdp-api-bim-unified` |
-| **WDP API** | 2.3.1 | 鼠标事件扩展 `layerType` 字段，支持 3DT/WMS/WMTS/矢量图层识别 | `wdp-api-general-event-registration` |
+| **WDP API** | 2.3.0 | 鼠标事件扩展 `layerType` 字段，支持 3DT/WMS/WMTS/矢量图层识别 | `wdp-api-general-event-registration` |
 
 > **更新说明**：以上更新已同步至 official_api_code_example 各摘录文件，skills 已引用最新 API 能力。
 
@@ -151,7 +151,7 @@
   - 再查：`official-entity-general-behavior-core.md`、`official-function-components.md`、`official-scene-camera.md`
   - 关注：事件解绑、`Delete` / `ClearByTypes`、`RemoveScreenPosBound`、`StopRoam`
 
-## 按官网分类的整理进度（WDP API 2.3.1）
+## 按官网分类的整理进度（WDP API 2.3.0）
 
 1. 通用事件监听：已整理
 2. 场景初始：已整理（补充完整事件列表 + Renderer控制方法：包含Base64截图、码率帧率和分辨率缩放控制、网络传输质量GetStats监控）

@@ -7,6 +7,6 @@
     "build": "vite build"
   },
   "dependencies": {
-    "wdpapi": "^2.3.1"
+    "wdpapi": "^2.3.0"
   }
 }
